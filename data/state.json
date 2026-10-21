@@ -1,0 +1,98 @@
+{
+ "last_poll": "2026-10-21T19:28:09Z",
+ "seen": {
+  "cosmos3": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "cosmos3"
+  },
+  "deepseekv4-flash-vision": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "deepseekv4-flash-vision"
+  },
+  "deepseekv41-flash": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "deepseekv41-flash-0909-amd64"
+  },
+  "dsv4-megamoe-mxfp4": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "dsv4-megamoe-mxfp4-x86_64-cu130-4ba0a72"
+  },
+  "flint": {
+   "family": "flint",
+   "first_seen": "2026-10-21T19:28:09Z",
+   "model": null,
+   "vllm_tag": "flint",
+   "vllm_tag_pushed": "2026-10-21T16:09:51.326641Z"
+  },
+  "glm53-flash": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "glm53-flash"
+  },
+  "hy3": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "hy3"
+  },
+  "hy4-preview": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "hy4-preview"
+  },
+  "inkling": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "inkling"
+  },
+  "kimi-k3": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "kimi-k3"
+  },
+  "mimo-v26": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "mimo-v26"
+  },
+  "muse-glimmer": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "muse-glimmer"
+  },
+  "muse-spark-open": {
+   "family": "muse-spark-open",
+   "first_seen": "2026-10-21T19:28:09Z",
+   "model": "meta-models/Muse-Spark-Open-816B-A42B",
+   "vllm_tag": "muse-spark-open",
+   "vllm_tag_pushed": "2026-10-15T17:17:29.537349Z"
+  },
+  "qwen38": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "qwen38"
+  },
+  "qwen38-flash-next": {
+   "first_seen": "2026-10-21T19:28:09Z",
+   "skipped": "before --since",
+   "vllm_tag": "qwen38-flash-next"
+  },
+  "reflection-beam": {
+   "family": "reflection-beam",
+   "first_seen": "2026-10-21T19:28:09Z",
+   "model": null,
+   "vllm_tag": "reflection-beam",
+   "vllm_tag_pushed": "2026-10-16T08:16:29.807518Z"
+  },
+  "step-5-preview": {
+   "family": "step-5-preview",
+   "first_seen": "2026-10-21T19:28:09Z",
+   "model": "stepfun-ai/Step-5-Preview",
+   "vllm_tag": "step-5-preview",
+   "vllm_tag_pushed": "2026-10-15T00:51:17.902093Z"
+  }
+ }
+}

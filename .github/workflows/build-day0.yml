@@ -1,0 +1,179 @@
+name: Build day-0 worker
+
+# Builds runpod-workers/worker-vllm (or a fork/branch of it) FROM a vLLM
+# day-0 image, runs CPU readiness checks inside the result, and pushes it to
+# GHCR. Pushes to main or milestone branches (m1-build, ...) run the
+# defaults; Actions > Run workflow takes inputs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      vllm_tag:
+        description: "vllm/vllm-openai tag to build FROM (model-named day-0 tag, nightly, or vX.Y.Z)"
+        default: "step-5-preview"
+      model:
+        description: "Hugging Face model id for the CPU checks"
+        default: "stepfun-ai/Step-5-Preview"
+      worker_repo:
+        description: "worker-vllm repo to build"
+        default: "ashwinsreedhar28/worker-vllm"
+      worker_ref:
+        description: "branch, tag or SHA of worker_repo"
+        default: "fix/version-guard-any-base-tag"
+      push_image:
+        description: "push the image to GHCR if the build succeeds"
+        type: boolean
+        default: true
+  push:
+    branches: [main, "m*-*"]
+    paths:
+      - ".github/workflows/build-day0.yml"
+      - "checks/**"
+
+permissions:
+  contents: write   # records data/results/<tag>.json
+  packages: write
+
+concurrency:
+  group: build-day0-${{ inputs.vllm_tag || 'step-5-preview' }}
+  cancel-in-progress: false
+
+env:
+  VLLM_TAG: ${{ inputs.vllm_tag || 'step-5-preview' }}
+  MODEL: ${{ inputs.model || 'stepfun-ai/Step-5-Preview' }}
+  WORKER_REPO: ${{ inputs.worker_repo || 'ashwinsreedhar28/worker-vllm' }}
+  WORKER_REF: ${{ inputs.worker_ref || 'fix/version-guard-any-base-tag' }}
+  PUSH_IMAGE: ${{ github.event_name == 'push' || inputs.push_image }}
+
+defaults:
+  run:
+    shell: bash  # -eo pipefail, so `docker build | tee` fails the step on a build error
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout day0-ready
+        uses: actions/checkout@v4
+
+      - name: Checkout worker
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.WORKER_REPO }}
+          ref: ${{ env.WORKER_REF }}
+          path: worker
+
+      - name: Make room for a ~20 GB base image
+        # vllm/vllm-openai is ~9 GB compressed. Drop preinstalled toolchains
+        # from / and move Docker's data root to the larger /mnt disk.
+        run: |
+          df -h / /mnt
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          sudo docker image prune -af >/dev/null
+          sudo systemctl stop docker docker.socket
+          sudo mkdir -p /mnt/docker
+          if [ -s /etc/docker/daemon.json ]; then
+            sudo jq '. + {"data-root": "/mnt/docker"}' /etc/docker/daemon.json | sudo tee /etc/docker/daemon.json.new >/dev/null
+            sudo mv /etc/docker/daemon.json.new /etc/docker/daemon.json
+          else
+            echo '{"data-root": "/mnt/docker"}' | sudo tee /etc/docker/daemon.json >/dev/null
+          fi
+          sudo systemctl start docker
+          docker info --format 'Docker root: {{.DockerRootDir}}'
+          df -h / /mnt
+
+      - name: Resolve image name
+        id: img
+        run: |
+          owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          safe_tag="$(echo "$VLLM_TAG" | tr -c 'a-zA-Z0-9._-' '-' | sed 's/-*$//')"
+          echo "image=ghcr.io/${owner}/worker-vllm:day0-${safe_tag}" >> "$GITHUB_OUTPUT"
+          echo "worker_sha=$(git -C worker rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build worker FROM vllm/vllm-openai:${{ env.VLLM_TAG }}
+        id: build
+        run: |
+          start=$(date +%s)
+          DOCKER_BUILDKIT=1 docker build --progress=plain \
+            --build-arg VLLM_VERSION="$VLLM_TAG" \
+            --label org.opencontainers.image.source="https://github.com/${{ github.repository }}" \
+            --label day0.vllm_tag="$VLLM_TAG" \
+            --label day0.worker="${WORKER_REPO}@${{ steps.img.outputs.worker_sha }}" \
+            -t "${{ steps.img.outputs.image }}" worker 2>&1 | tee build.log
+          echo "build_s=$(( $(date +%s) - start ))" >> "$GITHUB_OUTPUT"
+          grep -E "base image vLLM|OK for base tag" build.log || true
+
+      - name: CPU readiness checks
+        id: checks
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          mkdir -p out
+          docker run --rm --entrypoint python3 \
+            -e HF_TOKEN -e HF_HOME=/tmp/hf \
+            -v "$PWD/checks:/checks:ro" -v "$PWD/out:/out" \
+            "${{ steps.img.outputs.image }}" /checks/cpu_check.py "$MODEL" | tail -1 > out/stdout.json
+          echo "verdict=$(jq -r .verdict out/result.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        if: env.PUSH_IMAGE == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
+        id: push
+        if: env.PUSH_IMAGE == 'true'
+        run: docker push "${{ steps.img.outputs.image }}"
+
+      - name: Record result
+        if: always() && steps.img.outcome == 'success'
+        run: |
+          mkdir -p data/results
+          safe="$(basename '${{ steps.img.outputs.image }}' | sed 's/^worker-vllm:day0-//')"
+          jq -n \
+            --arg vllm_tag "$VLLM_TAG" --arg model "$MODEL" --arg image "${{ steps.img.outputs.image }}" \
+            --arg worker "${WORKER_REPO}@${{ steps.img.outputs.worker_sha }}" --arg worker_ref "$WORKER_REF" \
+            --arg build "${{ steps.build.outcome }}" --arg build_s "${{ steps.build.outputs.build_s }}" \
+            --arg pushed "${{ steps.push.outcome }}" --arg verdict "${{ steps.checks.outputs.verdict }}" \
+            --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg finished_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --slurpfile checks <(cat out/result.json 2>/dev/null || echo null) \
+            '{vllm_tag:$vllm_tag, model:$model, image:$image, worker:$worker, worker_ref:$worker_ref,
+              build:$build, build_s:($build_s|tonumber? // null), pushed:$pushed, verdict:$verdict,
+              run_url:$run_url, finished_at:$finished_at, checks:$checks[0]}' > "data/results/${safe}.json"
+          python3 detect/board.py
+          git config user.name "day0-ready bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/results data/board.md
+          git commit -q -m "result: ${VLLM_TAG} (${{ steps.checks.outputs.verdict || steps.build.outcome }})"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### ${VLLM_TAG} → ${{ steps.img.outputs.image }}"
+            echo ""
+            echo "- worker: ${WORKER_REPO}@${{ steps.img.outputs.worker_sha }} (${WORKER_REF})"
+            echo "- build: ${{ steps.build.outcome }} in ${{ steps.build.outputs.build_s }} s"
+            echo "- CPU checks for \`${MODEL}\`: **${{ steps.checks.outputs.verdict }}**"
+            echo ""
+            echo '```json'
+            jq . out/result.json 2>/dev/null || echo "no result.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: day0-${{ env.VLLM_TAG }}
+          path: |
+            out/
+            build.log
+          if-no-files-found: warn

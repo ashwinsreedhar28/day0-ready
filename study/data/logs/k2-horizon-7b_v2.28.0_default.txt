@@ -1,0 +1,813 @@
+2026-10-21 14:16:36.808 | info | oqss514081kxv6 | 2026-10-21 18:16:26,250 INFO httpx: HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"\n
+2026-10-21 14:16:36.808 | info | oqss514081kxv6 | 2026-10-21 18:16:26,276 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:16:36.808 | info | oqss514081kxv6 | 2026-10-21 18:16:26,278 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:16:36.808 | info | oqss514081kxv6 | 2026-10-21 18:16:26,278 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:16:36.808 | info | oqss514081kxv6 | INFO 10-21 18:16:36 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:16:37.341 | info | oqss514081kxv6 | INFO 10-21 18:16:37 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:16:37.501 | warning | oqss514081kxv6 | WARNING 10-21 18:16:37 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347] \n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:347] \n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) INFO 10-21 18:16:37 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:16:37.501 | info | oqss514081kxv6 | (APIServer pid=496) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:16:37.501 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:37 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:39.502 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:37 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:39.502 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:37 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:16:39.502 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:39 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:42.299 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:39 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:42.299 | error | oqss514081kxv6 | (APIServer pid=496) ERROR 10-21 18:16:39 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496) Traceback (most recent call last):\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)     sys.exit(main())\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)              ^^^^^^\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)     args.dispatch_function(args)\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)     uvloop.run(run_server(args))\n
+2026-10-21 14:16:42.299 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return __asyncio.run(\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return runner.run(main)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return await main\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     async with build_async_engine_client(\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return await anext(self.gen)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return await anext(self.gen)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     model_config = self.create_model_config()\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     return ModelConfig(\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)            ^^^^^^^^^^^^\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:16:42.300 | info | oqss514081kxv6 | (APIServer pid=496)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:16:42.300 | error | oqss514081kxv6 | 2026-10-21 18:16:42,299 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:16:43.502 | error | oqss514081kxv6 | worker exited with exit code 1
+2026-10-21 14:16:54.353 | error | oqss514081kxv6 | 2026-10-21 18:16:42,299 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | 2026-10-21 18:16:44,303 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | 2026-10-21 18:16:44,305 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | 2026-10-21 18:16:44,305 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | INFO 10-21 18:16:51 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | INFO 10-21 18:16:52 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:16:54.353 | warning | oqss514081kxv6 | WARNING 10-21 18:16:52 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347] \n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347] \n
+2026-10-21 14:16:54.353 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:16:54.353 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:54.353 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:54.353 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:16:54.353 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:56.325 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:56.325 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500) Traceback (most recent call last):\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     sys.exit(main())\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     args.dispatch_function(args)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     uvloop.run(run_server(args))\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return __asyncio.run(\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return runner.run(main)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return await main\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client(\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     model_config = self.create_model_config()\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     return ModelConfig(\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:16:56.325 | info | oqss514081kxv6 | (APIServer pid=500)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:16:56.325 | error | oqss514081kxv6 | 2026-10-21 18:16:56,324 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | INFO 10-21 18:16:51 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | INFO 10-21 18:16:52 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:16:58.534 | warning | oqss514081kxv6 | WARNING 10-21 18:16:52 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347] \n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:347] \n
+2026-10-21 14:16:58.534 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:16:52 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:52 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:16:54 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500) Traceback (most recent call last):\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     sys.exit(main())\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     args.dispatch_function(args)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     uvloop.run(run_server(args))\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return __asyncio.run(\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return runner.run(main)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return await main\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client(\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     model_config = self.create_model_config()\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     return ModelConfig(\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:16:58.535 | info | oqss514081kxv6 | (APIServer pid=500)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:16:58.535 | error | oqss514081kxv6 | 2026-10-21 18:16:56,324 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:17:20.873 | error | oqss514081kxv6 | (APIServer pid=502) ERROR 10-21 18:17:11 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:17:20.873 | error | oqss514081kxv6 | (APIServer pid=502) ERROR 10-21 18:17:11 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:17:20.873 | error | oqss514081kxv6 | (APIServer pid=502) ERROR 10-21 18:17:11 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502) Traceback (most recent call last):\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     sys.exit(main())\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)              ^^^^^^\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     args.dispatch_function(args)\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     uvloop.run(run_server(args))\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     return __asyncio.run(\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     return runner.run(main)\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     return await main\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:17:20.873 | info | oqss514081kxv6 | (APIServer pid=502)     async with build_async_engine_client(\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     return await anext(self.gen)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     return await anext(self.gen)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     model_config = self.create_model_config()\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     return ModelConfig(\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)            ^^^^^^^^^^^^\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:17:20.874 | info | oqss514081kxv6 | (APIServer pid=502)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:17:20.874 | error | oqss514081kxv6 | 2026-10-21 18:17:14,110 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:17:31.579 | info | oqss514081kxv6 | 2026-10-21 18:17:24,096 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:17:31.579 | info | oqss514081kxv6 | 2026-10-21 18:17:24,099 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:17:31.579 | info | oqss514081kxv6 | 2026-10-21 18:17:24,100 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:17:31.579 | info | oqss514081kxv6 | INFO 10-21 18:17:31 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:17:32.044 | info | oqss514081kxv6 | INFO 10-21 18:17:32 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:17:32.220 | warning | oqss514081kxv6 | WARNING 10-21 18:17:32 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347] \n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:347] \n
+2026-10-21 14:17:32.220 | info | oqss514081kxv6 | (APIServer pid=497) INFO 10-21 18:17:32 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:17:32.220 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:32 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:17:34.221 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:32 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:17:34.221 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:32 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:17:34.221 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:34 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:17:38.124 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:34 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:17:38.125 | error | oqss514081kxv6 | (APIServer pid=497) ERROR 10-21 18:17:34 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497) Traceback (most recent call last):\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     sys.exit(main())\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)              ^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     args.dispatch_function(args)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     uvloop.run(run_server(args))\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return __asyncio.run(\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return runner.run(main)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return await main\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     async with build_async_engine_client(\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     model_config = self.create_model_config()\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     return ModelConfig(\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)            ^^^^^^^^^^^^\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:17:38.125 | info | oqss514081kxv6 | (APIServer pid=497)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:17:38.125 | error | oqss514081kxv6 | 2026-10-21 18:17:38,124 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:18:05.852 | info | oqss514081kxv6 | 2026-10-21 18:17:58,558 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:18:05.852 | info | oqss514081kxv6 | 2026-10-21 18:17:58,561 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:18:05.852 | info | oqss514081kxv6 | 2026-10-21 18:17:58,561 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:18:05.852 | info | oqss514081kxv6 | INFO 10-21 18:18:05 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:18:06.326 | info | oqss514081kxv6 | INFO 10-21 18:18:06 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:18:06.493 | warning | oqss514081kxv6 | WARNING 10-21 18:18:06 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347] \n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:347] \n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:06 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:18:06.493 | info | oqss514081kxv6 | (APIServer pid=500) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:18:06.493 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:06 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:08.494 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:06 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:08.494 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:06 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:18:08.494 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:08 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:10.582 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:08 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:10.582 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:08 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500) Traceback (most recent call last):\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     sys.exit(main())\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     args.dispatch_function(args)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     uvloop.run(run_server(args))\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return __asyncio.run(\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return runner.run(main)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return await main\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client(\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     model_config = self.create_model_config()\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)     return ModelConfig(\n
+2026-10-21 14:18:10.582 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:18:10.583 | info | oqss514081kxv6 | (APIServer pid=500)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:18:10.583 | error | oqss514081kxv6 | 2026-10-21 18:18:10,581 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:18:18.807 | error | oqss514081kxv6 | worker exited with exit code 1
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | INFO 10-21 18:18:26 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | INFO 10-21 18:18:27 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:18:31.633 | warning | oqss514081kxv6 | WARNING 10-21 18:18:27 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347] \n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347] \n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:31.633 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) Traceback (most recent call last):\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     sys.exit(main())\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     args.dispatch_function(args)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     uvloop.run(run_server(args))\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return __asyncio.run(\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return runner.run(main)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return await main\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client(\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     model_config = self.create_model_config()\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     return ModelConfig(\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:31.633 | info | oqss514081kxv6 | (APIServer pid=500) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:18:31.634 | info | oqss514081kxv6 | (APIServer pid=500)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:18:31.634 | error | oqss514081kxv6 | 2026-10-21 18:18:31,632 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:18:32.760 | error | oqss514081kxv6 | worker exited with exit code 1
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | INFO 10-21 18:18:26 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | INFO 10-21 18:18:27 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:18:41.095 | warning | oqss514081kxv6 | WARNING 10-21 18:18:27 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347] \n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:347] \n
+2026-10-21 14:18:41.095 | info | oqss514081kxv6 | (APIServer pid=500) INFO 10-21 18:18:27 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:18:41.095 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:41.095 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:41.096 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:27 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:18:41.096 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:41.096 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:41.096 | error | oqss514081kxv6 | (APIServer pid=500) ERROR 10-21 18:18:29 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500) Traceback (most recent call last):\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     sys.exit(main())\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     args.dispatch_function(args)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     uvloop.run(run_server(args))\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return __asyncio.run(\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return runner.run(main)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return await main\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client(\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return await anext(self.gen)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     model_config = self.create_model_config()\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     return ModelConfig(\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)            ^^^^^^^^^^^^\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | (APIServer pid=500)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:18:41.096 | error | oqss514081kxv6 | 2026-10-21 18:18:31,632 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | 2026-10-21 18:18:33,637 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | 2026-10-21 18:18:33,639 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | 2026-10-21 18:18:33,639 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:18:41.096 | info | oqss514081kxv6 | INFO 10-21 18:18:41 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:18:41.567 | info | oqss514081kxv6 | INFO 10-21 18:18:41 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:18:41.700 | warning | oqss514081kxv6 | WARNING 10-21 18:18:41 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347] \n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:347] \n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) INFO 10-21 18:18:41 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:18:41.700 | info | oqss514081kxv6 | (APIServer pid=498) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:18:43.779 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:41 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:43.779 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:41 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:43.779 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:41 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:18:43.779 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:43 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:45.662 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:43 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:45.662 | error | oqss514081kxv6 | (APIServer pid=498) ERROR 10-21 18:18:43 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498) Traceback (most recent call last):\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     sys.exit(main())\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)              ^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     args.dispatch_function(args)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     uvloop.run(run_server(args))\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return __asyncio.run(\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return runner.run(main)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return await main\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     async with build_async_engine_client(\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.662 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     model_config = self.create_model_config()\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     return ModelConfig(\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)            ^^^^^^^^^^^^\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:18:45.663 | info | oqss514081kxv6 | (APIServer pid=498)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:18:45.663 | error | oqss514081kxv6 | 2026-10-21 18:18:45,662 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:18:49.472 | error | oqss514081kxv6 | worker exited with exit code 1
+2026-10-21 14:18:58.090 | info | oqss514081kxv6 | 2026-10-21 18:18:50,278 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:18:58.090 | info | oqss514081kxv6 | 2026-10-21 18:18:50,281 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:18:58.090 | info | oqss514081kxv6 | 2026-10-21 18:18:50,282 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:18:58.090 | info | oqss514081kxv6 | INFO 10-21 18:18:58 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:18:58.561 | info | oqss514081kxv6 | INFO 10-21 18:18:58 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:18:58.712 | warning | oqss514081kxv6 | WARNING 10-21 18:18:58 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347] \n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:347] \n
+2026-10-21 14:18:58.712 | info | oqss514081kxv6 | (APIServer pid=493) INFO 10-21 18:18:58 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:18:58.712 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:18:58 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:19:00.713 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:18:58 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:19:00.714 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:18:58 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:19:00.714 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:19:00 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:19:04.309 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:19:00 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:19:04.309 | error | oqss514081kxv6 | (APIServer pid=493) ERROR 10-21 18:19:00 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493) Traceback (most recent call last):\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     sys.exit(main())\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)              ^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     args.dispatch_function(args)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     uvloop.run(run_server(args))\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return __asyncio.run(\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return runner.run(main)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return await main\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     async with build_async_engine_client(\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return await anext(self.gen)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     return await anext(self.gen)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.309 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)     model_config = self.create_model_config()\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)     return ModelConfig(\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)            ^^^^^^^^^^^^\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:19:04.310 | info | oqss514081kxv6 | (APIServer pid=493)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:19:04.310 | error | oqss514081kxv6 | 2026-10-21 18:19:04,308 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:19:10.841 | error | oqss514081kxv6 | worker exited with exit code 1
+2026-10-21 14:24:40.561 | info | ofk8q12dhb6nry | 2026-10-21 18:24:30,496 INFO httpx: HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"\n
+2026-10-21 14:24:40.561 | info | ofk8q12dhb6nry | 2026-10-21 18:24:30,524 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:24:40.561 | info | ofk8q12dhb6nry | 2026-10-21 18:24:30,527 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:24:40.561 | info | ofk8q12dhb6nry | 2026-10-21 18:24:30,528 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:24:40.561 | info | ofk8q12dhb6nry | INFO 10-21 18:24:40 [import_utils.py:499] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:24:41.122 | info | ofk8q12dhb6nry | INFO 10-21 18:24:41 [__init__.py:112] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:24:41.302 | warning | ofk8q12dhb6nry | WARNING 10-21 18:24:41 [argparse_utils.py:276] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347] \n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347]        █     █     █▄   ▄█\n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.0\n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:347] \n
+2026-10-21 14:24:41.302 | info | ofk8q12dhb6nry | (APIServer pid=499) INFO 10-21 18:24:41 [api_utils.py:286] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:24:41.302 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:41 [repo_utils.py:119] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:43.304 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:41 [repo_utils.py:119]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:43.304 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:41 [repo_utils.py:119] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:24:43.304 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:43 [repo_utils.py:117] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:46.558 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:43 [repo_utils.py:117]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:46.558 | error | ofk8q12dhb6nry | (APIServer pid=499) ERROR 10-21 18:24:43 [repo_utils.py:117] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499) Traceback (most recent call last):\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     sys.exit(main())\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)              ^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 106, in main\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     args.dispatch_function(args)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     uvloop.run(run_server(args))\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return __asyncio.run(\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return runner.run(main)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return await main\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 176, in run_server\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 190, in run_server_worker\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     async with build_async_engine_client(\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return await anext(self.gen)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return await anext(self.gen)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 82, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 2073, in create_engine_config\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     model_config = self.create_model_config()\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1820, in create_model_config\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     return ModelConfig(\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)            ^^^^^^^^^^^^\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:24:46.558 | info | ofk8q12dhb6nry | (APIServer pid=499)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:24:46.558 | error | ofk8q12dhb6nry | 2026-10-21 18:24:46,557 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:24:49.584 | error | ofk8q12dhb6nry | worker exited with exit code 1
+2026-10-21 14:25:04.178 | error | ofk8q12dhb6nry | worker exited with exit code 1

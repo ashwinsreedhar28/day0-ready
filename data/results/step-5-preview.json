@@ -1,0 +1,76 @@
+{
+  "vllm_tag": "step-5-preview",
+  "model": "stepfun-ai/Step-5-Preview",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview",
+  "worker": "ashwinsreedhar28/worker-vllm@b779895",
+  "worker_ref": "fix/version-guard-any-base-tag",
+  "build": "success",
+  "build_s": 251,
+  "pushed": "success",
+  "verdict": "native",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39658800684",
+  "finished_at": "2026-10-21T19:24:05Z",
+  "checks": {
+    "model": "stepfun-ai/Step-5-Preview",
+    "checked_at": "2026-10-21T19:23:13Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev22912+g8224bb82f",
+          "transformers": "5.19.0",
+          "torch": "2.13.0+cu130"
+        },
+        "s": 7.8
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "Step5ForConditionalGeneration"
+          ],
+          "model_type": "step5_vl",
+          "auto_map": []
+        },
+        "s": 0.2
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "Step5ForConditionalGeneration": true
+        },
+        "s": 2.3
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The checkpoint you are trying to load has model type `step5_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "s": 0.1,
+        "trace_tail": [
+          "ValueError: The checkpoint you are trying to load has model type `step5_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
+          "",
+          "You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+        ]
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "Step5ForConditionalGeneration",
+          "architectures": "['Step5ForConditionalGeneration']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 16.0
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "LlamaTokenizer",
+          "vocab": 128815
+        },
+        "s": 1.2
+      }
+    },
+    "verdict": "native"
+  }
+}

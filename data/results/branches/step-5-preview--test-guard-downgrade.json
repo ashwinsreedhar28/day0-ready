@@ -1,0 +1,16 @@
+{
+  "vllm_tag": "step-5-preview",
+  "model": "stepfun-ai/Step-5-Preview",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview--test-guard-downgrade",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview--test-guard-downgrade-7da2284",
+  "digest": "",
+  "worker": "ashwinsreedhar28/worker-vllm@7da2284",
+  "worker_ref": "test/guard-downgrade",
+  "build": "failure",
+  "build_s": null,
+  "pushed": "skipped",
+  "verdict": "",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665273579",
+  "finished_at": "2026-10-21T20:01:38Z",
+  "checks": null
+}

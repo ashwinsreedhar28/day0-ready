@@ -103,3 +103,17 @@ def test_worker_remote_code_startup_error_retries_with_remote_code(monkeypatch):
 def test_gpu_climb_stops_at_max_gpu():
     assert smoke.next_rung({}, "48gb", "startup_oom", False, max_gpu="48gb") is None
     assert smoke.next_rung({}, "24gb", "startup_oom", False, max_gpu="48gb") == ({}, "48gb")
+
+
+def test_crash_loop_skips_remote_code_when_cpu_check_ruled_it_out():
+    # flint on H200: native, no auto_map; the loop was a Blackwell-only MoE kernel.
+    assert smoke.next_rung({"ATTENTION_BACKEND": "FLASHINFER"}, "141gb", "crash_loop", False,
+                           remote_code_possible=False) is None
+    assert smoke.next_rung({}, "24gb", "needs_remote_code", False, remote_code_possible=False) == (
+        {"TRUST_REMOTE_CODE": "true"}, "24gb")
+
+
+def test_cpu_verdict_lookup_by_pinned_tag():
+    assert smoke.cpu_verdict("ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint-b779895") == "native"
+    assert smoke.cpu_verdict("ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--fix-remote-code-startup-error-c1b457f") == "native+remote_code"
+    assert smoke.cpu_verdict("runpod/worker-v1-vllm:v2.27.2") is None

@@ -134,9 +134,15 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
     return rung
 
 
-def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb"):
-    """The ladder: which setting to change after a failure, or None to stop."""
-    if outcome in ("needs_remote_code", "crash_loop") and not remote_code_tried:
+def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb", remote_code_possible=True):
+    """The ladder: which setting to change after a failure, or None to stop.
+
+    A crash loop is only retried with remote code when the CPU check didn't
+    rule it out: flint (no auto_map) crash-looped on a Blackwell-only MoE
+    kernel, and a TRUST_REMOTE_CODE rung would have been 30 min of H200 for nothing.
+    """
+    if not remote_code_tried and (outcome == "needs_remote_code"
+                                  or (outcome == "crash_loop" and remote_code_possible)):
         return {**env, "TRUST_REMOTE_CODE": "true"}, gpu_class
     if outcome == "first_request_failure" and env.get("GPU_MEMORY_UTILIZATION") != "0.85":
         return {**env, "GPU_MEMORY_UTILIZATION": "0.85"}, gpu_class
@@ -144,6 +150,15 @@ def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb"):
     if (outcome == "startup_oom" and gpu_class in NEXT_GPU
             and order.index(NEXT_GPU[gpu_class]) <= order.index(max_gpu)):
         return env, NEXT_GPU[gpu_class]
+    return None
+
+
+def cpu_verdict(image):
+    """The CPU-check verdict recorded for this exact image tag, if the pipeline built it."""
+    for f in (ROOT / "data" / "results").rglob("*.json"):
+        r = json.loads(f.read_text())
+        if image in (r.get("image"), r.get("image_pinned")):
+            return r.get("verdict")
     return None
 
 
@@ -171,6 +186,10 @@ def main():
     env, gpu = dict(s.split("=", 1) for s in a.set), a.gpu
     if a.remote_code:
         env["TRUST_REMOTE_CODE"] = "true"
+    verdict = cpu_verdict(a.image)
+    remote_possible = verdict is None or "remote_code" in verdict
+    if verdict:
+        log(f"CPU check verdict for this image: {verdict}")
     label = a.image.rsplit(":", 1)[-1].replace(".", "")[:30]
     rungs = []
     while time.time() < deadline:
@@ -178,7 +197,7 @@ def main():
         rungs.append(r)
         if r["outcome"] == "pass":
             break
-        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, a.max_gpu)
+        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, a.max_gpu, remote_possible)
         if nxt is None:
             break
         env, gpu = nxt

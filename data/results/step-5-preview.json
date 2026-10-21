@@ -3,18 +3,18 @@
   "model": "stepfun-ai/Step-5-Preview",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview",
   "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview-b779895",
-  "digest": "sha256:17492844231bbb429b1f1bc181517e7221f8373c5513cfd7e6bf8d3693e16c3a",
+  "digest": "sha256:a9aee9946079e7ac7dd1c2b9d5f82c4bc2318520eef08991d36864263157b691",
   "worker": "ashwinsreedhar28/worker-vllm@b779895",
   "worker_ref": "fix/version-guard-any-base-tag",
   "build": "success",
-  "build_s": 247,
+  "build_s": 263,
   "pushed": "success",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665559855",
-  "finished_at": "2026-10-21T20:06:16Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39688228097",
+  "finished_at": "2026-10-21T22:47:25Z",
   "checks": {
     "model": "stepfun-ai/Step-5-Preview",
-    "checked_at": "2026-10-21T20:05:29Z",
+    "checked_at": "2026-10-21T22:46:46Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -23,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.13.0+cu130"
         },
-        "s": 6.6
+        "s": 5.8
       },
       "hub_config": {
         "ok": true,
@@ -34,14 +34,14 @@
           "model_type": "step5_vl",
           "auto_map": []
         },
-        "s": 0.3
+        "s": 0.2
       },
       "registry": {
         "ok": true,
         "value": {
           "Step5ForConditionalGeneration": true
         },
-        "s": 2.1
+        "s": 1.6
       },
       "transformers_config": {
         "ok": false,
@@ -62,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 14.7
+        "s": 12.0
       },
       "tokenizer": {
         "ok": true,
@@ -70,7 +70,7 @@
           "class": "LlamaTokenizer",
           "vocab": 128815
         },
-        "s": 1.1
+        "s": 0.9
       }
     },
     "verdict": "native"

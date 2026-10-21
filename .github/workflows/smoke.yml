@@ -1,0 +1,116 @@
+name: Smoke test
+
+# One chat request against a built worker image on a Runpod Serverless
+# endpoint (pipeline/smoke.py), then the result is recorded in data/smoke/,
+# the board and data/ready.json. Started by build-day0.yml after a successful
+# build, or by hand.
+#
+# Spend limits, all in this file or pipeline/smoke.py:
+# - max_gpu (default 48gb). Larger classes run in the gpu-large environment,
+#   which can require an approval before the job starts.
+# - max_minutes across all rungs (default 40), one worker per endpoint.
+# - vars.SMOKE_BUDGET_USD (default 10): skip or stop once the recorded spend of
+#   the last 24 h plus this rung's worst case would pass it.
+# - TRUST_REMOTE_CODE is never set unless allow_remote_code is checked: a
+#   model that needs it stops at needs_remote_code for a person to review.
+#
+# Needs the repo secret RUNPOD_API_KEY. Not triggered by pull requests, so a
+# fork can't spend it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: "worker image (prefer the pinned ...-<sha> tag)"
+        required: true
+      model:
+        description: "Hugging Face model id"
+        required: true
+      gpu:
+        description: "GPU class to start on (auto: from the weight size)"
+        default: auto
+        type: choice
+        options: [auto, 24gb, 48gb, 80gb, 141gb, 180gb]
+      max_gpu:
+        description: "largest GPU class the test may use"
+        default: 48gb
+        type: choice
+        options: [24gb, 48gb, 80gb, 141gb, 180gb]
+      allow_remote_code:
+        description: "allow TRUST_REMOTE_CODE=true (only after reviewing the repo's code)"
+        type: boolean
+        default: false
+      set:
+        description: "extra worker env, space-separated KEY=VALUE (e.g. ATTENTION_BACKEND=FLASHINFER)"
+        default: ""
+      max_minutes:
+        description: "wall-clock cap across all rungs"
+        default: "40"
+
+permissions:
+  contents: write  # records data/smoke/, data/board.md, data/ready.json
+
+concurrency:
+  group: smoke-${{ inputs.image }}
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    environment: ${{ contains(fromJSON('["80gb", "141gb", "180gb"]'), inputs.max_gpu) && 'gpu-large' || 'gpu-small' }}
+    env:
+      IMAGE: ${{ inputs.image }}
+      MODEL: ${{ inputs.model }}
+      GPU: ${{ inputs.gpu }}
+      MAX_GPU: ${{ inputs.max_gpu }}
+      ALLOW_REMOTE_CODE: ${{ inputs.allow_remote_code }}
+      SET: ${{ inputs.set }}
+      MAX_MINUTES: ${{ inputs.max_minutes }}
+      BUDGET_USD: ${{ vars.SMOKE_BUDGET_USD || '10' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run smoke test
+        id: smoke
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          if [ -z "$RUNPOD_API_KEY" ]; then echo "::error::repo secret RUNPOD_API_KEY is not set"; exit 1; fi
+          args=(--image "$IMAGE" --model "$MODEL" --gpu "$GPU" --max-gpu "$MAX_GPU"
+                --max-minutes "$MAX_MINUTES" --budget-usd "$BUDGET_USD")
+          [ "$ALLOW_REMOTE_CODE" = "true" ] || args+=(--no-remote-code)
+          read -ra kvs <<< "$SET"
+          for kv in "${kvs[@]}"; do args+=(--set "$kv"); done
+          python3 pipeline/smoke.py "${args[@]}" | tee smoke.log || true
+          echo "file=data/smoke/${IMAGE##*:}.json" >> "$GITHUB_OUTPUT"
+
+      - name: Record result
+        if: always() && steps.smoke.outputs.file != ''
+        run: |
+          file="${{ steps.smoke.outputs.file }}"
+          [ -f "$file" ] || { echo "::error::no result file"; exit 1; }
+          cp "$file" /tmp/smoke.json
+          git config user.name "day0-ready bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="${GITHUB_REF_NAME}"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "$branch" && git reset -q --hard "origin/$branch"
+            cp /tmp/smoke.json "$file"
+            python3 detect/board.py > /dev/null
+            git add "$file" data/board.md data/ready.json
+            git commit -q -m "smoke: ${IMAGE##*:} ($(jq -r 'if .passed then "pass" elif .skipped then "not run" else (.rungs[-1].outcome // "fail") end' "$file"))"
+            git push -q origin "HEAD:$branch" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Smoke test: \`${IMAGE##*/}\` with \`$MODEL\`"
+            echo '```'
+            cat smoke.log 2>/dev/null || echo "no log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

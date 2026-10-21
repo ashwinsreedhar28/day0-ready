@@ -117,3 +117,58 @@ def test_cpu_verdict_lookup_by_pinned_tag():
     assert smoke.cpu_verdict("ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint-b779895") == "native"
     assert smoke.cpu_verdict("ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--fix-remote-code-startup-error-c1b457f") == "native+remote_code"
     assert smoke.cpu_verdict("runpod/worker-v1-vllm:v2.27.2") is None
+
+
+def test_ci_never_runs_repo_code_without_approval():
+    assert smoke.next_rung({}, "24gb", "needs_remote_code", False, allow_remote_code=False) is None
+    assert smoke.next_rung({}, "24gb", "crash_loop", False, allow_remote_code=False) is None
+    # Settings that don't run repo code still apply.
+    assert smoke.next_rung({}, "24gb", "first_request_failure", False, allow_remote_code=False) == (
+        {"GPU_MEMORY_UTILIZATION": "0.85"}, "24gb")
+
+
+def test_spend_counts_only_the_last_24h(tmp_path):
+    import json
+    from datetime import datetime, timezone
+    (tmp_path / "a.json").write_text(json.dumps({"rungs": [
+        {"started": "2026-10-21T21:20:40+00:00", "gpu_class": "180gb", "minutes": 13.1, "est_cost_usd": 1.89},
+        {"started": "2026-10-21T20:12:01+00:00", "gpu_class": "24gb", "outcome": "error"},  # template 401, no minutes
+        {"started": "2026-10-19T20:00:00+00:00", "gpu_class": "141gb", "minutes": 30, "est_cost_usd": 2.97}]}))
+    (tmp_path / "b.json").write_text(json.dumps({"rungs": [  # older result without est_cost_usd
+        {"started": "2026-10-21T20:34:00+00:00", "gpu_class": "141gb", "minutes": 31.3}]}))
+    now = datetime(2026, 10, 21, 22, 0, tzinfo=timezone.utc)
+    assert smoke.spent_last_24h(now, tmp_path) == round(1.89 + 3.09, 2)
+
+
+def test_passing_rung_records_a_redeployable_body(monkeypatch):
+    rungs = run_ladder(monkeypatch, [("COMPLETED", ["ok"], RUN)])
+    assert rungs[0][0] == "pass"
+    body = smoke.template_body("img", "m/x", {"ATTENTION_BACKEND": "FLASHINFER"}, 150)
+    assert body["env"] == {"MODEL_NAME": "m/x", "MAX_MODEL_LEN": "4096", "ATTENTION_BACKEND": "FLASHINFER"}
+    assert smoke.endpoint_body("180gb", "13.0")["gpuTypeIds"] == ["NVIDIA B200"]
+
+
+def test_too_large_for_max_gpu_is_recorded_not_run(monkeypatch, tmp_path):
+    import json
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
+    monkeypatch.setattr(smoke.sizing, "hf_model_info", lambda m: {"safetensors": {"parameters": {"BF16": 39_785_287_456}}})
+    monkeypatch.setattr(smoke.rp, "call", lambda *a, **k: pytest.fail("no API call for a skipped run"))
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "ghcr.io/x/w:day0-flint-abc1234", "--model", "RecursiveSI/flint",
+                                      "--gpu", "auto", "--max-gpu", "48gb"])
+    assert smoke.main() == 1
+    r = json.loads((tmp_path / "data" / "smoke" / "day0-flint-abc1234.json").read_text())
+    assert r["skipped"]["reason"] == "needs_larger_gpu" and r["weights_gb"] == 79.6 and r["rungs"] == []
+
+
+def test_budget_stops_before_spending(monkeypatch, tmp_path):
+    import json
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
+    monkeypatch.setattr(smoke, "spent_last_24h", lambda: 9.80)
+    monkeypatch.setattr(smoke.rp, "call", lambda *a, **k: pytest.fail("over budget: no endpoint"))
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "ghcr.io/x/w:day0-q-abc1234", "--model", "Qwen/Qwen3-8B",
+                                      "--gpu", "24gb", "--disk-gb", "60", "--budget-usd", "10"])
+    assert smoke.main() == 1
+    r = json.loads((tmp_path / "data" / "smoke" / "day0-q-abc1234.json").read_text())
+    assert r["skipped"]["reason"] == "budget"

@@ -159,12 +159,18 @@ def main():
     ap.add_argument("--max-minutes", type=int, default=40, help="wall-clock cap across all rungs")
     ap.add_argument("--disk-gb", type=int, default=60,
                     help="container disk; weights download here without a network volume (~2x params in GB for bf16, plus ~20 for the image)")
+    ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
+                    help="extra worker env for every rung, e.g. --set ATTENTION_BACKEND=FLASHINFER (repeatable)")
     ap.add_argument("--env-file")
     a = ap.parse_args()
+    if any("=" not in s for s in a.set):
+        ap.error("--set takes KEY=VALUE")
     key = rp.load_key(a.env_file)
 
     deadline = time.time() + a.max_minutes * 60
-    env, gpu = ({"TRUST_REMOTE_CODE": "true"} if a.remote_code else {}), a.gpu
+    env, gpu = dict(s.split("=", 1) for s in a.set), a.gpu
+    if a.remote_code:
+        env["TRUST_REMOTE_CODE"] = "true"
     label = a.image.rsplit(":", 1)[-1].replace(".", "")[:30]
     rungs = []
     while time.time() < deadline:

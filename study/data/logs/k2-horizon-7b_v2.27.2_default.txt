@@ -1,0 +1,383 @@
+2026-10-21 14:16:26.952 | info | kucb8bpjtxv1h0 | 2026-10-21 18:16:15,244 INFO httpx: HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"\n
+2026-10-21 14:16:26.953 | info | kucb8bpjtxv1h0 | 2026-10-21 18:16:15,280 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:16:26.953 | info | kucb8bpjtxv1h0 | 2026-10-21 18:16:15,283 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:16:26.953 | info | kucb8bpjtxv1h0 | 2026-10-21 18:16:15,283 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:16:26.953 | info | kucb8bpjtxv1h0 | INFO 10-21 18:16:26 [import_utils.py:478] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:16:30.257 | info | kucb8bpjtxv1h0 | INFO 10-21 18:16:30 [__init__.py:109] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:16:30.443 | warning | kucb8bpjtxv1h0 | WARNING 10-21 18:16:30 [argparse_utils.py:257] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:16:30.443 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333] \n
+2026-10-21 14:16:30.443 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333]        █     █     █▄   ▄█\n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.28.0\n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:333] \n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) INFO 10-21 18:16:30 [api_utils.py:272] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:16:30.444 | info | kucb8bpjtxv1h0 | (APIServer pid=497) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:16:30.444 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:30 [repo_utils.py:106] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:32.445 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:30 [repo_utils.py:106]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:32.445 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:30 [repo_utils.py:106] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:16:32.445 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:32 [repo_utils.py:104] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:35.309 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:32 [repo_utils.py:104]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:35.309 | error | kucb8bpjtxv1h0 | (APIServer pid=497) ERROR 10-21 18:16:32 [repo_utils.py:104] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497) Traceback (most recent call last):\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     sys.exit(main())\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)              ^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     args.dispatch_function(args)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     uvloop.run(run_server(args))\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return __asyncio.run(\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return runner.run(main)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return await main\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 739, in run_server\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 753, in run_server_worker\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     async with build_async_engine_client(\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 127, in build_async_engine_client\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 151, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1969, in create_engine_config\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     model_config = self.create_model_config()\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:16:35.309 | info | kucb8bpjtxv1h0 | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1727, in create_model_config\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     return ModelConfig(\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)            ^^^^^^^^^^^^\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:16:35.310 | info | kucb8bpjtxv1h0 | (APIServer pid=497)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:16:35.310 | error | kucb8bpjtxv1h0 | 2026-10-21 18:16:35,308 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:16:37.471 | error | kucb8bpjtxv1h0 | worker exited with exit code 1
+2026-10-21 14:24:39.906 | info | acegnrke03zawa | 2026-10-21 18:24:28,568 INFO httpx: HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"\n
+2026-10-21 14:24:39.906 | info | acegnrke03zawa | 2026-10-21 18:24:28,597 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:24:39.906 | info | acegnrke03zawa | 2026-10-21 18:24:28,599 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:24:39.906 | info | acegnrke03zawa | 2026-10-21 18:24:28,599 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:24:39.906 | info | acegnrke03zawa | INFO 10-21 18:24:39 [import_utils.py:478] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:24:43.770 | info | acegnrke03zawa | INFO 10-21 18:24:43 [__init__.py:109] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:24:43.908 | warning | acegnrke03zawa | WARNING 10-21 18:24:43 [argparse_utils.py:257] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333] \n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]        █     █     █▄   ▄█\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.28.0\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333] \n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:272] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:24:43.908 | info | acegnrke03zawa | (APIServer pid=498) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:24:45.995 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:45.995 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:45.995 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:24:45.995 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:48.622 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:48.622 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498) Traceback (most recent call last):\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     sys.exit(main())\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     args.dispatch_function(args)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     uvloop.run(run_server(args))\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return __asyncio.run(\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return runner.run(main)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return await main\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 739, in run_server\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 753, in run_server_worker\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     async with build_async_engine_client(\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 127, in build_async_engine_client\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 151, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1969, in create_engine_config\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     model_config = self.create_model_config()\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1727, in create_model_config\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     return ModelConfig(\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:24:48.622 | info | acegnrke03zawa | (APIServer pid=498)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:24:48.622 | error | acegnrke03zawa | 2026-10-21 18:24:48,621 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | INFO 10-21 18:24:43 [__init__.py:109] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:24:53.862 | warning | acegnrke03zawa | WARNING 10-21 18:24:43 [argparse_utils.py:257] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333] \n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]        █     █     █▄   ▄█\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.28.0\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:333] \n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) INFO 10-21 18:24:43 [api_utils.py:272] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:43 [repo_utils.py:106] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:53.862 | error | acegnrke03zawa | (APIServer pid=498) ERROR 10-21 18:24:45 [repo_utils.py:104] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498) Traceback (most recent call last):\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     sys.exit(main())\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     args.dispatch_function(args)\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     uvloop.run(run_server(args))\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     return __asyncio.run(\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     return runner.run(main)\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     return await main\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 739, in run_server\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 753, in run_server_worker\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     async with build_async_engine_client(\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:24:53.862 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 127, in build_async_engine_client\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     return await anext(self.gen)\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 151, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1969, in create_engine_config\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     model_config = self.create_model_config()\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1727, in create_model_config\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     return ModelConfig(\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)            ^^^^^^^^^^^^\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:24:53.863 | info | acegnrke03zawa | (APIServer pid=498)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:24:53.863 | error | acegnrke03zawa | 2026-10-21 18:24:48,621 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:25:13.641 | error | acegnrke03zawa | worker exited with exit code 1
+2026-10-21 14:25:23.726 | error | acegnrke03zawa | 2026-10-21 18:25:10,393 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:25:23.726 | info | acegnrke03zawa | 2026-10-21 18:25:16,549 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:25:23.726 | info | acegnrke03zawa | 2026-10-21 18:25:16,550 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:25:23.726 | info | acegnrke03zawa | 2026-10-21 18:25:16,550 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:25:23.726 | info | acegnrke03zawa | INFO 10-21 18:25:23 [import_utils.py:478] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:25:25.252 | info | acegnrke03zawa | INFO 10-21 18:25:25 [__init__.py:109] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:25:25.399 | warning | acegnrke03zawa | WARNING 10-21 18:25:25 [argparse_utils.py:257] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333] \n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333]        █     █     █▄   ▄█\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.28.0\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:333] \n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) INFO 10-21 18:25:25 [api_utils.py:272] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:25:25.399 | info | acegnrke03zawa | (APIServer pid=495) Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 14:25:25.399 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:25 [repo_utils.py:106] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:27.401 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:25 [repo_utils.py:106]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:27.401 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:25 [repo_utils.py:106] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:25:27.401 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:27 [repo_utils.py:104] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:30.571 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:27 [repo_utils.py:104]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:30.571 | error | acegnrke03zawa | (APIServer pid=495) ERROR 10-21 18:25:27 [repo_utils.py:104] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495) Traceback (most recent call last):\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     sys.exit(main())\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)              ^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     args.dispatch_function(args)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     uvloop.run(run_server(args))\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return __asyncio.run(\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return runner.run(main)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return await main\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 739, in run_server\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 753, in run_server_worker\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     async with build_async_engine_client(\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return await anext(self.gen)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 127, in build_async_engine_client\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return await anext(self.gen)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 151, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1969, in create_engine_config\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     model_config = self.create_model_config()\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1727, in create_model_config\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     return ModelConfig(\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)            ^^^^^^^^^^^^\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:25:30.571 | info | acegnrke03zawa | (APIServer pid=495)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:30.572 | info | acegnrke03zawa | (APIServer pid=495)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:30.572 | info | acegnrke03zawa | (APIServer pid=495) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:25:30.572 | info | acegnrke03zawa | (APIServer pid=495)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:25:30.572 | error | acegnrke03zawa | 2026-10-21 18:25:30,571 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:25:35.701 | error | acegnrke03zawa | worker exited with exit code 1
+2026-10-21 14:25:43.100 | error | acegnrke03zawa | 2026-10-21 18:25:30,571 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:25:43.100 | info | acegnrke03zawa | 2026-10-21 18:25:36,526 INFO httpx: HTTP Request: GET https://huggingface.co/api/models/IFM/K2-Horizon-7B "HTTP/1.1 200 OK"\n
+2026-10-21 14:25:43.100 | info | acegnrke03zawa | 2026-10-21 18:25:36,528 INFO root: Model pre-flight: IFM/K2-Horizon-7B is fetchable\n
+2026-10-21 14:25:43.100 | info | acegnrke03zawa | 2026-10-21 18:25:36,528 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --max-model-len 4096 --model IFM/K2-Horizon-7B\n
+2026-10-21 14:25:43.100 | info | acegnrke03zawa | INFO 10-21 18:25:43 [import_utils.py:478] DeepEP v2 requires NCCL >= 2.30.4 but found 2.29.7. deepep_v2 backend will not be available.\n
+2026-10-21 14:25:44.498 | info | acegnrke03zawa | INFO 10-21 18:25:44 [__init__.py:109] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 14:25:44.650 | warning | acegnrke03zawa | WARNING 10-21 18:25:44 [argparse_utils.py:257] With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333] \n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333]        █     █     █▄   ▄█\n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.28.0\n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333]   █▄█▀ █     █     █     █  model   IFM/K2-Horizon-7B\n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:333] \n
+2026-10-21 14:25:44.650 | info | acegnrke03zawa | (APIServer pid=497) INFO 10-21 18:25:44 [api_utils.py:272] non-default args: {'model_tag': 'IFM/K2-Horizon-7B', 'host': '127.0.0.1', 'model': 'IFM/K2-Horizon-7B', 'max_model_len': 4096}\n
+2026-10-21 14:25:44.650 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:44 [repo_utils.py:106] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:46.652 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:44 [repo_utils.py:106]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:46.652 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:44 [repo_utils.py:106] Please pass the argument `trust_remote_code=True` to allow custom code to be run., retrying 1 of 2\n
+2026-10-21 14:25:46.652 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:46 [repo_utils.py:104] Error parsing config for IFM/K2-Horizon-7B: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:50.549 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:46 [repo_utils.py:104]  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:50.549 | error | acegnrke03zawa | (APIServer pid=497) ERROR 10-21 18:25:46 [repo_utils.py:104] Please pass the argument `trust_remote_code=True` to allow custom code to be run.\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497) Traceback (most recent call last):\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     sys.exit(main())\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)              ^^^^^^\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 97, in main\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     args.dispatch_function(args)\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 152, in cmd\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     uvloop.run(run_server(args))\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     return __asyncio.run(\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     return runner.run(main)\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 14:25:50.549 | info | acegnrke03zawa | (APIServer pid=497)     return self._loop.run_until_complete(task)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     return await main\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 739, in run_server\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 753, in run_server_worker\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     async with build_async_engine_client(\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 127, in build_async_engine_client\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     return await anext(self.gen)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 151, in build_async_engine_client_from_engine_args\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 47, in _patched_create_engine_config\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     result = _orig_create_engine_config(self, *args, **kwargs)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1969, in create_engine_config\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     model_config = self.create_model_config()\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)                    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm_bnb_plugin/__init__.py", line 41, in _patched_create_model_config\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     result = _orig_create_model_config(self, *args, **kwargs)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/vllm/engine/arg_utils.py", line 1727, in create_model_config\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     return ModelConfig(\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)            ^^^^^^^^^^^^\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   File "/usr/local/lib/python3.12/dist-packages/pydantic/_internal/_dataclasses.py", line 121, in __init__\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)   Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)  You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497) Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n
+2026-10-21 14:25:50.550 | info | acegnrke03zawa | (APIServer pid=497)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n
+2026-10-21 14:25:50.550 | error | acegnrke03zawa | 2026-10-21 18:25:50,549 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 14:25:58.543 | error | acegnrke03zawa | worker exited with exit code 1

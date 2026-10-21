@@ -1,0 +1,36 @@
+name,group,repo_id,architectures,hf_created,public_release_date,confidence,release_source_url,vllm_pr,vllm_merge_date,notes
+GLM-4.7-Flash,new_arch,zai-org/GLM-4.7-Flash,Glm4MoeLiteForCausalLM,2026-01-19,2026-01-19,high,https://x.com/Zai_org/status/2013261304060866758,31386,2026-01-19,
+Kimi-K2.5,new_arch,moonshotai/Kimi-K2.5,KimiK25ForConditionalGeneration,2026-01-01,2026-01-27,medium,https://www.kimi.com/blog/kimi-k2-5.html,33131,2026-01-27,
+Step-3.5-Flash,new_arch,stepfun-ai/Step-3.5-Flash,Step3p5ForCausalLM,2026-02-01,2026-02-02,medium,https://cs.com.cn/ssgs/gsxw/202602/t20260202_6536498.html,33523,2026-02-02,
+GLM-5,new_arch,zai-org/GLM-5,GlmMoeDsaForCausalLM,2026-02-11,2026-02-12,high,https://docs.z.ai/release-notes/new-released,34124,2026-02-09,
+Qwen3.5-397B-A17B,new_arch,Qwen/Qwen3.5-397B-A17B,Qwen3_5MoeForConditionalGeneration,2026-02-16,2026-02-16,high,https://github.com/QwenLM/Qwen3.5,34110,2026-02-09,
+Gemma 4,new_arch,google/gemma-4-31B-it,Gemma4ForConditionalGeneration,2026-03-11,2026-04-02,high,https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/,38826,2026-04-02,
+Hy3-preview,new_arch,tencent/Hy3-preview,HYV3ForCausalLM,2026-04-13,2026-04-23,high,https://github.com/Tencent-Hunyuan/Hy3-preview,40681,2026-04-23,
+DeepSeek-V4,new_arch,deepseek-ai/DeepSeek-V4-Flash,DeepseekV4ForCausalLM,2026-04-22,2026-04-24,high,https://api-docs.deepseek.com/news/news260424/,40860,2026-04-26,V4-Pro same day same arch
+MiMo-V2.5-Pro,new_arch,XiaomiMiMo/MiMo-V2.5-Pro,MiMoV2ForCausalLM,2026-04-27,2026-04-27,high,https://mimo.xiaomi.com/mimo-v2-5-pro,41029,2026-04-27,
+Laguna-XS.2,new_arch,poolside/Laguna-XS.2,LagunaForCausalLM,2026-04-23,2026-04-28,high,https://poolside.ai/blog/laguna-a-deeper-dive,41129,2026-04-28,
+Step-3.7-Flash,new_arch,stepfun-ai/Step-3.7-Flash,Step3p7ForConditionalGeneration,2026-05-23,2026-05-29,medium,https://www.ithome.com/0/956/860.htm,43859,2026-05-28,
+Mellum 2,new_arch,JetBrains/Mellum2-12B-A2.5B-Instruct,MellumForCausalLM,2026-05-26,2026-06-01,medium,https://thenewstack.io/jetbrains-mellum2-open-source-coding-model/,43992,2026-06-01,
+North-Mini-Code-1.0,new_arch,CohereLabs/North-Mini-Code-1.0,Cohere2MoeForCausalLM,2026-06-05,2026-06-09,high,https://huggingface.co/blog/CohereLabs/introducing-north-mini-code,40817,2026-04-29,support merged 6 weeks before release (as CohereMoe; renamed Cohere2Moe)
+MiniMax-M3,new_arch,MiniMaxAI/MiniMax-M3,MiniMaxM3SparseForConditionalGeneration,2026-06-02,2026-06-12,medium,https://howaiworks.ai/blog/minimax-m3-open-source-hugging-face,45381,2026-06-16,
+Inkling,new_arch,thinkingmachines/Inkling,InklingForConditionalGeneration,2026-07-14,2026-07-15,high,https://thinkingmachines.ai/news/introducing-inkling/,48799,2026-07-15,
+Kimi-K3,new_arch,moonshotai/Kimi-K3,KimiK3ForConditionalGeneration,2026-06-13,2026-07-27,high,https://x.com/Kimi_Moonshot/status/2081760186235289764,50000,2026-07-30,
+Ling-3.0-flash,new_arch,inclusionAI/Ling-3.0-flash,BailingMoeV3ForCausalLM,2026-08-02,2026-08-04,medium,https://huggingface.co/inclusionAI/Ling-3.0-flash/discussions/4,51045,2026-08-06,public repo activity Aug 4 15:22 UTC; news reports say Aug 5-7
+GLM-5.3-Flash,new_arch,zai-org/GLM-5.3-Flash,Glm5NextForConditionalGeneration,2026-08-25,2026-08-26,high,https://docs.z.ai/release-notes/new-released,53906,2026-09-03,
+Qwen3.8-Flash-Next,new_arch,Qwen/Qwen3.8-Flash-Next,Qwen4ExpForConditionalGeneration,2026-08-24,2026-08-26,high,https://github.com/QwenLM/Qwen3.8-Flash-Next,53896,2026-08-31,
+Hy4-preview,new_arch,tencent/Hy4-preview,HYV4ForCausalLM,2026-08-27,2026-08-28,medium,https://caixinglobal.com/2026-08-28/tencent-unveils-larger-ai-model-in-bid-to-close-gap-with-rivals-102479258.html,54160,2026-08-29,
+K2-Horizon,new_arch,IFM/K2-Horizon-375B-A23B,K2HorizonForCausalLM,2026-09-01,2026-09-03,high,https://ifm.ai/blog/k2/,55063,2026-09-03,
+DeepSeek-V4.1-Flash,new_arch,deepseek-ai/DeepSeek-V4.1-Flash,DeepseekV41ForCausalLM,2026-09-10,2026-09-10,high,https://api-docs.deepseek.com/news/news260910/,56214,2026-09-11,
+Step-5-Preview,new_arch,stepfun-ai/Step-5-Preview,Step5ForConditionalGeneration,2026-09-20,2026-10-15,medium,https://runaihome.com/blog/step-5-preview-local-ai-hardware-guide-2026/,61727,2026-10-19,
+Muse Glimmer 30B,new_arch,meta-models/Muse-Glimmer-30B,MuseGlimmerForConditionalGeneration;MuseGlimmerForCausalLM,2026-08-09,2026-08-10,high,https://phoronix.com/news/Meta-Muse-Glimmer,51655,2026-08-14,Meta; first open weights since Llama 4
+Muse Spark Open,new_arch,meta-models/Muse-Spark-Open-816B-A42B,MuseSparkForConditionalGeneration,2026-09-15,2026-10-15,medium,https://www.vals.ai/models/meta_muse-spark-open,,,Meta; gated repo; vLLM main has Muse Spark kernels and parsers (Oct 16-19) but no MuseSpark class in registry.py - appears to load via the Transformers modeling backend which the registry proxy does not count
+MiniMax-M2.5,control,MiniMaxAI/MiniMax-M2.5,MiniMaxM2ForCausalLM,2026-02-12,2026-02-12,medium,https://www.minimax.io/news/minimax-m25,,,
+Nemotron 3 Super,control,nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16,NemotronHForCausalLM,2026-03-10,2026-03-11,high,https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16,,,
+GLM-5.1,control,zai-org/GLM-5.1,GlmMoeDsaForCausalLM,2026-04-03,2026-04-07,high,https://docs.z.ai/release-notes/new-released,,,
+Qwen3.6-35B-A3B,control,Qwen/Qwen3.6-35B-A3B,Qwen3_5MoeForConditionalGeneration,2026-04-15,2026-04-16,high,https://github.com/QwenLM/Qwen3.6,,,
+Kimi-K2.6,control,moonshotai/Kimi-K2.6,KimiK25ForConditionalGeneration,2026-04-14,2026-04-20,medium,https://www.kimi.com/en/blog/kimi-k2-6,,,
+Mistral Medium 3.5,control,mistralai/Mistral-Medium-3.5-128B,Mistral3ForConditionalGeneration,2026-03-31,2026-05-22,high,https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5/,,,
+GLM-5.2,control,zai-org/GLM-5.2,GlmMoeDsaForCausalLM,2026-06-16,2026-06-16,high,https://docs.z.ai/release-notes/new-released,,,
+Qwen3.8-27B,control,Qwen/Qwen3.8-27B,Qwen3_5ForConditionalGeneration,2026-08-05,2026-08-14,high,https://github.com/QwenLM/Qwen3.5,,,
+GLM-5.3,control,zai-org/GLM-5.3,GlmMoeDsaForCausalLM,2026-08-25,2026-08-28,high,https://x.com/Zai_org/status/2093354097122455713,,,
+Clef-Flash,control,Cloudflare/clef-flash,Qwen3_5ForConditionalGeneration,2026-09-30,2026-10-01,high,https://developers.cloudflare.com/changelog/post/2026-10-01-clef-workers-ai/,,,generation reuses Qwen3.5; joint-schema head (ClefFlashForJointSchema, vLLM PR 61308) merged Oct 13, not yet in a release

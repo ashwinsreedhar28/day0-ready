@@ -1,0 +1,22 @@
+as of 2026-10-21 (events cut off at 2026-10-21T23:59:59+00:00)
+
+[new_arch] n=25  status: censored: no vLLM release yet=2, served=23
+  upstream_lag_days: n=23 median=14 mean=11.9 min=0 max=27 zero=1 | censored: Step-5-Preview >=6, Muse Spark Open >=6
+  worker_lag_days: n=23 median=11 mean=16.6 min=1 max=55 zero=0
+  total_lag_days: n=23 median=24 mean=28.5 min=2 max=74 zero=0 | censored: Step-5-Preview >=6, Muse Spark Open >=6
+  outage_days: n=6 median=47.0 mean=33.7 min=7 max=47 zero=0
+  vllm_merge_minus_release_days: n=24 median=0.0 mean=-0.8 min=-41 max=8 zero=10
+  day0_image_lag_days: n=18 median=0.0 mean=0.8 min=0 max=14 zero=16
+
+[control] n=10  status: served=10
+  upstream_lag_days: n=10 median=0.0 mean=0.0 min=0 max=0 zero=10
+  worker_lag_days: n=10 median=0.0 mean=1.5 min=0 max=15 zero=9
+  total_lag_days: n=10 median=0.0 mean=1.5 min=0 max=15 zero=9
+  outage_days: none
+  vllm_merge_minus_release_days: none
+  day0_image_lag_days: n=2 median=0.5 mean=0.5 min=0 max=1 zero=1
+
+[worker staleness 2026-01-01..2026-10-21, 294 days]
+  days a newer vLLM final image was published than the latest worker pin: 245
+  age of oldest such release (0 when none): median=20.0 max=84
+  vLLM finals behind: median=3.0 max=8

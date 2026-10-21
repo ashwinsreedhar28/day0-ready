@@ -1,0 +1,26 @@
+model,earliest_model_tag,pushed_utc
+Qwen3.5-397B-A17B,qwen3_5-x86_64,2026-02-16T05:52:48Z
+GLM-5,glm5-x86_64,2026-02-12T09:21:05Z
+Gemma 4,gemma4-x86-64-cu130,2026-04-02T17:24:29Z
+GLM-5.1,glm51-arm64-cu129,2026-04-07T10:44:28Z
+MiniMax-M2.7,minimax27-arm64-cu129,2026-04-12T00:28:30Z
+Hy3-preview,hy3-preview-arm64-cu129,2026-04-23T05:57:55Z
+DeepSeek-V4,deepseekv4-x86-64-cu129,2026-04-24T07:55:04Z
+MiMo-V2.5-Pro,mimov25-arm64-cu129,2026-04-27T10:23:37Z
+Laguna-XS.2,laguna-x86_64-cu130,2026-04-28T19:56:33Z
+Step-3.7-Flash,stepfun37-arm64-cu129,2026-05-28T22:46:50Z
+MiniMax-M3,minimax-m3-x86_64-cu130,2026-06-12T11:19:27Z
+GLM-5.2,glm52-arm64-cu129,2026-06-17T08:57:32Z
+Hy3,hy3-arm64-cu129,2026-07-06T06:00:37Z
+Inkling,inkling-x86_64-cu130,2026-07-15T18:17:49Z
+Kimi-K3,kimi-k3-arm64,2026-07-27T15:16:50Z
+Qwen3.8,qwen38-arm64-cu129,2026-08-12T14:56:13Z
+Qwen3.8-Flash-Next,qwen38-flash-next-x86_64-cu129,2026-08-26T13:03:23Z
+Hy4-preview,hy4-preview-x86_64-cu129,2026-08-28T06:09:49Z
+DeepSeek-V4-Flash-Vision,deepseekv4-flash-vision-x86_64-cu129,2026-09-01T08:36:37Z
+GLM-5.3-Flash,glm53-flash-x86_64-cu129,2026-09-09T13:31:17Z
+DeepSeek-V4.1-Flash,deepseekv41-flash-0909-amd64,2026-09-10T06:47:07Z
+MiMo-V2.6,mimo-v26-x86_64-cu130,2026-09-21T21:03:25Z
+Step-5-Preview,step-5-preview-arm64-cu130,2026-10-15T00:51:17Z
+Muse Glimmer 30B,muse-glimmer-x86_64-cu130,2026-08-11T11:28:38Z
+Muse Spark Open,muse-spark-open-arm64-cu130,2026-10-15T17:17:29Z

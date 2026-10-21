@@ -2,17 +2,19 @@
   "vllm_tag": "step-5-preview",
   "model": "stepfun-ai/Step-5-Preview",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview-b779895",
+  "digest": "sha256:fccae0957fc4152fc8cd4e6f276685a86c743effcf7a243ef75b4de532dfd31f",
   "worker": "ashwinsreedhar28/worker-vllm@b779895",
   "worker_ref": "fix/version-guard-any-base-tag",
   "build": "success",
-  "build_s": 317,
+  "build_s": 255,
   "pushed": "success",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39661568095",
-  "finished_at": "2026-10-21T19:34:12Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39664958118",
+  "finished_at": "2026-10-21T19:55:45Z",
   "checks": {
     "model": "stepfun-ai/Step-5-Preview",
-    "checked_at": "2026-10-21T19:33:29Z",
+    "checked_at": "2026-10-21T19:54:56Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -21,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.13.0+cu130"
         },
-        "s": 9.1
+        "s": 8.3
       },
       "hub_config": {
         "ok": true,
@@ -39,7 +41,7 @@
         "value": {
           "Step5ForConditionalGeneration": true
         },
-        "s": 2.2
+        "s": 2.3
       },
       "transformers_config": {
         "ok": false,
@@ -60,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 12.4
+        "s": 14.8
       },
       "tokenizer": {
         "ok": true,
@@ -68,7 +70,7 @@
           "class": "LlamaTokenizer",
           "vocab": 128815
         },
-        "s": 0.7
+        "s": 0.9
       }
     },
     "verdict": "native"

@@ -35,7 +35,10 @@ permissions:
   packages: write
 
 concurrency:
-  group: build-day0-${{ inputs.vllm_tag || 'step-5-preview' }}
+  # One build per (tag, worker branch) at a time. GitHub keeps only the newest
+  # pending run in a group and cancels older pending ones, so the branch must be
+  # in the key or a test build can silently cancel a queued board build.
+  group: build-day0-${{ inputs.vllm_tag || 'step-5-preview' }}-${{ inputs.worker_repo || 'default' }}-${{ inputs.worker_ref || 'default' }}
   cancel-in-progress: false
 
 env:

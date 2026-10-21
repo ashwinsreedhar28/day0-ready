@@ -8,3 +8,4 @@ Last poll: 2026-10-21T19:51:45Z. Rows: launches vLLM published a model-named ima
 | `reflection-beam` | 2026-10-16 08:16 | no match | pending |  |  |  |
 | `muse-spark-open` | 2026-10-15 17:17 | meta-models/Muse-Spark-Open-816B-A42B | pending |  |  |  |
 | `step-5-preview` | 2026-10-15 00:51 | stepfun-ai/Step-5-Preview | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39661568095) → `worker-vllm:day0-step-5-preview` | **native**: vLLM resolves the architecture natively | pass: Qwen3-8B, 24gb, defaults, 6.1 min | backfill |
+| `v0.32.0` |  | Qwen/Qwen3-8B | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665268200) → `worker-vllm:day0-v0.32.0` | **native**: vLLM resolves the architecture natively |  |  |

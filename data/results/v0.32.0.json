@@ -1,0 +1,73 @@
+{
+  "vllm_tag": "v0.32.0",
+  "model": "Qwen/Qwen3-8B",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0-b779895",
+  "digest": "sha256:f1d43a87fa11e4187fa2edf464e780f6e0e51e858e580695a29e897f74f8c87a",
+  "worker": "ashwinsreedhar28/worker-vllm@b779895",
+  "worker_ref": "fix/version-guard-any-base-tag",
+  "build": "success",
+  "build_s": 250,
+  "pushed": "success",
+  "verdict": "native",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665268200",
+  "finished_at": "2026-10-21T20:05:23Z",
+  "checks": {
+    "model": "Qwen/Qwen3-8B",
+    "checked_at": "2026-10-21T19:57:55Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.32.0",
+          "transformers": "5.19.0",
+          "torch": "2.13.0+cu130"
+        },
+        "s": 8.1
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "Qwen3ForCausalLM"
+          ],
+          "model_type": "qwen3",
+          "auto_map": []
+        },
+        "s": 0.2
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "Qwen3ForCausalLM": true
+        },
+        "s": 2.3
+      },
+      "transformers_config": {
+        "ok": true,
+        "value": "Qwen3Config",
+        "s": 0.0
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "Qwen3ForCausalLM",
+          "architectures": "['Qwen3ForCausalLM']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 13.1
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "Qwen2Tokenizer",
+          "vocab": 151669
+        },
+        "s": 1.7
+      }
+    },
+    "verdict": "native"
+  }
+}

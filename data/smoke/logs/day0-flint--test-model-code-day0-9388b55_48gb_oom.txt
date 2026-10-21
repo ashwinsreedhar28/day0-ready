@@ -1,0 +1,499 @@
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | W1021 22:07:14.142000 497 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | W1021 22:07:14.142000 497 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | W1021 22:07:14.143000 497 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418] \n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418]        █     █     █▄   ▄█\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.32.0rc1.dev348+ge7c846767\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418]   █▄█▀ █     █     █     █  model   RecursiveSI/flint\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:418] \n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:21 [api_utils.py:357] non-default args: {'model_tag': 'RecursiveSI/flint', 'host': '127.0.0.1', 'model': 'RecursiveSI/flint', 'max_model_len': 4096}\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 18:07:31.108 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:31 [model.py:733] Resolved architecture: FlintForCausalLM\n
+2026-10-21 18:07:31.249 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:31 [model.py:2152] Using max model len 4096\n
+2026-10-21 18:07:31.249 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:31 [kernel.py:476] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])\n
+2026-10-21 18:07:31.429 | info | v4l1tiip27gjch | \n
+2026-10-21 18:07:31.429 | info | v4l1tiip27gjch | Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]\n
+2026-10-21 18:07:31.682 | info | v4l1tiip27gjch | Fetching 20 files:  55%|█████▌    | 11/20 [00:00<00:00, 105.15it/s]\n
+2026-10-21 18:07:34.070 | info | v4l1tiip27gjch | Fetching 20 files: 100%|██████████| 20/20 [00:00<00:00, 55.91it/s] \n
+2026-10-21 18:07:34.070 | info | v4l1tiip27gjch | W1021 22:07:34.069000 1085 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead\n
+2026-10-21 18:07:39.579 | info | v4l1tiip27gjch | W1021 22:07:34.069000 1085 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead\n
+2026-10-21 18:07:39.580 | info | v4l1tiip27gjch | W1021 22:07:34.070000 1085 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead\n
+2026-10-21 18:07:39.580 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:39 [__init__.py:113] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 18:07:40.572 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:39 [core.py:133] Initializing a V1 LLM engine (v0.32.0rc1.dev348+ge7c846767) with config: model='RecursiveSI/flint', speculative_config=None, tokenizer='RecursiveSI/flint', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=RecursiveSI/flint, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::qwen4_exp_qsa_prepare_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [2048], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)\n
+2026-10-21 18:07:40.572 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:40 [parallel_state.py:1911] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_5f96eb6cc02b4c99b5a0d8767bba9727 backend=nccl\n
+2026-10-21 18:07:42.128 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:40 [parallel_state.py:2355] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A\n
+2026-10-21 18:07:42.128 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:40 [gpu_worker.py:510] Using V2 Model Runner\n
+2026-10-21 18:07:42.128 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:42 [model_runner.py:397] Loading model from scratch...\n
+2026-10-21 18:07:42.280 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:42 [cuda.py:508] Using FLASHINFER attention backend out of potential backends: ['FLASHINFER', 'TRITON_ATTN'].\n
+2026-10-21 18:07:42.280 | info | v4l1tiip27gjch | (EngineCore pid=1085) INFO 10-21 22:07:42 [unquantized.py:365] Using FlashInfer CUTLASS Unquantized MoE backend out of potential backends: ['FlashInfer TRTLLM', 'FlashInfer CUTLASS', 'TRITON', 'BATCHED_TRITON'].\n
+2026-10-21 18:07:42.405 | info | v4l1tiip27gjch | [rank0]:[W1021 22:07:42.911093136 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1073741824 bytes (free: 793051136, total: 50868518912).\n
+2026-10-21 18:07:43.410 | info | v4l1tiip27gjch | [rank0]:[W1021 22:07:42.914094137 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1073741824 bytes (free: 994377728, total: 50868518912).\n
+2026-10-21 18:07:43.410 | info | v4l1tiip27gjch | /usr/local/lib/python3.12/dist-packages/torch/utils/_device.py:122: UserWarning: nvmlDeviceGetComputeRunningProcesses failed; omitting per-process memory info from CUDA out-of-memory messages. This is expected on platforms with partial NVML support such as Tegra/Jetson. (Triggered internally at /__w/pytorch/pytorch/c10/cuda/CUDACachingAllocator.cpp:1383.)\n
+2026-10-21 18:07:43.410 | info | v4l1tiip27gjch |   return func(*args, **kwargs)\n
+2026-10-21 18:07:43.410 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543] EngineCore failed to start.\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543] Traceback (most recent call last):\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     super().__init__(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self._init_executor()\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.driver_worker.load_model()\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.model = model or model_loader.load_model(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     model = self.create_model(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     model = initialize_model(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.model = FlintModel(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                  ^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                                                     ^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     + get_offloader().wrap_modules(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return list(modules_generator)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 495, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.mlp = FlintSparseMoeBlock(config, quant_config, prefix=f"{prefix}.mlp")\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 187, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.experts = FusedMoEFactory(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                    ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/layer.py", line 411, in FusedMoEFactory\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     routed_experts = routed_experts_cls(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]                      ^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 213, in __init__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     self.quant_method.create_weights(layer=self, **moe_quant_params)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/unquantized_fused_moe_method.py", line 88, in create_weights\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     torch.empty(\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.468 | error | v4l1tiip27gjch | (EngineCore pid=1085) ERROR 10-21 22:07:43 [core.py:1543] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 47.38 GiB of which 948.31 MiB is free. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 17.23 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n
+2026-10-21 18:07:45.468 | info | v4l1tiip27gjch | Process EngineCore:\n
+2026-10-21 18:07:45.468 | info | v4l1tiip27gjch | Traceback (most recent call last):\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.run()\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self._target(*self._args, **self._kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1547, in run_engine_core\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     raise e\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     super().__init__(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self._init_executor()\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.driver_worker.load_model()\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.model = model or model_loader.load_model(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     model = self.create_model(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     model = initialize_model(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.model = FlintModel(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                  ^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                                                     ^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     + get_offloader().wrap_modules(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return list(modules_generator)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 495, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.mlp = FlintSparseMoeBlock(config, quant_config, prefix=f"{prefix}.mlp")\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 187, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.experts = FusedMoEFactory(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                    ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/layer.py", line 411, in FusedMoEFactory\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     routed_experts = routed_experts_cls(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |                      ^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 213, in __init__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     self.quant_method.create_weights(layer=self, **moe_quant_params)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/unquantized_fused_moe_method.py", line 88, in create_weights\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     torch.empty(\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch | torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 47.38 GiB of which 948.31 MiB is free. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 17.23 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n
+2026-10-21 18:07:45.469 | info | v4l1tiip27gjch | (APIServer pid=497) INFO 10-21 22:07:45 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore\n
+2026-10-21 18:07:45.662 | info | v4l1tiip27gjch | Traceback (most recent call last):\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     sys.exit(main())\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |              ^^^^^^\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 120, in main\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     args.dispatch_function(args)\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 156, in cmd\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     uvloop.run(run_server(args))\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     return __asyncio.run(\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     return runner.run(main)\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     return self._loop.run_until_complete(task)\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "uvloop/loop.pyx", line 1515, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 18:07:49.242 | info | v4l1tiip27gjch |     return await main\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 177, in run_server\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 195, in run_server_worker\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     async with build_async_engine_client(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return await anext(self.gen)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 61, in build_async_engine_client\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return await anext(self.gen)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 95, in build_async_engine_client_from_engine_args\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     async_llm = AsyncLLM.from_vllm_config(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 263, in from_vllm_config\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return cls(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 192, in __init__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     self.engine_core = EngineCoreClient.make_async_mp_client(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 170, in make_async_mp_client\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return AsyncMPClient(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 1157, in __init__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     super().__init__(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 695, in __init__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     with launch_core_engines(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     next(self.gen)\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1388, in launch_core_engines\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     wait_for_engine_startup(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1468, in wait_for_engine_startup\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch |     raise RuntimeError(\n
+2026-10-21 18:07:49.243 | info | v4l1tiip27gjch | 
+2026-10-21 18:07:49.243 | error | v4l1tiip27gjch | 2026-10-21 22:07:49,242 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 18:07:50.188 | warning | v4l1tiip27gjch | 2026-10-21 22:07:49,243 WARNING root: Disabling CUDA graphs for the retry (ENFORCE_EAGER=true): their memory has been reserved up front since v0.29, and the boot OOM'd.\n
+2026-10-21 18:07:50.188 | warning | v4l1tiip27gjch | 2026-10-21 22:07:49,243 WARNING root: Reducing the peak-activation budget for the retry (MAX_NUM_BATCHED_TOKENS=8192).\n
+2026-10-21 18:07:50.188 | warning | v4l1tiip27gjch | 2026-10-21 22:07:49,243 WARNING root: vLLM ran out of GPU memory during startup. Relaunching once with a smaller memory footprint.\n
+2026-10-21 18:07:50.188 | info | v4l1tiip27gjch | 2026-10-21 22:07:49,243 INFO root: Starting vLLM: vllm serve --host 127.0.0.1 --port 8000 --enforce-eager --max-model-len 4096 --max-num-batched-tokens 8192 --model RecursiveSI/flint\n
+2026-10-21 18:07:50.188 | info | v4l1tiip27gjch | W1021 22:07:50.187000 1596 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead\n
+2026-10-21 18:07:57.017 | info | v4l1tiip27gjch | W1021 22:07:50.187000 1596 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead\n
+2026-10-21 18:07:57.017 | info | v4l1tiip27gjch | W1021 22:07:50.188000 1596 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead\n
+2026-10-21 18:07:57.017 | info | v4l1tiip27gjch | With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418] \n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418]        █     █     █▄   ▄█\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.32.0rc1.dev348+ge7c846767\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418]   █▄█▀ █     █     █     █  model   RecursiveSI/flint\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:418] \n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [api_utils.py:357] non-default args: {'model_tag': 'RecursiveSI/flint', 'host': '127.0.0.1', 'model': 'RecursiveSI/flint', 'max_model_len': 4096, 'enforce_eager': True, 'max_num_batched_tokens': 8192}\n
+2026-10-21 18:07:57.213 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [model.py:733] Resolved architecture: FlintForCausalLM\n
+2026-10-21 18:07:57.356 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [model.py:2152] Using max model len 4096\n
+2026-10-21 18:07:57.356 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=8192.\n
+2026-10-21 18:07:59.760 | warning | v4l1tiip27gjch | (APIServer pid=1596) WARNING 10-21 22:07:57 [vllm.py:1747] Enforce eager set, disabling torch.compile, CUDAGraphs, and JIT kernel warmup. This is equivalent to setting -cc.mode=none -cc.cudagraph_mode=none and --kernel_config.enable_jit_warmup=False\n
+2026-10-21 18:07:59.760 | warning | v4l1tiip27gjch | (APIServer pid=1596) WARNING 10-21 22:07:57 [vllm.py:1771] Inductor compilation was disabled by user settings, optimizations settings that are only active during inductor compilation will be ignored.\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [kernel.py:476] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [vllm.py:1973] Cudagraph is disabled under eager mode\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:07:57 [compilation.py:317] Enabled custom fusions: norm_quant, act_quant\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | \n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | Fetching 20 files: 100%|██████████| 20/20 [00:00<00:00, 2281.25it/s]\n
+2026-10-21 18:07:59.760 | info | v4l1tiip27gjch | W1021 22:07:59.759000 1812 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead\n
+2026-10-21 18:08:05.507 | info | v4l1tiip27gjch | W1021 22:07:59.760000 1812 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead\n
+2026-10-21 18:08:05.507 | info | v4l1tiip27gjch | W1021 22:07:59.760000 1812 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead\n
+2026-10-21 18:08:05.507 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:05 [__init__.py:113] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 18:08:06.525 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:05 [core.py:133] Initializing a V1 LLM engine (v0.32.0rc1.dev348+ge7c846767) with config: model='RecursiveSI/flint', speculative_config=None, tokenizer='RecursiveSI/flint', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=True, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=RecursiveSI/flint, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [8192], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=False, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)\n
+2026-10-21 18:08:06.525 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:06 [parallel_state.py:1911] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_53b4f75085424608888fdffb70040dcb backend=nccl\n
+2026-10-21 18:08:08.164 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:06 [parallel_state.py:2355] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A\n
+2026-10-21 18:08:08.164 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:06 [gpu_worker.py:510] Using V2 Model Runner\n
+2026-10-21 18:08:08.164 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:08 [model_runner.py:397] Loading model from scratch...\n
+2026-10-21 18:08:08.275 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:08 [cuda.py:508] Using FLASHINFER attention backend out of potential backends: ['FLASHINFER', 'TRITON_ATTN'].\n
+2026-10-21 18:08:08.492 | info | v4l1tiip27gjch | (EngineCore pid=1812) INFO 10-21 22:08:08 [unquantized.py:365] Using FlashInfer CUTLASS Unquantized MoE backend out of potential backends: ['FlashInfer TRTLLM', 'FlashInfer CUTLASS', 'TRITON', 'BATCHED_TRITON'].\n
+2026-10-21 18:08:08.492 | info | v4l1tiip27gjch | [rank0]:[W1021 22:08:08.997837156 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1073741824 bytes (free: 793051136, total: 50868518912).\n
+2026-10-21 18:08:09.359 | info | v4l1tiip27gjch | [rank0]:[W1021 22:08:08.001088442 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1073741824 bytes (free: 994377728, total: 50868518912).\n
+2026-10-21 18:08:09.360 | info | v4l1tiip27gjch | /usr/local/lib/python3.12/dist-packages/torch/utils/_device.py:122: UserWarning: nvmlDeviceGetComputeRunningProcesses failed; omitting per-process memory info from CUDA out-of-memory messages. This is expected on platforms with partial NVML support such as Tegra/Jetson. (Triggered internally at /__w/pytorch/pytorch/c10/cuda/CUDACachingAllocator.cpp:1383.)\n
+2026-10-21 18:08:09.360 | info | v4l1tiip27gjch |   return func(*args, **kwargs)\n
+2026-10-21 18:08:09.360 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543] EngineCore failed to start.\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543] Traceback (most recent call last):\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     super().__init__(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self._init_executor()\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.driver_worker.load_model()\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.model = model or model_loader.load_model(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     model = self.create_model(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     model = initialize_model(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.model = FlintModel(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                  ^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                                                     ^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     + get_offloader().wrap_modules(\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return list(modules_generator)\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 18:08:11.386 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 495, in __init__\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.mlp = FlintSparseMoeBlock(config, quant_config, prefix=f"{prefix}.mlp")\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 187, in __init__\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.experts = FusedMoEFactory(\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                    ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/layer.py", line 411, in FusedMoEFactory\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     routed_experts = routed_experts_cls(\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]                      ^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 213, in __init__\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     self.quant_method.create_weights(layer=self, **moe_quant_params)\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/unquantized_fused_moe_method.py", line 88, in create_weights\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     torch.empty(\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | error | v4l1tiip27gjch | (EngineCore pid=1812) ERROR 10-21 22:08:09 [core.py:1543] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 47.38 GiB of which 948.31 MiB is free. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 17.15 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch | Process EngineCore:\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch | Traceback (most recent call last):\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.run()\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self._target(*self._args, **self._kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1547, in run_engine_core\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     raise e\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     super().__init__(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self._init_executor()\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.driver_worker.load_model()\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.model = model or model_loader.load_model(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     model = self.create_model(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     model = initialize_model(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.model = FlintModel(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                  ^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                                                     ^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     + get_offloader().wrap_modules(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return list(modules_generator)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 495, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.mlp = FlintSparseMoeBlock(config, quant_config, prefix=f"{prefix}.mlp")\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 187, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.experts = FusedMoEFactory(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                    ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/layer.py", line 411, in FusedMoEFactory\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     routed_experts = routed_experts_cls(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |                      ^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 213, in __init__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     self.quant_method.create_weights(layer=self, **moe_quant_params)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/unquantized_fused_moe_method.py", line 88, in create_weights\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     torch.empty(\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |     return func(*args, **kwargs)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch | torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 47.38 GiB of which 948.31 MiB is free. Of the allocated memory 45.88 GiB is allocated by PyTorch, and 17.15 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n
+2026-10-21 18:08:11.387 | info | v4l1tiip27gjch | (APIServer pid=1596) INFO 10-21 22:08:11 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore\n
+2026-10-21 18:08:11.654 | info | v4l1tiip27gjch | Traceback (most recent call last):\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     sys.exit(main())\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |              ^^^^^^\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 120, in main\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     args.dispatch_function(args)\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 156, in cmd\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     uvloop.run(run_server(args))\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     return __asyncio.run(\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     return runner.run(main)\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |     return self._loop.run_until_complete(task)\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "uvloop/loop.pyx", line 1515, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 18:08:15.252 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |     return await main\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |            ^^^^^^^^^^\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 177, in run_server\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 195, in run_server_worker\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |     async with build_async_engine_client(\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |     return await anext(self.gen)\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 61, in build_async_engine_client\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 18:08:15.253 | info | v4l1tiip27gjch |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 18:08:16.860 | error | v4l1tiip27gjch | 2026-10-21 22:08:15,253 ERROR root: vLLM cannot start on this configuration; answering jobs with the cause: RecursiveSI/flint ran out of GPU memory during startup. This GPU has 47.38 GiB. The worker already retried once with a smaller footprint (ENFORCE_EAGER=true and MAX_NUM_BATCHED_TOKENS reduced to 8192 where it was higher or unset) and it still does not fit. What remains: a smaller or quantized checkpoint, a larger GPU (or more GPUs with TENSOR_PARALLEL_SIZE), a lower MAX_MODEL_LEN, or, if KV_CACHE_DTYPE=fp8 is set on an Ampere/Ada GPU, KV_CACHE_DTYPE=auto (fp8 KV forces the FlashInfer backend there, which needs extra workspace memory).\n
+2026-10-21 18:08:16.860 | info | v4l1tiip27gjch | --- Starting Serverless Worker |  Version 1.12.0 ---\n
+2026-10-21 18:08:17.144 | info | v4l1tiip27gjch | Running 7 fitness check(s)...
+2026-10-21 18:08:17.144 | info | v4l1tiip27gjch | GPU binary test passed: 1 GPU(s) healthy (CUDA 13.2)
+2026-10-21 18:08:18.325 | info | v4l1tiip27gjch | Memory check passed: 1369.90GB available (of 1511.38GB total)
+2026-10-21 18:08:18.325 | info | v4l1tiip27gjch | Disk space check passed: 149.97GB free (100.0% available)
+2026-10-21 18:08:18.325 | info | v4l1tiip27gjch | Network connectivity passed: Connected to 8.8.8.8 (5ms)
+2026-10-21 18:08:18.325 | info | v4l1tiip27gjch | CUDA version check passed: 13.0 (minimum: 11.8)
+2026-10-21 18:08:18.325 | info | v4l1tiip27gjch | CUDA initialization passed: 1 device(s) initialized successfully
+2026-10-21 18:08:18.486 | info | v4l1tiip27gjch | GPU compute benchmark passed: Matrix multiply completed in 49ms
+2026-10-21 18:08:18.705 | info | v4l1tiip27gjch | All fitness checks passed. (1626.42ms)
+2026-10-21 18:08:18.705 | info | v4l1tiip27gjch | Jobs in queue: 1
+2026-10-21 18:08:49.646 | info | v4l1tiip27gjch | Jobs in progress: 1
+2026-10-21 18:08:49.646 | info | v4l1tiip27gjch | Finished.
+2026-10-21 18:08:49.646 | info | v4l1tiip27gjch | Finished running generator.
+2026-10-21 18:08:49.646 | info | v4l1tiip27gjch | 2026-10-21 22:08:49,645 INFO root: Received signal 15, shutting down vLLM\n

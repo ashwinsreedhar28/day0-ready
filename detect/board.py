@@ -40,7 +40,8 @@ def main():
     for fam, ev in state["seen"].items():
         if ev.get("skipped"):
             continue
-        rows.append((ev.get("vllm_tag_pushed") or "", fam, ev.get("vllm_tag"), ev.get("model"),
+        label = ev.get("model") and (ev["model"] + (f" ({ev['match']})" if ev.get("match", "").startswith("search") else ""))
+        rows.append((ev.get("vllm_tag_pushed") or "", fam, ev.get("vllm_tag"), label,
                      results.pop(ev.get("vllm_tag"), None), ev.get("first_seen")))
     for tag, r in results.items():  # manual runs with no detector event
         rows.append(("", tag, tag, r.get("model"), r, None))

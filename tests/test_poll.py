@@ -64,3 +64,29 @@ def test_no_match_for_unrelated_family():
                                   "Qwen/Qwen3.6-35B-A3B-FP8", "z-lab/Muse-Glimmer-30B-DFlash2"])
 def test_derivatives_filtered(repo):
     assert poll.DERIVATIVE.search(repo)
+
+
+FLINT_SEARCH = [  # HF search for "flint", sorted by likes (shape of the real 2026-10-21 response)
+    {"id": "RecursiveSI/flint", "createdAt": "2026-10-21T14:20:58.000Z", "likes": 123},
+    {"id": "unsloth/flint-GGUF", "createdAt": "2026-10-20T03:26:14.000Z", "likes": 28},
+    {"id": "RecursiveSI/flint-int4", "createdAt": "2026-10-21T13:51:27.000Z", "likes": 2},
+    {"id": "TechnoBaptist/flint", "createdAt": "2026-10-21T18:33:29.000Z", "likes": 0},
+    {"id": "himankhanda/flint-bert-base", "createdAt": "2026-10-17T17:09:53.000Z", "likes": 0},
+    {"id": "Cargile/flint-473", "createdAt": "2026-07-12T04:26:14.000Z", "likes": 9},
+]
+
+
+def test_search_fallback_finds_unlisted_lab():
+    hit = poll.search_repo("flint", "2026-10-21T16:09:51Z", search=lambda q: FLINT_SEARCH)
+    assert hit == ("RecursiveSI/flint", 123)
+
+
+def test_search_fallback_ignores_repos_far_from_the_tag_date():
+    old_only = [r for r in FLINT_SEARCH if r["id"] == "Cargile/flint-473"]
+    assert poll.search_repo("flint", "2026-10-21T16:09:51Z", search=lambda q: old_only) is None
+
+
+def test_watchlist_match_wins_over_search(monkeypatch):
+    monkeypatch.setattr(poll, "search_repo", lambda *a, **k: ("someone/step-5-preview", 999))
+    assert poll.resolve_model("step-5-preview", "2026-10-15T00:51:17Z", REPOS) == {
+        "model": "stepfun-ai/Step-5-Preview", "match": "watchlist"}

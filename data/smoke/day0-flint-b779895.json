@@ -1,0 +1,58 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint-b779895",
+ "model": "RecursiveSI/flint",
+ "passed": true,
+ "passing_env": {
+  "ATTENTION_BACKEND": "FLASHINFER"
+ },
+ "passing_gpu_class": "180gb",
+ "rungs": [
+  {
+   "env": {
+    "ATTENTION_BACKEND": "FLASHINFER"
+   },
+   "gpu_class": "180gb",
+   "started": "2026-10-21T21:20:40+00:00",
+   "endpoint_id": "gwel6xxzf4w0f1",
+   "delay_s": 771,
+   "exec_s": 0,
+   "job_status": "COMPLETED",
+   "output": "[{\"choices\": [{\"finish_reason\": \"length\", \"index\": 0, \"logprobs\": null, \"message\": {\"annotations\": null, \"audio\": null, \"content\": \"<think>1.  The user asks to\", \"function_call\": null, \"reasoning\": null, \"refusal\": null, \"role\": \"assistant\"}, \"routed_experts\": null, \"stop_reason\": null, \"token_ids\": null, \"weight_versions\": null}], \"created\": 1792618413, \"ec_transfer_params\": null, \"id\": \"chatcmpl-8157b7c9fb6af325\", \"kv_transfer_params\": null, \"metrics\": null, \"model\": \"RecursiveSI/flint\", \"object\": \"chat.completion\", \"prompt_logprobs\": null, \"prompt_text\": null, \"prompt_token_ids\": null, \"ser",
+   "minutes": 13.1,
+   "worker_states": [
+    "idle",
+    "initializing",
+    "ready",
+    "running",
+    "throttled"
+   ],
+   "outcome": "pass"
+  }
+ ],
+ "finished_at": "2026-10-21T21:33:51+00:00",
+ "image_build": {
+  "run": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665308085",
+  "digest": "sha256:d3c8a43934c83bc3c943e8d4bd230ee4dcfc8f5004e5ea281b27a3635bac8070",
+  "worker": "ashwinsreedhar28/worker-vllm@b779895",
+  "pushed_at": "2026-10-21T20:05:00Z"
+ },
+ "note": "minutes includes ~6 min of the B200 worker sitting 'throttled' (no free GPU on the host) before it initialized. Earlier H200 attempts failed for hardware reasons; see prior_attempts.",
+ "prior_attempts": [
+  {
+   "gpu_class": "141gb",
+   "env": {},
+   "result": "vLLM failed during model construction on every start: \"AssertionError: Flint requires FlashInfer attention\" (vLLM auto-selected FLASH_ATTN / FA3 on the H200). Worker restarted every ~32 s; run interrupted manually.",
+   "log": "data/smoke/logs/day0-flint-b779895_h200_default.txt"
+  },
+  {
+   "gpu_class": "141gb",
+   "env": {
+    "ATTENTION_BACKEND": "FLASHINFER"
+   },
+   "endpoint_id": "wuqi129fkgg9ja",
+   "minutes": 31.3,
+   "result": "FlashInfer attention selected and weights loaded (52.14 GiB KV cache), then kernel warmup failed on every start: \"RuntimeError: Flint BF16 decode MoE requires the FlashInfer TRTLLM BF16 MoE backend without padding (got UnquantizedMoeBackend.TRITON)\". vLLM chose Triton MoE on Hopper; the model's own sglang/serve_h200.sh says the TRTLLM MoE kernels are Blackwell-only. Worker exited with code 1 five times in 11 min; the script recorded it as crash_loop.",
+   "log": "data/smoke/logs/day0-flint-b779895_h200_flashinfer.txt"
+  }
+ ]
+}

@@ -2,17 +2,19 @@
   "vllm_tag": "step-5-preview",
   "model": "stepfun-ai/Step-5-Preview",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview-b779895",
+  "digest": "sha256:db2440b02e73e85b3c61c63e7d24a5d7ec9765163feaaa146ab9da237eb25a87",
   "worker": "ashwinsreedhar28/worker-vllm@b779895",
   "worker_ref": "fix/version-guard-any-base-tag",
   "build": "success",
-  "build_s": 317,
+  "build_s": 254,
   "pushed": "success",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39661568095",
-  "finished_at": "2026-10-21T19:34:12Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665472813",
+  "finished_at": "2026-10-21T20:00:13Z",
   "checks": {
     "model": "stepfun-ai/Step-5-Preview",
-    "checked_at": "2026-10-21T19:33:29Z",
+    "checked_at": "2026-10-21T19:59:16Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -21,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.13.0+cu130"
         },
-        "s": 9.1
+        "s": 8.1
       },
       "hub_config": {
         "ok": true,
@@ -32,19 +34,19 @@
           "model_type": "step5_vl",
           "auto_map": []
         },
-        "s": 0.1
+        "s": 0.2
       },
       "registry": {
         "ok": true,
         "value": {
           "Step5ForConditionalGeneration": true
         },
-        "s": 2.2
+        "s": 2.3
       },
       "transformers_config": {
         "ok": false,
         "error": "ValueError: The checkpoint you are trying to load has model type `step5_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
-        "s": 0.0,
+        "s": 0.1,
         "trace_tail": [
           "ValueError: The checkpoint you are trying to load has model type `step5_vl` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
           "",
@@ -60,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 12.4
+        "s": 15.9
       },
       "tokenizer": {
         "ok": true,
@@ -68,7 +70,7 @@
           "class": "LlamaTokenizer",
           "vocab": 128815
         },
-        "s": 0.7
+        "s": 1.0
       }
     },
     "verdict": "native"

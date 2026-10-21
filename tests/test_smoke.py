@@ -98,3 +98,8 @@ def test_worker_remote_code_startup_error_retries_with_remote_code(monkeypatch):
                      "Face (an auto_map in its config.json), and vLLM only runs that code with TRUST_REMOTE_CODE=true."}}
     rungs = run_ladder(monkeypatch, [("FAILED", msg, RUN), ("COMPLETED", ["ok"], RUN)])
     assert rungs == [("needs_remote_code", {}, "24gb"), ("pass", {"TRUST_REMOTE_CODE": "true"}, "24gb")]
+
+
+def test_gpu_climb_stops_at_max_gpu():
+    assert smoke.next_rung({}, "48gb", "startup_oom", False, max_gpu="48gb") is None
+    assert smoke.next_rung({}, "24gb", "startup_oom", False, max_gpu="48gb") == ({}, "48gb")

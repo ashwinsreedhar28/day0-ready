@@ -134,13 +134,15 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label):
     return rung
 
 
-def next_rung(env, gpu_class, outcome, remote_code_tried):
+def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb"):
     """The ladder: which setting to change after a failure, or None to stop."""
     if outcome in ("needs_remote_code", "crash_loop") and not remote_code_tried:
         return {**env, "TRUST_REMOTE_CODE": "true"}, gpu_class
     if outcome == "first_request_failure" and env.get("GPU_MEMORY_UTILIZATION") != "0.85":
         return {**env, "GPU_MEMORY_UTILIZATION": "0.85"}, gpu_class
-    if outcome == "startup_oom" and gpu_class in NEXT_GPU:
+    order = list(GPU_CLASSES)
+    if (outcome == "startup_oom" and gpu_class in NEXT_GPU
+            and order.index(NEXT_GPU[gpu_class]) <= order.index(max_gpu)):
         return env, NEXT_GPU[gpu_class]
     return None
 
@@ -150,6 +152,8 @@ def main():
     ap.add_argument("--image", required=True)
     ap.add_argument("--model", required=True)
     ap.add_argument("--gpu", default="24gb", choices=GPU_CLASSES)
+    ap.add_argument("--max-gpu", default="48gb", choices=GPU_CLASSES,
+                    help="largest class a startup OOM may climb to (H200/B200 cost several times a 4090)")
     ap.add_argument("--min-cuda", default="13.0", help="vllm/vllm-openai images build on CUDA 13.0")
     ap.add_argument("--remote-code", action="store_true", help="start with TRUST_REMOTE_CODE=true (CPU check said so)")
     ap.add_argument("--max-minutes", type=int, default=40, help="wall-clock cap across all rungs")
@@ -166,7 +170,7 @@ def main():
         rungs.append(r)
         if r["outcome"] == "pass":
             break
-        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env)
+        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, a.max_gpu)
         if nxt is None:
             break
         env, gpu = nxt

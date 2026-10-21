@@ -1,0 +1,78 @@
+{
+  "vllm_tag": "flint",
+  "model": "RecursiveSI/flint",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-9388b55",
+  "digest": "sha256:3c9e4ef6b03c8df82676085406e210e750762f27619faabde54d0cdc4fb218be",
+  "worker": "ashwinsreedhar28/worker-vllm@9388b55",
+  "worker_ref": "test/model-code-day0",
+  "build": "success",
+  "build_s": 238,
+  "pushed": "success",
+  "verdict": "native",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39682789711",
+  "finished_at": "2026-10-21T22:03:31Z",
+  "checks": {
+    "model": "RecursiveSI/flint",
+    "checked_at": "2026-10-21T22:02:50Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.32.0rc1.dev348+ge7c846767",
+          "transformers": "5.19.0",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 7.9
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "FlintForCausalLM"
+          ],
+          "model_type": "flint",
+          "auto_map": []
+        },
+        "s": 0.1
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "FlintForCausalLM": true
+        },
+        "s": 2.4
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The checkpoint you are trying to load has model type `flint` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "s": 0.0,
+        "trace_tail": [
+          "ValueError: The checkpoint you are trying to load has model type `flint` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
+          "",
+          "You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+        ]
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "FlintForCausalLM",
+          "architectures": "['FlintForCausalLM']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 16.2
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 150144
+        },
+        "s": 1.3
+      }
+    },
+    "verdict": "native"
+  }
+}

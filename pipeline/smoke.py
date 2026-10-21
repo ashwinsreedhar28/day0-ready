@@ -55,7 +55,8 @@ def classify_failure(job_status, output, crash_signals):
         return "startup_oom"
     if job_status == "FAILED" and ("EngineCore encountered an issue" in text or "out of memory" in text.lower()):
         return "first_request_failure"
-    if "trust_remote_code" in text or "custom code" in text:
+    # Raw vLLM error, or the worker's startup_error once fix/remote-code-startup-error lands.
+    if "trust_remote_code" in text.lower() or "custom code" in text or "own modeling code" in text:
         return "needs_remote_code"
     if job_status == "FAILED" and "startup_error" in text:
         return "startup_error"

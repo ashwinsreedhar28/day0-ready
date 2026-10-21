@@ -90,3 +90,10 @@ def test_remote_code_is_tried_once(monkeypatch):
 @pytest.mark.parametrize("outcome,expected", [("startup_oom", None)])
 def test_no_gpu_class_above_80gb(outcome, expected):
     assert smoke.next_rung({}, "80gb", outcome, False) is expected
+
+
+def test_worker_remote_code_startup_error_retries_with_remote_code(monkeypatch):
+    msg = {"error": {"type": "startup_error", "message": "IFM/K2-Horizon-7B ships its own modeling code on Hugging "
+                     "Face (an auto_map in its config.json), and vLLM only runs that code with TRUST_REMOTE_CODE=true."}}
+    rungs = run_ladder(monkeypatch, [("FAILED", msg, RUN), ("COMPLETED", ["ok"], RUN)])
+    assert rungs == [("needs_remote_code", {}, "24gb"), ("pass", {"TRUST_REMOTE_CODE": "true"}, "24gb")]

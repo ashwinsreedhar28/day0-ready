@@ -24,6 +24,10 @@ on:
         description: "push the image to GHCR if the build succeeds"
         type: boolean
         default: true
+      smoke:
+        description: "start a GPU smoke test (smoke.yml, max 48gb) after a pushed build the CPU checks pass"
+        type: boolean
+        default: true
   push:
     branches: [main, "m*-*"]
     paths:
@@ -33,6 +37,7 @@ on:
 permissions:
   contents: write   # records data/results/<tag>.json
   packages: write
+  actions: write    # starts smoke.yml
 
 concurrency:
   # One build per (tag, worker branch) at a time. GitHub keeps only the newest
@@ -183,6 +188,20 @@ jobs:
             sleep $((i * 5))
           done
           exit 1
+
+      - name: Start GPU smoke test
+        # Verdicts where the image can resolve the model; anything else would only
+        # spend GPU time to rediscover the CPU check's answer.
+        if: >-
+          success() && github.event_name == 'workflow_dispatch' && inputs.smoke && env.PUSH_IMAGE == 'true'
+          && contains(fromJSON('["native", "native+remote_code", "fallback", "fallback+remote_code"]'), steps.checks.outputs.verdict)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IMAGE_PINNED: ${{ steps.img.outputs.image_pinned }}
+        run: |
+          gh workflow run smoke.yml -R "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME" \
+            -f image="$IMAGE_PINNED" -f model="$MODEL" -f gpu=auto -f max_gpu=48gb
+          echo "started smoke.yml for $IMAGE_PINNED"
 
       - name: Summary
         if: always()

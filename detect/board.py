@@ -7,11 +7,14 @@ hours from vLLM's tag to a pushed worker image.
 
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
+sys.path.insert(0, str(ROOT / "pipeline"))
+import smoke as smoke_mod  # noqa: E402  (template_body / endpoint_body for data/ready.json)
 
 VERDICT_NOTE = {
     "native": "vLLM resolves the architecture natively",
@@ -28,6 +31,44 @@ VERDICT_NOTE = {
 
 def ts(s):
     return datetime.fromisoformat(s.replace("Z", "+00:00")) if s else None
+
+
+def smoke_text(sm):
+    """One board cell for a smoke result."""
+    last = sm["rungs"][-1] if sm.get("rungs") else {}
+    model = sm["model"].split("/")[-1]
+    if sm.get("passed"):
+        how = ", ".join(f"{k}={v}" for k, v in (sm.get("passing_env") or {}).items()) or "defaults"
+        return f"pass: {model}, {sm['passing_gpu_class']}, {how}, {last.get('minutes')} min"
+    skipped = sm.get("skipped") or (sm.get("stopped") if not sm.get("rungs") else None)
+    if skipped:
+        return f"not run: {skipped['detail']}"
+    if last.get("outcome") == "needs_remote_code":
+        return f"{model} needs TRUST_REMOTE_CODE: review the repo's code, then rerun with allow_remote_code"
+    stopped = f" (stopped: {sm['stopped']['reason']})" if sm.get("stopped") else ""
+    return f"fail: {model}, {last.get('outcome')}{stopped}"
+
+
+def ready_entries(smoke, builds_by_image):
+    """Known-good deploys: one per launch whose own model passed on its board image.
+
+    Left out: branch test builds ("--" in the name) and stand-in models (step-5-preview's
+    Qwen3-8B run proved the image serves, not that Step-5-Preview does).
+    """
+    out = []
+    for name, sm in sorted(smoke.items()):
+        build = builds_by_image.get(sm["image"]) or {}
+        if not sm.get("passed") or "--" in name or build.get("model") != sm["model"]:
+            continue
+        last = sm["rungs"][-1]
+        deploy = sm.get("deploy") or {
+            "template": smoke_mod.template_body(sm["image"], sm["model"], last["env"], last.get("disk_gb", 60)),
+            "endpoint": smoke_mod.endpoint_body(last["gpu_class"], "13.0")}
+        out.append({"model": sm["model"], "vllm_tag": build.get("vllm_tag"), "image": sm["image"],
+                    "digest": build.get("digest") or (sm.get("image_build") or {}).get("digest"),
+                    "gpu_class": last["gpu_class"], "env": last["env"], "verified_at": sm["finished_at"],
+                    "result": f"data/smoke/{sm['image'].rsplit(':', 1)[-1]}.json", "deploy": deploy})
+    return out
 
 
 def main():
@@ -47,14 +88,7 @@ def main():
 
     def smoke_cell(r):
         sm = r and smoke.get(r["image"].rsplit(":", 1)[-1])
-        if not sm:
-            return ""
-        last = sm["rungs"][-1] if sm["rungs"] else {}
-        how = ", ".join(f"{k}={v}" for k, v in (sm.get("passing_env") or {}).items()) or "defaults"
-        model = sm["model"].split("/")[-1]
-        if sm["passed"]:
-            return f"pass: {model}, {sm['passing_gpu_class']}, {how}, {last.get('minutes')} min"
-        return f"fail: {model}, {last.get('outcome')}"
+        return smoke_text(sm) if sm else ""
 
     rows = []
     for fam, ev in state["seen"].items():
@@ -83,6 +117,13 @@ def main():
                 lag = f"{(ts(r['finished_at']) - ts(pushed)).total_seconds() / 3600:.1f} h"
         lines.append(f"| `{tag}` | {pushed[:16].replace('T', ' ')} | {model or 'no match'} | {build} | {verdict} | {smoke_cell(r)} | {lag} |")
     (DATA / "board.md").write_text("\n".join(lines) + "\n")
+    builds = {}
+    for f in (DATA / "results").rglob("*.json") if (DATA / "results").exists() else []:
+        r = json.loads(f.read_text())
+        for k in ("image", "image_pinned"):
+            if r.get(k):
+                builds[r[k]] = r
+    (DATA / "ready.json").write_text(json.dumps(ready_entries(smoke, builds), indent=1) + "\n")
     print("\n".join(lines))
 
 

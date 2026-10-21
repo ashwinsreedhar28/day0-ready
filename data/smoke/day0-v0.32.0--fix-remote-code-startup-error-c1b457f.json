@@ -23,7 +23,8 @@
     "running"
    ],
    "outcome": "needs_remote_code",
-   "logs": "https://console.runpod.io/serverless/user/endpoint/1ehyz4u1gn72d4"
+   "logs": "https://console.runpod.io/serverless/user/endpoint/1ehyz4u1gn72d4",
+   "disk_gb": 60
   },
   {
    "env": {
@@ -42,7 +43,8 @@
     "ready",
     "running"
    ],
-   "outcome": "pass"
+   "outcome": "pass",
+   "disk_gb": 60
   }
  ],
  "finished_at": "2026-10-21T21:01:41+00:00"

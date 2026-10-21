@@ -16,8 +16,11 @@ moves to the next rung, mirroring the failures seen in study/:
 A worker that keeps restarting with no answer is treated as an unrecognised
 startup failure; its logs are in the console (endpoint kept at 0 workers).
 
-Writes data/smoke/<image tag>.json. Cost guard: --max-minutes across all rungs,
-one worker at a time, 5 s idle timeout, endpoints scaled to 0 on every exit path.
+Writes data/smoke/<image tag>.json; a pass also records the exact template and
+endpoint bodies (data/ready.json is built from them). Cost guard: --max-minutes
+across all rungs, one worker at a time, 5 s idle timeout, endpoints scaled to 0
+on every exit path, and in CI (.github/workflows/smoke.yml) --gpu auto,
+--max-gpu, --budget-usd and --no-remote-code.
 """
 
 import argparse
@@ -29,6 +32,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import runpod_api as rp  # noqa: E402
+import sizing  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PREFIX = "day0-smoke-"
@@ -69,18 +73,28 @@ def classify_failure(job_status, output, crash_signals):
     return "no_result"
 
 
-def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60):
-    rung = {"env": env, "gpu_class": gpu_class, "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+def template_body(image, model, env, disk_gb):
+    """POST /v1/templates body (minus the name); recorded so a passing rung can be redeployed as is."""
+    return {"imageName": image, "isServerless": True, "containerDiskInGb": disk_gb,
+            "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}}
+
+
+def endpoint_body(gpu_class, min_cuda, gpu_types=None):
+    """POST /v1/endpoints body (minus name and templateId), with the smoke test's cost limits."""
+    return {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": 1, "workersMin": 0,
+            "workersMax": 1, "idleTimeout": 5, "executionTimeoutMs": 600000, "flashboot": False,
+            "minCudaVersion": min_cuda}
+
+
+def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None):
+    rung = {"env": env, "gpu_class": gpu_class, "disk_gb": disk_gb,
+            "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     name = f"{PREFIX}{label}-{int(time.time())}"[:60]
-    st, tpl = rp.call("POST", f"{rp.REST}/templates", key, {
-        "name": name, "imageName": image, "isServerless": True, "containerDiskInGb": disk_gb,
-        "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}})
+    st, tpl = rp.call("POST", f"{rp.REST}/templates", key, {"name": name, **template_body(image, model, env, disk_gb)})
     if not rp.ok(st):
         return {**rung, "outcome": "error", "detail": f"template {st}: {tpl}"}
     st, ep = rp.call("POST", f"{rp.REST}/endpoints", key, {
-        "templateId": tpl["id"], "name": name, "computeType": "GPU", "gpuTypeIds": GPU_CLASSES[gpu_class],
-        "gpuCount": 1, "workersMin": 0, "workersMax": 1, "idleTimeout": 5, "executionTimeoutMs": 600000,
-        "flashboot": False, "minCudaVersion": min_cuda})
+        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types)})
     if not rp.ok(st):
         rp.call("DELETE", f"{rp.REST}/templates/{tpl['id']}", key)
         return {**rung, "outcome": "error", "detail": f"endpoint {st}: {ep}"}
@@ -121,8 +135,11 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
             rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
     finally:
         rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", key, {"workersMax": 0, "workersMin": 0})
+    minutes = round((time.time() - t0) / 60, 1)
     rung.update(job_status=status, output=json.dumps(output)[:600] if output is not None else None,
-                minutes=round((time.time() - t0) / 60, 1), worker_states=sorted(seen))
+                minutes=minutes, worker_states=sorted(seen),
+                # Upper bound: includes queue and throttled time, which isn't billed.
+                est_cost_usd=sizing.cost_usd(minutes, gpu_class))
     if status == "COMPLETED":
         rung["outcome"] = "pass"
         rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", key)
@@ -134,15 +151,18 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
     return rung
 
 
-def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb", remote_code_possible=True):
+def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb", remote_code_possible=True,
+              allow_remote_code=True):
     """The ladder: which setting to change after a failure, or None to stop.
 
     A crash loop is only retried with remote code when the CPU check didn't
     rule it out: flint (no auto_map) crash-looped on a Blackwell-only MoE
     kernel, and a TRUST_REMOTE_CODE rung would have been 30 min of H200 for nothing.
+    allow_remote_code=False (CI's default) never runs a repo's own code: the
+    run stops at needs_remote_code for a person to review the code first.
     """
-    if not remote_code_tried and (outcome == "needs_remote_code"
-                                  or (outcome == "crash_loop" and remote_code_possible)):
+    if allow_remote_code and not remote_code_tried and (
+            outcome == "needs_remote_code" or (outcome == "crash_loop" and remote_code_possible)):
         return {**env, "TRUST_REMOTE_CODE": "true"}, gpu_class
     if outcome == "first_request_failure" and env.get("GPU_MEMORY_UTILIZATION") != "0.85":
         return {**env, "GPU_MEMORY_UTILIZATION": "0.85"}, gpu_class
@@ -162,28 +182,83 @@ def cpu_verdict(image):
     return None
 
 
+def spent_last_24h(now=None, smoke_dir=None):
+    """Estimated spend of recorded smoke rungs that started in the last 24 h."""
+    now = now or datetime.now(timezone.utc)
+    total = 0.0
+    for f in (smoke_dir or ROOT / "data" / "smoke").glob("*.json"):
+        for r in json.loads(f.read_text()).get("rungs") or []:
+            started = datetime.fromisoformat(r["started"]) if r.get("started") else None
+            if started and (now - started).total_seconds() < 86400 and r.get("gpu_class") in sizing.PRICE_PER_HR:
+                total += r.get("est_cost_usd", sizing.cost_usd(r.get("minutes") or 0, r["gpu_class"]))
+    return round(total, 2)
+
+
+def write_result(result, image):
+    out = ROOT / "data" / "smoke" / f"{image.rsplit(':', 1)[-1]}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, indent=1) + "\n")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)
     ap.add_argument("--model", required=True)
-    ap.add_argument("--gpu", default="24gb", choices=GPU_CLASSES)
+    ap.add_argument("--gpu", default="24gb", choices=[*GPU_CLASSES, "auto"],
+                    help="auto: smallest class that holds the weights (Hugging Face API), see sizing.py")
     ap.add_argument("--max-gpu", default="48gb", choices=GPU_CLASSES,
                     help="largest class a startup OOM may climb to (H200/B200 cost several times a 4090)")
     ap.add_argument("--min-cuda", default="13.0", help="vllm/vllm-openai images build on CUDA 13.0")
     ap.add_argument("--remote-code", action="store_true", help="start with TRUST_REMOTE_CODE=true (CPU check said so)")
+    ap.add_argument("--no-remote-code", action="store_true",
+                    help="never set TRUST_REMOTE_CODE; stop at needs_remote_code for a person to review the code")
+    ap.add_argument("--budget-usd", type=float,
+                    help="skip or stop when recorded spend in the last 24 h plus this rung's worst case would exceed it")
     ap.add_argument("--max-minutes", type=int, default=40, help="wall-clock cap across all rungs")
-    ap.add_argument("--disk-gb", type=int, default=60,
-                    help="container disk; weights download here without a network volume (~2x params in GB for bf16, plus ~20 for the image)")
+    ap.add_argument("--disk-gb", type=int,
+                    help="container disk; weights download here without a network volume (default: from the weight size, min 60)")
+    ap.add_argument("--gpu-types", help="comma-separated Runpod GPU type ids to use instead of the class's list, "
+                    "e.g. Hopper only: 'NVIDIA H100 80GB HBM3,NVIDIA H100 PCIe,NVIDIA H100 NVL' (no ladder climb)")
     ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                     help="extra worker env for every rung, e.g. --set ATTENTION_BACKEND=FLASHINFER (repeatable)")
     ap.add_argument("--env-file")
     a = ap.parse_args()
     if any("=" not in s for s in a.set):
         ap.error("--set takes KEY=VALUE")
+    if a.remote_code and a.no_remote_code:
+        ap.error("--remote-code and --no-remote-code conflict")
     key = rp.load_key(a.env_file)
 
+    order = list(GPU_CLASSES)
+    base = {"image": a.image, "model": a.model}
+    gb = None
+    if a.gpu == "auto" or a.disk_gb is None:
+        try:
+            gb = sizing.weights_gb(sizing.hf_model_info(a.model))
+        except Exception as e:  # noqa: BLE001 - sizing is best effort; the ladder still climbs on OOM
+            log(f"weight size unavailable ({e})")
+    if gb is not None:
+        base["weights_gb"] = round(gb, 1)
+    gpu = a.gpu
+    if gpu == "auto":
+        gpu = sizing.pick_class(gb) if gb is not None else "24gb"
+        log(f"weights {base.get('weights_gb', '?')} GB -> {gpu or 'multi-GPU'}")
+    skip = None
+    if gpu is None:
+        skip = {"reason": "needs_multi_gpu", "detail": f"{gb:.0f} GB of weights is more than one 180 GB GPU holds"}
+    elif order.index(gpu) > order.index(a.max_gpu):
+        skip = {"reason": "needs_larger_gpu", "detail": f"needs {gpu}; --max-gpu is {a.max_gpu}"}
+    if skip:
+        out = write_result({**base, "passed": False, "skipped": skip, "rungs": [],
+                            "finished_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, a.image)
+        log(f"NOT RUN: {skip['detail']} -> {out.relative_to(ROOT)}")
+        return 1
+    disk = a.disk_gb or (sizing.disk_gb(gb) if gb is not None else 60)
+    gpu_types = [t.strip() for t in a.gpu_types.split(",") if t.strip()] if a.gpu_types else None
+
     deadline = time.time() + a.max_minutes * 60
-    env, gpu = dict(s.split("=", 1) for s in a.set), a.gpu
+    env = dict(s.split("=", 1) for s in a.set)
     if a.remote_code:
         env["TRUST_REMOTE_CODE"] = "true"
     verdict = cpu_verdict(a.image)
@@ -191,25 +266,42 @@ def main():
     if verdict:
         log(f"CPU check verdict for this image: {verdict}")
     label = a.image.rsplit(":", 1)[-1].replace(".", "")[:30]
-    rungs = []
+    rungs, stopped = [], None
     while time.time() < deadline:
-        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", a.disk_gb)
+        if a.budget_usd is not None:
+            spent = spent_last_24h() + sum(r.get("est_cost_usd", 0) for r in rungs)
+            worst = sizing.cost_usd((deadline - time.time()) / 60, gpu)
+            if spent + worst > a.budget_usd:
+                stopped = {"reason": "budget", "detail": f"${spent:.2f} spent in the last 24 h + up to "
+                           f"${worst:.2f} for a {gpu} rung > ${a.budget_usd:.2f} budget"}
+                log(f"stopping: {stopped['detail']}")
+                break
+        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk, gpu_types)
+        if gpu_types:
+            r["gpu_types"] = gpu_types
         rungs.append(r)
         if r["outcome"] == "pass":
             break
-        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, a.max_gpu, remote_possible)
+        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env,
+                        gpu if gpu_types else a.max_gpu,  # an explicit GPU list never climbs classes
+                        remote_possible, allow_remote_code=not a.no_remote_code)
         if nxt is None:
             break
         env, gpu = nxt
 
-    result = {"image": a.image, "model": a.model, "passed": bool(rungs) and rungs[-1]["outcome"] == "pass",
-              "passing_env": rungs[-1]["env"] if rungs and rungs[-1]["outcome"] == "pass" else None,
-              "passing_gpu_class": rungs[-1]["gpu_class"] if rungs and rungs[-1]["outcome"] == "pass" else None,
+    passed = bool(rungs) and rungs[-1]["outcome"] == "pass"
+    result = {**base, "passed": passed,
+              "passing_env": rungs[-1]["env"] if passed else None,
+              "passing_gpu_class": rungs[-1]["gpu_class"] if passed else None,
               "rungs": rungs, "finished_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-    out = ROOT / "data" / "smoke" / f"{a.image.rsplit(':', 1)[-1]}.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=1) + "\n")
-    log(f"{'PASS' if result['passed'] else 'FAIL'} after {len(rungs)} rung(s) -> {out.relative_to(ROOT)}")
+    if passed:
+        last = rungs[-1]
+        result["deploy"] = {"template": template_body(a.image, a.model, last["env"], last["disk_gb"]),
+                            "endpoint": endpoint_body(last["gpu_class"], a.min_cuda, last.get("gpu_types"))}
+    if stopped:
+        result["skipped" if not rungs else "stopped"] = stopped
+    out = write_result(result, a.image)
+    log(f"{'PASS' if passed else 'FAIL'} after {len(rungs)} rung(s) -> {out.relative_to(ROOT)}")
     return 0 if result["passed"] else 1
 
 

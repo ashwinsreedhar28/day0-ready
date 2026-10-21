@@ -21,7 +21,8 @@
     "ready",
     "running"
    ],
-   "outcome": "pass"
+   "outcome": "pass",
+   "disk_gb": 60
   }
  ],
  "finished_at": "2026-10-21T19:35:40+00:00",

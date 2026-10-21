@@ -26,7 +26,8 @@
     "running",
     "throttled"
    ],
-   "outcome": "pass"
+   "outcome": "pass",
+   "disk_gb": 150
   }
  ],
  "finished_at": "2026-10-21T21:33:51+00:00",

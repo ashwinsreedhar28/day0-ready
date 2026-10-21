@@ -13,15 +13,27 @@ First launch through the pipeline: [RecursiveSI/flint](https://huggingface.co/Re
 | detect | every 30 min: new model-named `vllm/vllm-openai` tags, matched to a Hugging Face repo (24-lab watchlist, then HF search) | no | `.github/workflows/detect.yml`, `detect/poll.py`; starts a build per new launch |
 | build | worker-vllm `FROM vllm/vllm-openai:<day-0 tag>`, pushed to `ghcr.io` | no | `.github/workflows/build-day0.yml` |
 | CPU checks | inside the built image: architecture resolution, transformers config, vLLM `ModelConfig`, tokenizer | no | `checks/cpu_check.py`, run by the build |
-| smoke test | one request on a Serverless endpoint; on failure: `GPU_MEMORY_UTILIZATION=0.85` (first-request OOM), `TRUST_REMOTE_CODE=true` (remote-code error, or a crash loop the CPU check didn't rule out), next GPU class (startup OOM, capped by `--max-gpu`) | yes, capped | `pipeline/smoke.py`, run by hand with a Runpod key |
+| smoke test | one request on a Serverless endpoint, GPU class picked from the weight size; on failure: `GPU_MEMORY_UTILIZATION=0.85` (first-request OOM), next GPU class (startup OOM, capped by `max_gpu`), `TRUST_REMOTE_CODE=true` only when allowed | yes, capped | `.github/workflows/smoke.yml` (`pipeline/smoke.py`), started by every dispatched build |
 | pre-warm | torch.compile cache on a network volume per (model, GPU) | yes | planned |
 | board | per launch: tag push time, model, build, CPU verdict, smoke test, tag → worker image | no | [`data/board.md`](data/board.md), regenerated on every recorded build |
+| deploy recipe | per launch whose own model passed: the exact template and endpoint request bodies, image digest, GPU class, env | no | [`data/ready.json`](data/ready.json) |
 
 ## Run a build
 
 Actions → **Build day-0 worker** → Run workflow, with a `vllm_tag` (e.g. `muse-spark-open`) and the Hugging Face `model` to check. The result lands in the run summary and as `ghcr.io/ashwinsreedhar28/worker-vllm:day0-<tag>`.
 
-## Run a smoke test
+## Automatic smoke tests
+
+After a dispatched build pushes an image and its CPU checks resolve the model, `build-day0.yml` starts `smoke.yml` on the pinned image with `gpu=auto, max_gpu=48gb`. Spend limits:
+
+- Classes above 48 GB never start automatically. Run `smoke.yml` by hand with a larger `max_gpu`; those runs use the `gpu-large` environment, which can require an approval.
+- `max_minutes` (default 40) across all attempts, one worker per endpoint, endpoints scaled to zero on exit.
+- A rolling 24 h budget (`SMOKE_BUDGET_USD` repo variable, default $10) over the recorded runs, using the highest listed Serverless rate in each class.
+- A model that needs `TRUST_REMOTE_CODE` stops there; rerun with `allow_remote_code` after reading the repo's code.
+
+Setup: the repo secret `RUNPOD_API_KEY` (a key used only for this), and optionally required reviewers on the `gpu-large` environment.
+
+## Run a smoke test by hand
 
 Needs a Runpod API key (kept out of the repo, e.g. in `~/.runpod.env`). Spend is capped by `--max-minutes` and `--max-gpu`; endpoints are scaled to zero on exit and deleted on a pass.
 

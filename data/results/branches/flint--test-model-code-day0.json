@@ -2,19 +2,19 @@
   "vllm_tag": "flint",
   "model": "RecursiveSI/flint",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0",
-  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-9388b55",
-  "digest": "sha256:3c9e4ef6b03c8df82676085406e210e750762f27619faabde54d0cdc4fb218be",
-  "worker": "ashwinsreedhar28/worker-vllm@9388b55",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-a121ce7",
+  "digest": "sha256:1c3c3b86f0eb668dd5db5660ea0040c40b94865d857c5b3022a0510b7fe6db5c",
+  "worker": "ashwinsreedhar28/worker-vllm@a121ce7",
   "worker_ref": "test/model-code-day0",
   "build": "success",
-  "build_s": 238,
+  "build_s": 249,
   "pushed": "success",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39682789711",
-  "finished_at": "2026-10-21T22:03:31Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39691648560",
+  "finished_at": "2026-10-21T23:16:22Z",
   "checks": {
     "model": "RecursiveSI/flint",
-    "checked_at": "2026-10-21T22:02:50Z",
+    "checked_at": "2026-10-21T23:15:43Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -23,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.14.0+cu130"
         },
-        "s": 7.9
+        "s": 7.3
       },
       "hub_config": {
         "ok": true,
@@ -41,7 +41,7 @@
         "value": {
           "FlintForCausalLM": true
         },
-        "s": 2.4
+        "s": 2.3
       },
       "transformers_config": {
         "ok": false,
@@ -62,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 16.2
+        "s": 15.5
       },
       "tokenizer": {
         "ok": true,
@@ -70,7 +70,7 @@
           "class": "TokenizersBackend",
           "vocab": 150144
         },
-        "s": 1.3
+        "s": 1.2
       }
     },
     "verdict": "native"

@@ -6,6 +6,7 @@ hours from vLLM's tag to a pushed worker image.
 """
 
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -36,6 +37,25 @@ def main():
         r = json.loads(f.read_text())
         results[r["vllm_tag"]] = r
 
+    smoke = {}  # image name (without -sha) -> latest smoke result
+    for f in sorted((DATA / "smoke").glob("*.json")) if (DATA / "smoke").exists() else []:
+        sm = json.loads(f.read_text())
+        name = sm["image"].rsplit(":", 1)[-1]
+        name = re.sub(r"-[0-9a-f]{7,}$", "", name) if name.count("-") > 1 else name
+        if name not in smoke or sm["finished_at"] > smoke[name]["finished_at"]:
+            smoke[name] = sm
+
+    def smoke_cell(r):
+        sm = r and smoke.get(r["image"].rsplit(":", 1)[-1])
+        if not sm:
+            return ""
+        last = sm["rungs"][-1] if sm["rungs"] else {}
+        how = ", ".join(f"{k}={v}" for k, v in (sm.get("passing_env") or {}).items()) or "defaults"
+        model = sm["model"].split("/")[-1]
+        if sm["passed"]:
+            return f"pass: {model}, {sm['passing_gpu_class']}, {how}, {last.get('minutes')} min"
+        return f"fail: {model}, {last.get('outcome')}"
+
     rows = []
     for fam, ev in state["seen"].items():
         if ev.get("skipped"):
@@ -48,8 +68,8 @@ def main():
 
     lines = ["# Day-0 board", "",
              f"Last poll: {state.get('last_poll', 'never')}. Rows: launches vLLM published a model-named image for.", "",
-             "| vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | tag → worker image |",
-             "|---|---|---|---|---|---|"]
+             "| vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | tag → worker image |",
+             "|---|---|---|---|---|---|---|"]
     for pushed, fam, tag, model, r, first_seen in sorted(rows, key=lambda row: row[0], reverse=True):
         if r is None:
             build, verdict, lag = "pending", "", ""
@@ -61,7 +81,7 @@ def main():
                 lag = "backfill"  # detected long after vLLM pushed the tag; not a live measurement
             elif pushed and r.get("pushed") == "success":
                 lag = f"{(ts(r['finished_at']) - ts(pushed)).total_seconds() / 3600:.1f} h"
-        lines.append(f"| `{tag}` | {pushed[:16].replace('T', ' ')} | {model or 'no match'} | {build} | {verdict} | {lag} |")
+        lines.append(f"| `{tag}` | {pushed[:16].replace('T', ' ')} | {model or 'no match'} | {build} | {verdict} | {smoke_cell(r)} | {lag} |")
     (DATA / "board.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 

@@ -1,0 +1,92 @@
+{
+  "vllm_tag": "v0.32.0",
+  "model": "IFM/K2-Horizon-7B",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--fix-remote-code-startup-error",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--fix-remote-code-startup-error-c1b457f",
+  "digest": "sha256:c6b3fdd4dda44ef7492b3f5b7da0b6be17d22b982f1d466cb5574824c8f4558f",
+  "worker": "ashwinsreedhar28/worker-vllm@c1b457f",
+  "worker_ref": "fix/remote-code-startup-error",
+  "build": "success",
+  "build_s": 236,
+  "pushed": "success",
+  "verdict": "native+remote_code",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665278389",
+  "finished_at": "2026-10-21T20:11:15Z",
+  "checks": {
+    "model": "IFM/K2-Horizon-7B",
+    "checked_at": "2026-10-21T20:10:24Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.32.0",
+          "transformers": "5.19.0",
+          "torch": "2.13.0+cu130"
+        },
+        "s": 6.7
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "K2HorizonForCausalLM"
+          ],
+          "model_type": "k2_horizon",
+          "auto_map": [
+            "AutoConfig",
+            "AutoModel",
+            "AutoModelForCausalLM"
+          ]
+        },
+        "s": 0.3
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "K2HorizonForCausalLM": true
+        },
+        "s": 2.1
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.",
+        "s": 0.1,
+        "trace_tail": [
+          "ValueError: The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .",
+          " You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.",
+          "Please pass the argument `trust_remote_code=True` to allow custom code to be run."
+        ]
+      },
+      "vllm_model_config": {
+        "ok": false,
+        "error": "ValidationError: 1 validation error for ModelConfig\n  Value error, The repository IFM/K2-Horizon-7B contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B .\n You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...st_remote_code': False}), input_type=ArgsKwargs]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        "s": 2.1,
+        "trace_tail": [
+          " You can inspect the repository content at https://hf.co/IFM/K2-Horizon-7B.",
+          "Please pass the argument `trust_remote_code=True` to allow custom code to be run. [type=value_error, input_value=ArgsKwargs((), {'model': ...st_remote_code': False}), input_type=ArgsKwargs]",
+          "    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        ]
+      },
+      "vllm_model_config_remote": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": true,
+          "architecture": "K2HorizonForCausalLM",
+          "architectures": "['K2HorizonForCausalLM']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 12.4
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 250624
+        },
+        "s": 3.7
+      }
+    },
+    "verdict": "native+remote_code"
+  }
+}

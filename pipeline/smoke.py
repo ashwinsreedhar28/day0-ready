@@ -69,11 +69,11 @@ def classify_failure(job_status, output, crash_signals):
     return "no_result"
 
 
-def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label):
+def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60):
     rung = {"env": env, "gpu_class": gpu_class, "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     name = f"{PREFIX}{label}-{int(time.time())}"[:60]
     st, tpl = rp.call("POST", f"{rp.REST}/templates", key, {
-        "name": name, "imageName": image, "isServerless": True, "containerDiskInGb": 60,
+        "name": name, "imageName": image, "isServerless": True, "containerDiskInGb": disk_gb,
         "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}})
     if not rp.ok(st):
         return {**rung, "outcome": "error", "detail": f"template {st}: {tpl}"}
@@ -157,6 +157,8 @@ def main():
     ap.add_argument("--min-cuda", default="13.0", help="vllm/vllm-openai images build on CUDA 13.0")
     ap.add_argument("--remote-code", action="store_true", help="start with TRUST_REMOTE_CODE=true (CPU check said so)")
     ap.add_argument("--max-minutes", type=int, default=40, help="wall-clock cap across all rungs")
+    ap.add_argument("--disk-gb", type=int, default=60,
+                    help="container disk; weights download here without a network volume (~2x params in GB for bf16, plus ~20 for the image)")
     ap.add_argument("--env-file")
     a = ap.parse_args()
     key = rp.load_key(a.env_file)
@@ -166,7 +168,7 @@ def main():
     label = a.image.rsplit(":", 1)[-1].replace(".", "")[:30]
     rungs = []
     while time.time() < deadline:
-        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}")
+        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", a.disk_gb)
         rungs.append(r)
         if r["outcome"] == "pass":
             break

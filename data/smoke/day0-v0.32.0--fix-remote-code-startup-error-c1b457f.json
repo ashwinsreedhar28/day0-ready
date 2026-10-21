@@ -1,0 +1,49 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--fix-remote-code-startup-error-c1b457f",
+ "model": "IFM/K2-Horizon-7B",
+ "passed": true,
+ "passing_env": {
+  "TRUST_REMOTE_CODE": "true"
+ },
+ "passing_gpu_class": "24gb",
+ "rungs": [
+  {
+   "env": {},
+   "gpu_class": "24gb",
+   "started": "2026-10-21T20:54:10+00:00",
+   "endpoint_id": "1ehyz4u1gn72d4",
+   "delay_s": 160,
+   "exec_s": 0,
+   "job_status": "FAILED",
+   "output": "\"{'message': \\\"IFM/K2-Horizon-7B ships its own modeling code on Hugging Face (an auto_map in its config.json), and vLLM only runs that code with TRUST_REMOTE_CODE=true. Review the repository's code, then set TRUST_REMOTE_CODE=true if you trust it. This also lets vLLM serve architectures it has no native implementation for yet, through its Transformers backend.\\\", 'type': 'startup_error', 'code': None}\"",
+   "minutes": 2.8,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "outcome": "needs_remote_code",
+   "logs": "https://console.runpod.io/serverless/user/endpoint/1ehyz4u1gn72d4"
+  },
+  {
+   "env": {
+    "TRUST_REMOTE_CODE": "true"
+   },
+   "gpu_class": "24gb",
+   "started": "2026-10-21T20:57:01+00:00",
+   "endpoint_id": "510ih3rqcxmd1m",
+   "delay_s": 267,
+   "exec_s": 0,
+   "job_status": "COMPLETED",
+   "output": "[{\"choices\": [{\"finish_reason\": \"length\", \"index\": 0, \"logprobs\": null, \"message\": {\"annotations\": null, \"audio\": null, \"content\": \"The user says: \\\"Reply with the\", \"function_call\": null, \"reasoning\": null, \"refusal\": null, \"role\": \"assistant\"}, \"routed_experts\": null, \"stop_reason\": null, \"token_ids\": null}], \"created\": 1792616491, \"ec_transfer_params\": null, \"id\": \"chatcmpl-81561de00bdb4ff9\", \"kv_transfer_params\": null, \"metrics\": null, \"model\": \"IFM/K2-Horizon-7B\", \"object\": \"chat.completion\", \"prompt_logprobs\": null, \"prompt_text\": null, \"prompt_token_ids\": null, \"service_tier\": null, \"sy",
+   "minutes": 4.6,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "outcome": "pass"
+  }
+ ],
+ "finished_at": "2026-10-21T21:01:41+00:00"
+}

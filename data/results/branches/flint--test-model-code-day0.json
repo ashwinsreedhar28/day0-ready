@@ -2,19 +2,19 @@
   "vllm_tag": "flint",
   "model": "RecursiveSI/flint",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0",
-  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-a121ce7",
-  "digest": "sha256:1c3c3b86f0eb668dd5db5660ea0040c40b94865d857c5b3022a0510b7fe6db5c",
-  "worker": "ashwinsreedhar28/worker-vllm@a121ce7",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-b674cda",
+  "digest": "sha256:d8224ecc3250f9dc6215ba0a2aa518bd78f256b51e38fd3a71540c309b7b1a90",
+  "worker": "ashwinsreedhar28/worker-vllm@b674cda",
   "worker_ref": "test/model-code-day0",
   "build": "success",
-  "build_s": 249,
-  "pushed": "success",
+  "build_s": 283,
+  "pushed": "cancelled",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39691648560",
-  "finished_at": "2026-10-21T23:16:22Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39694265424",
+  "finished_at": "2026-10-21T23:41:58Z",
   "checks": {
     "model": "RecursiveSI/flint",
-    "checked_at": "2026-10-21T23:15:43Z",
+    "checked_at": "2026-10-21T23:41:21Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -23,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.14.0+cu130"
         },
-        "s": 7.3
+        "s": 6.0
       },
       "hub_config": {
         "ok": true,
@@ -34,19 +34,19 @@
           "model_type": "flint",
           "auto_map": []
         },
-        "s": 0.1
+        "s": 0.2
       },
       "registry": {
         "ok": true,
         "value": {
           "FlintForCausalLM": true
         },
-        "s": 2.3
+        "s": 1.8
       },
       "transformers_config": {
         "ok": false,
         "error": "ValueError: The checkpoint you are trying to load has model type `flint` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
-        "s": 0.0,
+        "s": 0.1,
         "trace_tail": [
           "ValueError: The checkpoint you are trying to load has model type `flint` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
           "",
@@ -62,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 15.5
+        "s": 12.8
       },
       "tokenizer": {
         "ok": true,
@@ -70,7 +70,7 @@
           "class": "TokenizersBackend",
           "vocab": 150144
         },
-        "s": 1.2
+        "s": 2.1
       }
     },
     "verdict": "native"

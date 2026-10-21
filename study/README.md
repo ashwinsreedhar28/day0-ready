@@ -22,7 +22,7 @@ For a new architecture, the median wait from public release to a published worke
 | upstream: release → first vLLM final image listing the arch | 14 d | 11.9 | 27 (GLM-5.3-Flash) | 1 / 23 |
 | worker: that image → latest published worker image pins a vLLM listing it | 11 d | 16.6 | 55 (Qwen3.5-397B) | 0 / 23 |
 
-Most of the upstream half is release cadence, not missing code. On vLLM's main branch, the support PR merged a median of 0 days from release (min −41 for North-Mini-Code, max +8). vLLM also publishes model-named images for big launches, such as `vllm/vllm-openai:gemma4`, `deepseekv4` and `step-5-preview`. 18 of the 25 new-architecture models had one, and **16 of those 18 were pushed on release day**. Muse Glimmer's came a day later and GLM-5.3-Flash's 14 days later. The worker couldn't be built from those images because of a version check; that's fixed on a branch (see the top-level README).
+Most of the upstream half is release cadence, not missing code. On vLLM's main branch, the support PR merged a median of 0 days from release (min −41 for North-Mini-Code, max +8). vLLM also publishes model-named images for big launches, such as `vllm/vllm-openai:gemma4`, `deepseekv4` and `step-5-preview`. 18 of the 25 new-architecture models had one, and **16 of those 18 were available on or before the recorded release date** (15 pushed on the release's UTC date, Step-3.7-Flash's the evening before). Muse Glimmer's came a day later and GLM-5.3-Flash's 14 days later. The worker couldn't be built from those images because of a version check; that's fixed on a branch (see the top-level README).
 
 The worker half has the long tail, and it's the half Runpod controls:
 

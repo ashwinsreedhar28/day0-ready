@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-10-21T19:28:09Z",
+ "last_poll": "2026-10-21T19:51:45Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -24,7 +24,9 @@
   "flint": {
    "family": "flint",
    "first_seen": "2026-10-21T19:28:09Z",
-   "model": null,
+   "match": "search (127 likes)",
+   "matched_at": "2026-10-21T19:51:45Z",
+   "model": "RecursiveSI/flint",
    "vllm_tag": "flint",
    "vllm_tag_pushed": "2026-10-21T16:09:51.326641Z"
   },

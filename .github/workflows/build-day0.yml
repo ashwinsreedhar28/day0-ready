@@ -87,9 +87,22 @@ jobs:
         id: img
         run: |
           owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          safe_tag="$(echo "$VLLM_TAG" | tr -c 'a-zA-Z0-9._-' '-' | sed 's/-*$//')"
-          echo "image=ghcr.io/${owner}/worker-vllm:day0-${safe_tag}" >> "$GITHUB_OUTPUT"
-          echo "worker_sha=$(git -C worker rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          slug() { echo "$1" | tr -c 'a-zA-Z0-9._-' '-' | sed 's/-*$//'; }
+          safe_tag="$(slug "$VLLM_TAG")"
+          sha="$(git -C worker rev-parse --short HEAD)"
+          # The default worker branch owns day0-<tag>; any other branch gets its own
+          # name so a test build never overwrites the image the board points at.
+          if [ "$WORKER_REPO@$WORKER_REF" = "ashwinsreedhar28/worker-vllm@fix/version-guard-any-base-tag" ]; then
+            name="day0-${safe_tag}"; results="data/results/${safe_tag}.json"
+          else
+            ref="$(slug "$WORKER_REF" | cut -c1-40)"
+            name="day0-${safe_tag}--${ref}"; results="data/results/branches/${safe_tag}--${ref}.json"
+          fi
+          echo "image=ghcr.io/${owner}/worker-vllm:${name}" >> "$GITHUB_OUTPUT"
+          # Immutable tag for every build, so a smoke test or PR can cite exactly what ran.
+          echo "image_pinned=ghcr.io/${owner}/worker-vllm:${name}-${sha}" >> "$GITHUB_OUTPUT"
+          echo "results=${results}" >> "$GITHUB_OUTPUT"
+          echo "worker_sha=${sha}" >> "$GITHUB_OUTPUT"
 
       - name: Build worker FROM vllm/vllm-openai:${{ env.VLLM_TAG }}
         id: build
@@ -100,7 +113,7 @@ jobs:
             --label org.opencontainers.image.source="https://github.com/${{ github.repository }}" \
             --label day0.vllm_tag="$VLLM_TAG" \
             --label day0.worker="${WORKER_REPO}@${{ steps.img.outputs.worker_sha }}" \
-            -t "${{ steps.img.outputs.image }}" worker 2>&1 | tee build.log
+            -t "${{ steps.img.outputs.image }}" -t "${{ steps.img.outputs.image_pinned }}" worker 2>&1 | tee build.log
           echo "build_s=$(( $(date +%s) - start ))" >> "$GITHUB_OUTPUT"
           grep -E "base image vLLM|OK for base tag" build.log || true
 
@@ -127,30 +140,45 @@ jobs:
       - name: Push image
         id: push
         if: env.PUSH_IMAGE == 'true'
-        run: docker push "${{ steps.img.outputs.image }}"
+        run: |
+          docker push "${{ steps.img.outputs.image_pinned }}"
+          docker push "${{ steps.img.outputs.image }}"
+          echo "digest=$(docker inspect --format '{{index .RepoDigests 0}}' "${{ steps.img.outputs.image_pinned }}" | cut -d@ -f2)" >> "$GITHUB_OUTPUT"
 
       - name: Record result
         if: always() && steps.img.outcome == 'success'
         run: |
-          mkdir -p data/results
-          safe="$(basename '${{ steps.img.outputs.image }}' | sed 's/^worker-vllm:day0-//')"
+          results="${{ steps.img.outputs.results }}"
+          mkdir -p "$(dirname "$results")"
           jq -n \
             --arg vllm_tag "$VLLM_TAG" --arg model "$MODEL" --arg image "${{ steps.img.outputs.image }}" \
+            --arg image_pinned "${{ steps.img.outputs.image_pinned }}" --arg digest "${{ steps.push.outputs.digest }}" \
             --arg worker "${WORKER_REPO}@${{ steps.img.outputs.worker_sha }}" --arg worker_ref "$WORKER_REF" \
             --arg build "${{ steps.build.outcome }}" --arg build_s "${{ steps.build.outputs.build_s }}" \
             --arg pushed "${{ steps.push.outcome }}" --arg verdict "${{ steps.checks.outputs.verdict }}" \
             --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --arg finished_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --slurpfile checks <(cat out/result.json 2>/dev/null || echo null) \
-            '{vllm_tag:$vllm_tag, model:$model, image:$image, worker:$worker, worker_ref:$worker_ref,
+            '{vllm_tag:$vllm_tag, model:$model, image:$image, image_pinned:$image_pinned, digest:$digest,
+              worker:$worker, worker_ref:$worker_ref,
               build:$build, build_s:($build_s|tonumber? // null), pushed:$pushed, verdict:$verdict,
-              run_url:$run_url, finished_at:$finished_at, checks:$checks[0]}' > "data/results/${safe}.json"
-          python3 detect/board.py
+              run_url:$run_url, finished_at:$finished_at, checks:$checks[0]}' > "$results"
+          # Results from concurrent builds land on the same branch, and every build
+          # re-renders board.md, so a rebase would conflict. Instead: start from the
+          # branch tip each attempt, drop this result in, re-render, commit, push.
+          cp "$results" /tmp/result.json
           git config user.name "day0-ready bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/results data/board.md
-          git commit -q -m "result: ${VLLM_TAG} (${{ steps.checks.outputs.verdict || steps.build.outcome }})"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          branch="${GITHUB_REF_NAME}"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "$branch" && git reset -q --hard "origin/$branch"
+            mkdir -p "$(dirname "$results")" && cp /tmp/result.json "$results"
+            python3 detect/board.py > /dev/null
+            git add "$results" data/board.md
+            git commit -q -m "result: ${VLLM_TAG} (${{ steps.checks.outputs.verdict || steps.build.outcome }})"
+            git push -q origin "HEAD:$branch" && exit 0
+            sleep $((i * 5))
+          done
           exit 1
 
       - name: Summary

@@ -1,0 +1,57 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-9388b55",
+ "model": "RecursiveSI/flint",
+ "passed": false,
+ "passing_env": null,
+ "passing_gpu_class": null,
+ "rungs": [
+  {
+   "env": {},
+   "gpu_class": "80gb",
+   "disk_gb": 150,
+   "started": "2026-10-21T22:40:49+00:00",
+   "endpoint_id": "m9jmx3e05pbvqv",
+   "delay_s": 638,
+   "exec_s": 1,
+   "job_status": "FAILED",
+   "output": "\"{'message': \\\"RecursiveSI/flint failed inside vLLM's implementation of the model during startup: AssertionError: Flint requires FlashInfer attention. A restart will not change this. A model's vLLM code can require a specific attention backend (set ATTENTION_BACKEND), GPU generation or dtype: check the model card and vLLM's recipe for the model, then change the endpoint's settings or GPU type.\\\", 'type': 'startup_error', 'code': None}\"",
+   "minutes": 10.7,
+   "worker_states": [
+    "initializing",
+    "running"
+   ],
+   "est_cost_usd": 0.85,
+   "outcome": "startup_error",
+   "logs": "https://console.runpod.io/serverless/user/endpoint/m9jmx3e05pbvqv",
+   "gpu_types": [
+    "NVIDIA H100 80GB HBM3",
+    "NVIDIA H100 PCIe",
+    "NVIDIA H100 NVL"
+   ]
+  }
+ ],
+ "finished_at": "2026-10-21T22:51:34+00:00",
+ "image_build": {
+  "run": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39682789711",
+  "digest": "sha256:3c9e4ef6b03c8df82676085406e210e750762f27619faabde54d0cdc4fb218be",
+  "worker": "ashwinsreedhar28/worker-vllm@9388b55",
+  "note": "test/model-code-day0 = fix/model-code-startup-error (04233af) + a cherry-pick of #360's version guard (b779895), only so the image builds FROM vllm/vllm-openai:flint"
+ },
+ "log": "data/smoke/logs/day0-flint--test-model-code-day0-9388b55_h100.txt",
+ "note": "H100: vLLM picks FLASH_ATTN (FlashAttention 3), flint's model code asserts, and the worker answers the job with that cause after one vLLM launch. minutes includes ~9.9 min of the worker initializing (image pull).",
+ "prior_attempts": [
+  {
+   "gpu_class": "24gb",
+   "landed_on": "a 47.38 GiB card (the 24gb class falls back to 48 GB cards)",
+   "outcome": "startup_oom",
+   "result": "vLLM picked FLASHINFER itself (options: FLASHINFER, TRITON_ATTN), so the assertion doesn't apply; weights filled 45.88 GiB and the existing OOM handling answered the job after one reduced-footprint relaunch.",
+   "log": "data/smoke/logs/day0-flint--test-model-code-day0-9388b55_48gb_oom.txt"
+  },
+  {
+   "gpu_class": "141gb",
+   "endpoint_id": "8hkwgf58l91czx",
+   "outcome": "no_result",
+   "result": "worker stayed initializing for the whole 25 min cap; endpoint deleted, no logs kept"
+  }
+ ]
+}

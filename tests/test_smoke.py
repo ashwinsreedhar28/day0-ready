@@ -172,3 +172,20 @@ def test_budget_stops_before_spending(monkeypatch, tmp_path):
     assert smoke.main() == 1
     r = json.loads((tmp_path / "data" / "smoke" / "day0-q-abc1234.json").read_text())
     assert r["skipped"]["reason"] == "budget"
+
+
+
+def test_gpu_types_override_reaches_the_endpoint(monkeypatch):
+    # Hopper only: the 80gb class starts with A100s, where vLLM picks another attention backend.
+    bodies = []
+
+    def call(method, url, key, body=None):
+        if method == "POST" and url.endswith("/endpoints"):
+            bodies.append(body)
+            return 500, "stop after the endpoint request"
+        return 201, {"id": "t"}
+
+    monkeypatch.setattr(rp, "call", call)
+    r = smoke.run_rung("k", "img", "m", {}, "80gb", "13.0", 0, "t", 150, ["NVIDIA H100 80GB HBM3"])
+    assert bodies[0]["gpuTypeIds"] == ["NVIDIA H100 80GB HBM3"] and r["outcome"] == "error"
+    assert smoke.next_rung({}, "80gb", "startup_oom", False, max_gpu="80gb") is None  # no climb past the list

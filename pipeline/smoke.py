@@ -79,14 +79,14 @@ def template_body(image, model, env, disk_gb):
             "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}}
 
 
-def endpoint_body(gpu_class, min_cuda):
+def endpoint_body(gpu_class, min_cuda, gpu_types=None):
     """POST /v1/endpoints body (minus name and templateId), with the smoke test's cost limits."""
-    return {"computeType": "GPU", "gpuTypeIds": GPU_CLASSES[gpu_class], "gpuCount": 1, "workersMin": 0,
+    return {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": 1, "workersMin": 0,
             "workersMax": 1, "idleTimeout": 5, "executionTimeoutMs": 600000, "flashboot": False,
             "minCudaVersion": min_cuda}
 
 
-def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60):
+def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None):
     rung = {"env": env, "gpu_class": gpu_class, "disk_gb": disk_gb,
             "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     name = f"{PREFIX}{label}-{int(time.time())}"[:60]
@@ -94,7 +94,7 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
     if not rp.ok(st):
         return {**rung, "outcome": "error", "detail": f"template {st}: {tpl}"}
     st, ep = rp.call("POST", f"{rp.REST}/endpoints", key, {
-        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda)})
+        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types)})
     if not rp.ok(st):
         rp.call("DELETE", f"{rp.REST}/templates/{tpl['id']}", key)
         return {**rung, "outcome": "error", "detail": f"endpoint {st}: {ep}"}
@@ -218,6 +218,8 @@ def main():
     ap.add_argument("--max-minutes", type=int, default=40, help="wall-clock cap across all rungs")
     ap.add_argument("--disk-gb", type=int,
                     help="container disk; weights download here without a network volume (default: from the weight size, min 60)")
+    ap.add_argument("--gpu-types", help="comma-separated Runpod GPU type ids to use instead of the class's list, "
+                    "e.g. Hopper only: 'NVIDIA H100 80GB HBM3,NVIDIA H100 PCIe,NVIDIA H100 NVL' (no ladder climb)")
     ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                     help="extra worker env for every rung, e.g. --set ATTENTION_BACKEND=FLASHINFER (repeatable)")
     ap.add_argument("--env-file")
@@ -253,6 +255,7 @@ def main():
         log(f"NOT RUN: {skip['detail']} -> {out.relative_to(ROOT)}")
         return 1
     disk = a.disk_gb or (sizing.disk_gb(gb) if gb is not None else 60)
+    gpu_types = [t.strip() for t in a.gpu_types.split(",") if t.strip()] if a.gpu_types else None
 
     deadline = time.time() + a.max_minutes * 60
     env = dict(s.split("=", 1) for s in a.set)
@@ -273,12 +276,15 @@ def main():
                            f"${worst:.2f} for a {gpu} rung > ${a.budget_usd:.2f} budget"}
                 log(f"stopping: {stopped['detail']}")
                 break
-        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk)
+        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk, gpu_types)
+        if gpu_types:
+            r["gpu_types"] = gpu_types
         rungs.append(r)
         if r["outcome"] == "pass":
             break
-        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, a.max_gpu, remote_possible,
-                        allow_remote_code=not a.no_remote_code)
+        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env,
+                        gpu if gpu_types else a.max_gpu,  # an explicit GPU list never climbs classes
+                        remote_possible, allow_remote_code=not a.no_remote_code)
         if nxt is None:
             break
         env, gpu = nxt
@@ -291,7 +297,7 @@ def main():
     if passed:
         last = rungs[-1]
         result["deploy"] = {"template": template_body(a.image, a.model, last["env"], last["disk_gb"]),
-                            "endpoint": endpoint_body(last["gpu_class"], a.min_cuda)}
+                            "endpoint": endpoint_body(last["gpu_class"], a.min_cuda, last.get("gpu_types"))}
     if stopped:
         result["skipped" if not rungs else "stopped"] = stopped
     out = write_result(result, a.image)

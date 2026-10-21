@@ -1,0 +1,55 @@
+name: Detect launches
+
+# Every 30 minutes: look for new model-named vllm/vllm-openai tags, match each
+# to a Hugging Face repo, record it in data/state.json, and start a day-0
+# worker build for it.
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "first run only: ignore tag families first pushed before this date (YYYY-MM-DD)"
+        default: ""
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: detect
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Poll Docker Hub and Hugging Face
+        id: poll
+        run: python3 detect/poll.py ${{ inputs.since && format('--since {0}', inputs.since) || '' }}
+
+      - name: Commit state
+        run: |
+          git config user.name "day0-ready bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/state.json
+          git diff --cached --quiet && exit 0
+          git commit -m "detect: $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          exit 1
+
+      - name: Start builds for new launches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENTS: ${{ steps.poll.outputs.new_events }}
+        run: |
+          echo "${EVENTS:-[]}" | jq -c '.[] | select(.model != null)' | while read -r ev; do
+            tag=$(jq -r .vllm_tag <<<"$ev"); model=$(jq -r .model <<<"$ev")
+            echo "dispatch build: $tag -> $model"
+            gh workflow run build-day0.yml -f vllm_tag="$tag" -f model="$model"
+          done
+          echo "${EVENTS:-[]}" | jq -r '.[] | select(.model == null) | "no Hugging Face match for \(.family) (\(.vllm_tag))"'

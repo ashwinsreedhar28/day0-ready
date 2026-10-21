@@ -31,7 +31,7 @@ on:
       - "checks/**"
 
 permissions:
-  contents: read
+  contents: write   # records data/results/<tag>.json
   packages: write
 
 concurrency:
@@ -125,8 +125,33 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push image
+        id: push
         if: env.PUSH_IMAGE == 'true'
         run: docker push "${{ steps.img.outputs.image }}"
+
+      - name: Record result
+        if: always() && steps.img.outcome == 'success'
+        run: |
+          mkdir -p data/results
+          safe="$(basename '${{ steps.img.outputs.image }}' | sed 's/^worker-vllm:day0-//')"
+          jq -n \
+            --arg vllm_tag "$VLLM_TAG" --arg model "$MODEL" --arg image "${{ steps.img.outputs.image }}" \
+            --arg worker "${WORKER_REPO}@${{ steps.img.outputs.worker_sha }}" --arg worker_ref "$WORKER_REF" \
+            --arg build "${{ steps.build.outcome }}" --arg build_s "${{ steps.build.outputs.build_s }}" \
+            --arg pushed "${{ steps.push.outcome }}" --arg verdict "${{ steps.checks.outputs.verdict }}" \
+            --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg finished_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --slurpfile checks <(cat out/result.json 2>/dev/null || echo null) \
+            '{vllm_tag:$vllm_tag, model:$model, image:$image, worker:$worker, worker_ref:$worker_ref,
+              build:$build, build_s:($build_s|tonumber? // null), pushed:$pushed, verdict:$verdict,
+              run_url:$run_url, finished_at:$finished_at, checks:$checks[0]}' > "data/results/${safe}.json"
+          python3 detect/board.py
+          git config user.name "day0-ready bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/results data/board.md
+          git commit -q -m "result: ${VLLM_TAG} (${{ steps.checks.outputs.verdict || steps.build.outcome }})"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          exit 1
 
       - name: Summary
         if: always()

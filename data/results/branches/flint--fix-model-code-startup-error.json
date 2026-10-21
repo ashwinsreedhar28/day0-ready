@@ -1,0 +1,16 @@
+{
+  "vllm_tag": "flint",
+  "model": "RecursiveSI/flint",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--fix-model-code-startup-error",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--fix-model-code-startup-error-04233af",
+  "digest": "",
+  "worker": "ashwinsreedhar28/worker-vllm@04233af",
+  "worker_ref": "fix/model-code-startup-error",
+  "build": "failure",
+  "build_s": null,
+  "pushed": "skipped",
+  "verdict": "",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39681670121",
+  "finished_at": "2026-10-21T21:52:27Z",
+  "checks": null
+}

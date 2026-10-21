@@ -21,7 +21,7 @@ import re
 import sys
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,6 +30,8 @@ UA = {"User-Agent": "day0-ready/0.1 (+https://github.com/ashwinsreedhar28/day0-r
 
 HUB_TAGS = "https://hub.docker.com/v2/repositories/vllm/vllm-openai/tags?page_size=100&ordering=last_updated"
 HF_MODELS = "https://huggingface.co/api/models?author={org}&sort=createdAt&direction=-1&limit=30"
+HF_SEARCH = "https://huggingface.co/api/models?search={q}&sort=likes&direction=-1&limit=30"
+SEARCH_WINDOW_DAYS = (14, 3)  # repo created at most 14 days before / 3 days after vLLM's tag
 
 # Labs whose launches the study tracked, plus a few that ship open weights often.
 WATCHLIST = [
@@ -115,6 +117,43 @@ def match_repo(family, repos):
     return sorted(hits, key=lambda r: (len(r["id"]), r.get("created") or ""), reverse=False)[0]["id"]
 
 
+def resolve_model(family, pushed, repos):
+    model = match_repo(family, repos)
+    if model:
+        return {"model": model, "match": "watchlist"}
+    hit = search_repo(family, pushed)
+    if hit:
+        return {"model": hit[0], "match": f"search ({hit[1]} likes)"}
+    return {"model": None}
+
+
+def search_repo(family, pushed, search=None):
+    """Fallback when no watchlist lab matches (e.g. `flint` -> RecursiveSI/flint,
+    a lab nobody had listed): search Hugging Face for the family name and take the
+    most-liked base repo whose name starts with it and that was created near
+    vLLM's tag push. Returns (repo_id, likes) or None."""
+    q = re.sub(r"[-_]\d{4,6}$", "", family)
+    key = norm(q)
+    if len(key) < 4:
+        return None
+    try:
+        found = search(q) if search else get_json(HF_SEARCH.format(q=urllib.parse.quote(q)))
+    except Exception as e:  # noqa: BLE001
+        print(f"warn: search {q}: {e}", file=sys.stderr)
+        return None
+    t = datetime.fromisoformat(pushed.replace("Z", "+00:00"))
+    lo, hi = t - timedelta(days=SEARCH_WINDOW_DAYS[0]), t + timedelta(days=SEARCH_WINDOW_DAYS[1])
+    hits = []
+    for m in found:
+        created = m.get("createdAt")
+        if (DERIVATIVE.search(m["id"]) or not created
+                or not norm(m["id"].split("/")[1]).startswith(key)
+                or not lo <= datetime.fromisoformat(created.replace("Z", "+00:00")) <= hi):
+            continue
+        hits.append((m.get("likes", 0), m["id"]))
+    return max(hits)[::-1] if hits else None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", help="only report tag families first pushed on/after this date (YYYY-MM-DD)")
@@ -133,10 +172,19 @@ def main():
         if a.since and f["pushed"][:10] < a.since:
             state["seen"][fam] = {"first_seen": now, "skipped": "before --since", "vllm_tag": f["tag"]}
             continue
-        ev = {"family": fam, "vllm_tag": f["tag"], "vllm_tag_pushed": f["pushed"],
-              "model": match_repo(fam, repos), "first_seen": now}
+        ev = {"family": fam, "vllm_tag": f["tag"], "vllm_tag_pushed": f["pushed"], "first_seen": now}
+        ev.update(resolve_model(fam, f["pushed"], repos))
         state["seen"][fam] = ev
         new.append(ev)
+
+    # Launches seen earlier without a model: the repo may have gone public since.
+    for fam, ev in state["seen"].items():
+        if ev.get("skipped") or ev.get("model") or ev in new:
+            continue
+        found = resolve_model(fam, ev["vllm_tag_pushed"], repos)
+        if found.get("model"):
+            ev.update(found, matched_at=now)
+            new.append(ev)
 
     state["last_poll"] = now
     if not a.dry_run:

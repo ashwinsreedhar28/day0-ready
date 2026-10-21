@@ -37,9 +37,13 @@ GPU_CLASSES = {
     "24gb": ["NVIDIA GeForce RTX 4090", "NVIDIA L40S", "NVIDIA RTX 6000 Ada Generation", "NVIDIA L40",
              "NVIDIA RTX A6000", "NVIDIA RTX A5000", "NVIDIA GeForce RTX 3090"],
     "48gb": ["NVIDIA L40S", "NVIDIA RTX 6000 Ada Generation", "NVIDIA L40", "NVIDIA RTX A6000"],
-    "80gb": ["NVIDIA A100 80GB PCIe", "NVIDIA A100-SXM4-80GB", "NVIDIA H100 PCIe", "NVIDIA H100 80GB HBM3"],
+    "80gb": ["NVIDIA A100 80GB PCIe", "NVIDIA A100-SXM4-80GB", "NVIDIA H100 PCIe", "NVIDIA H100 80GB HBM3",
+             "NVIDIA H100 NVL"],
+    # A ~40B model in bf16 (~80 GB of weights, e.g. RecursiveSI/flint) needs one of these.
+    "141gb": ["NVIDIA H200", "NVIDIA H200 NVL"],
+    "180gb": ["NVIDIA B200"],
 }
-NEXT_GPU = {"24gb": "48gb", "48gb": "80gb"}
+NEXT_GPU = {"24gb": "48gb", "48gb": "80gb", "80gb": "141gb", "141gb": "180gb"}
 JOB_INPUT = {"input": {"messages": [{"role": "user", "content": "Reply with the single word: ok"}],
                        "sampling_params": {"max_tokens": 8, "temperature": 0}}}
 CRASH_SIGNALS = 2  # unhealthy states or running->not-running drops before a rung is a crash loop

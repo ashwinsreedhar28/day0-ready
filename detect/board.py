@@ -88,13 +88,18 @@ def main():
 
     def smoke_cell(r):
         sm = r and smoke.get(r["image"].rsplit(":", 1)[-1])
-        return smoke_text(sm) if sm else ""
+        if not sm:
+            return ""
+        if r.get("model") and sm["model"] != r["model"]:  # e.g. Step-5-Preview needs multi-GPU; a small model checked the image
+            return f"image check with a stand-in model ({smoke_text(sm)})"
+        return smoke_text(sm)
 
     rows = []
     for fam, ev in state["seen"].items():
         if ev.get("skipped"):
             continue
-        label = ev.get("model") and (ev["model"] + (f" ({ev['match']})" if ev.get("match", "").startswith("search") else ""))
+        m = re.match(r"search \((\d+) likes\)", ev.get("match") or "")
+        label = ev.get("model") and (ev["model"] + (f" (HF search, {m.group(1)} likes)" if m else ""))
         rows.append((ev.get("vllm_tag_pushed") or "", fam, ev.get("vllm_tag"), label,
                      results.pop(ev.get("vllm_tag"), None), ev.get("first_seen")))
     for tag, r in results.items():  # manual runs with no detector event

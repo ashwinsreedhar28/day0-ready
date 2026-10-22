@@ -1,0 +1,1 @@
+vllm serve Qwen/Qwen3.6-35B-A3B --served-model-name qwen3.6 --limit-mm-per-prompt \{\"image\":0\,\"video\":0\} --max-model-len 36864 --host 127.0.0.1 --port 8000 

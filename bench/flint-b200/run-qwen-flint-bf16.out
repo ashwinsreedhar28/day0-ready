@@ -1,0 +1,60 @@
+vllm serve Qwen/Qwen3.6-35B-A3B --served-model-name qwen3.6 --limit-mm-per-prompt \{\"image\":0\,\"video\":0\} --max-model-len 36864 --host 127.0.0.1 --port 8000 
+ready after 145 s
+(EngineCore pid=2345) INFO 10-22 02:45:06 [unquantized.py:365] Using FlashInfer TRTLLM Unquantized MoE backend out of potential backends: ['FlashInfer TRTLLM', 'FlashInfer CUTLASS', 'TRITON', 'BATCHED_TRITON'].
+(EngineCore pid=2345) INFO 10-22 02:45:06 [cuda.py:508] Using FLASHINFER attention backend out of potential backends: ['FLASHINFER', 'FLASH_ATTN', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=2345) INFO 10-22 02:45:35 [unquantized.py:530] Using TrtLlmBf16ExpertsMonolithic MoE backend
+(EngineCore pid=2345) INFO 10-22 02:46:14 [gpu_worker.py:763] Available KV cache memory: 94.73 GiB
+(EngineCore pid=2345) INFO 10-22 02:46:14 [kv_cache_utils.py:1101] GPU KV cache size: 3,912,727 tokens, Maximum concurrency for 36,864 tokens per request: 106.14x
+(EngineCore pid=2345) INFO 10-22 02:46:50 [gpu_worker.py:1045] Free memory on device (177.54/178.34 GiB) on startup. Desired GPU memory utilization is (0.92, 164.08 GiB). Actual usage is 65.76 GiB for consumed memory (weights + non-torch), 3.59 GiB for peak activation, and 0.78 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=100722555208` (93.81 GiB) to fit into requested memory, or `--kv-cache-memory=115174234112` (107.26 GiB) to fully utilize gpu memory. Current kv cache memory in use is 94.73 GiB.
+== warmup  input 8192  4 requests
+== warmup  input 32768  4 requests
+== qwen3.6 bf16  input 8192  output 1024  concurrency 1  prompts 8
+== qwen3.6 bf16  input 8192  output 1024  concurrency 8  prompts 32
+== qwen3.6 bf16  input 8192  output 1024  concurrency 32  prompts 128
+== qwen3.6 bf16  input 8192  output 1024  concurrency 64  prompts 256
+== qwen3.6 bf16  input 32768  output 1024  concurrency 1  prompts 8
+== qwen3.6 bf16  input 32768  output 1024  concurrency 8  prompts 32
+== qwen3.6 bf16  input 32768  output 1024  concurrency 32  prompts 128
+== qwen3.6 bf16  input 32768  output 1024  concurrency 64  prompts 256
+| model | ckpt | input | conc | done | TTFT p50 ms | TTFT p99 ms | TPOT p50 ms | TPOT p99 ms | ITL p50 ms | out tok/s | total tok/s |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3.6 | bf16 | 8192 | 1 | 8/8 | 99 | 115 | 3.15 | 3.18 | 3.14 | 308 | 2773 |
+| qwen3.6 | bf16 | 8192 | 8 | 32/32 | 434 | 577 | 5.36 | 5.70 | 5.27 | 1380 | 12417 |
+| qwen3.6 | bf16 | 8192 | 32 | 128/128 | 793 | 2139 | 10.27 | 10.94 | 9.11 | 2892 | 26032 |
+| qwen3.6 | bf16 | 8192 | 64 | 256/256 | 890 | 4279 | 15.49 | 16.06 | 12.35 | 3917 | 35256 |
+| qwen3.6 | bf16 | 32768 | 1 | 8/8 | 424 | 447 | 3.25 | 3.26 | 3.26 | 274 | 9026 |
+| qwen3.6 | bf16 | 32768 | 8 | 32/32 | 1644 | 2616 | 6.72 | 7.82 | 5.85 | 960 | 31691 |
+| qwen3.6 | bf16 | 32768 | 32 | 128/128 | 1877 | 10067 | 19.04 | 20.19 | 11.26 | 1540 | 50820 |
+| qwen3.6 | bf16 | 32768 | 64 | 256/256 | 1650 | 20259 | 33.80 | 34.89 | 16.85 | 1783 | 58845 |
+vllm serve RecursiveSI/flint --served-model-name flint --attention-backend FLASHINFER --max-model-len 36864 --host 127.0.0.1 --port 8000 
+ready after 105 s
+(EngineCore pid=10109) INFO 10-22 02:58:32 [unquantized.py:530] Using TrtLlmBf16ExpertsMonolithic MoE backend
+(EngineCore pid=10109) WARNING 10-22 02:58:36 [kv_cache_planning.py:537] Add 7 padding layers, may waste at most 20.00% KV cache memory
+(EngineCore pid=10109) INFO 10-22 02:58:37 [gpu_worker.py:763] Available KV cache memory: 87.52 GiB
+(EngineCore pid=10109) WARNING 10-22 02:58:37 [kv_cache_planning.py:537] Add 7 padding layers, may waste at most 20.00% KV cache memory
+(EngineCore pid=10109) INFO 10-22 02:58:37 [kv_cache_utils.py:1101] GPU KV cache size: 883,506 tokens, Maximum concurrency for 36,864 tokens per request: 23.97x
+(EngineCore pid=10109) INFO 10-22 02:59:11 [gpu_worker.py:1045] Free memory on device (177.54/178.34 GiB) on startup. Desired GPU memory utilization is (0.92, 164.08 GiB). Actual usage is 74.95 GiB for consumed memory (weights + non-torch), 1.61 GiB for peak activation, and 0.71 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=93051636040` (86.66 GiB) to fit into requested memory, or `--kv-cache-memory=107503380480` (100.12 GiB) to fully utilize gpu memory. Current kv cache memory in use is 87.52 GiB.
+== warmup  input 8192  4 requests
+== warmup  input 32768  4 requests
+== flint bf16  input 8192  output 1024  concurrency 8  prompts 32
+== flint bf16  input 8192  output 1024  concurrency 32  prompts 128
+== flint bf16  input 8192  output 1024  concurrency 64  prompts 256
+== flint bf16  input 32768  output 1024  concurrency 8  prompts 32
+== flint bf16  input 32768  output 1024  concurrency 32  prompts 128
+== flint bf16  input 32768  output 1024  concurrency 64  prompts 256
+| model | ckpt | input | conc | done | TTFT p50 ms | TTFT p99 ms | TPOT p50 ms | TPOT p99 ms | ITL p50 ms | out tok/s | total tok/s |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| flint | bf16 | 8192 | 8 | 32/32 | 358 | 477 | 4.47 | 4.79 | 4.36 | 1660 | 14943 |
+| flint | bf16 | 8192 | 32 | 128/128 | 671 | 1852 | 9.71 | 10.30 | 8.73 | 3071 | 27638 |
+| flint | bf16 | 8192 | 64 | 256/256 | 571 | 3624 | 14.45 | 14.94 | 11.82 | 4237 | 38135 |
+| flint | bf16 | 32768 | 8 | 32/32 | 1550 | 2493 | 6.05 | 7.15 | 5.19 | 1059 | 34945 |
+| flint | bf16 | 32768 | 32 | 128/128 | 1829 | 9521 | 19.01 | 20.23 | 11.79 | 1535 | 50641 |
+| flint | bf16 | 32768 | 64 | 256/256 | 1739 | 19106 | 34.37 | 35.26 | 18.30 | 1772 | 58474 |
+| qwen3.6 | bf16 | 8192 | 1 | 8/8 | 99 | 115 | 3.15 | 3.18 | 3.14 | 308 | 2773 |
+| qwen3.6 | bf16 | 8192 | 8 | 32/32 | 434 | 577 | 5.36 | 5.70 | 5.27 | 1380 | 12417 |
+| qwen3.6 | bf16 | 8192 | 32 | 128/128 | 793 | 2139 | 10.27 | 10.94 | 9.11 | 2892 | 26032 |
+| qwen3.6 | bf16 | 8192 | 64 | 256/256 | 890 | 4279 | 15.49 | 16.06 | 12.35 | 3917 | 35256 |
+| qwen3.6 | bf16 | 32768 | 1 | 8/8 | 424 | 447 | 3.25 | 3.26 | 3.26 | 274 | 9026 |
+| qwen3.6 | bf16 | 32768 | 8 | 32/32 | 1644 | 2616 | 6.72 | 7.82 | 5.85 | 960 | 31691 |
+| qwen3.6 | bf16 | 32768 | 32 | 128/128 | 1877 | 10067 | 19.04 | 20.19 | 11.26 | 1540 | 50820 |
+| qwen3.6 | bf16 | 32768 | 64 | 256/256 | 1650 | 20259 | 33.80 | 34.89 | 16.85 | 1783 | 58845 |

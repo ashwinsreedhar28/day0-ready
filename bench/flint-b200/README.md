@@ -1,10 +1,12 @@
-# Flint on one B200: vLLM load sweep
+# Flint on one B200: vLLM load sweep, with Qwen3.6-35B-A3B for comparison
 
-RecursiveSI/flint served by vLLM on a single NVIDIA B200 (Runpod pod), measured with `vllm bench serve` at 8K and 32K input, 1,024 output tokens, concurrency 1 to 64. Run on 2026-10-22 between 01:23 and 02:12 UTC (Oct 21, 9:23–10:12 pm ET), the day vLLM published its Flint image.
+RecursiveSI/flint served by vLLM on a single NVIDIA B200 (Runpod pod), measured with `vllm bench serve` at 8K and 32K input, 1,024 output tokens, concurrency 1 to 64. Flint NVFP4 and BF16 c=1 ran on 2026-10-22 between 01:23 and 02:12 UTC (Oct 21, 9:23–10:12 pm ET), the day vLLM published its Flint image. Flint BF16 under load and Qwen3.6-35B-A3B (BF16) ran on a second pod between 02:41 and 03:10 UTC with the same image, GPU model, driver and sweep.
 
 ## Results
 
-NVFP4 checkpoint (`RecursiveSI/flint-nvfp4-gguf`). TTFT and TPOT in ms, throughput in tokens/s. Every request generated exactly 1,024 tokens (`--ignore-eos`).
+TTFT and TPOT in ms, throughput in tokens/s. Every request generated exactly 1,024 tokens (`--ignore-eos`).
+
+Flint, NVFP4 checkpoint (`RecursiveSI/flint-nvfp4-gguf`):
 
 | input | concurrency | prompts | TTFT p50 | TTFT p99 | TPOT p50 | TPOT p99 | ITL p50 | output tok/s | total tok/s |
 |---|---|---|---|---|---|---|---|---|---|
@@ -17,14 +19,33 @@ NVFP4 checkpoint (`RecursiveSI/flint-nvfp4-gguf`). TTFT and TPOT in ms, throughp
 | 32,768 | 32 | 128 | 3,782 | 9,492 | 14.43 | 17.46 | 9.04 | 1,760 | 58,093 |
 | 32,768 | 64 | 256 | 2,692 | 19,009 | 30.25 | 31.95 | 14.98 | 1,941 | 64,046 |
 
-BF16 checkpoint (`RecursiveSI/flint`), concurrency 1 only:
+Flint, BF16 checkpoint (`RecursiveSI/flint`). The c=1 rows are from the first pod, the rest from the second:
 
 | input | concurrency | prompts | TTFT p50 | TTFT p99 | TPOT p50 | TPOT p99 | ITL p50 | output tok/s | total tok/s |
 |---|---|---|---|---|---|---|---|---|---|
 | 8,192 | 1 | 8 | 126 | 151 | 2.23 | 2.27 | 2.23 | 424 | 3,817 |
+| 8,192 | 8 | 32 | 358 | 477 | 4.47 | 4.79 | 4.36 | 1,660 | 14,943 |
+| 8,192 | 32 | 128 | 671 | 1,852 | 9.71 | 10.30 | 8.73 | 3,071 | 27,638 |
+| 8,192 | 64 | 256 | 571 | 3,624 | 14.45 | 14.94 | 11.82 | 4,237 | 38,135 |
 | 32,768 | 1 | 8 | 474 | 502 | 2.33 | 2.37 | 2.35 | 357 | 11,776 |
+| 32,768 | 8 | 32 | 1,550 | 2,493 | 6.05 | 7.15 | 5.19 | 1,059 | 34,945 |
+| 32,768 | 32 | 128 | 1,829 | 9,521 | 19.01 | 20.23 | 11.79 | 1,535 | 50,641 |
+| 32,768 | 64 | 256 | 1,739 | 19,106 | 34.37 | 35.26 | 18.30 | 1,772 | 58,474 |
 
-All 10 runs completed every request (0 failed). Raw results: `results/*.json`; each run's console output: `results/*.log`. `python3 summarize.py results` reprints the table.
+Qwen3.6-35B-A3B, BF16 (`Qwen/Qwen3.6-35B-A3B`), text only:
+
+| input | concurrency | prompts | TTFT p50 | TTFT p99 | TPOT p50 | TPOT p99 | ITL p50 | output tok/s | total tok/s |
+|---|---|---|---|---|---|---|---|---|---|
+| 8,192 | 1 | 8 | 99 | 115 | 3.15 | 3.18 | 3.14 | 308 | 2,773 |
+| 8,192 | 8 | 32 | 434 | 577 | 5.36 | 5.70 | 5.27 | 1,380 | 12,417 |
+| 8,192 | 32 | 128 | 793 | 2,139 | 10.27 | 10.94 | 9.11 | 2,892 | 26,032 |
+| 8,192 | 64 | 256 | 890 | 4,279 | 15.49 | 16.06 | 12.35 | 3,917 | 35,256 |
+| 32,768 | 1 | 8 | 424 | 447 | 3.25 | 3.26 | 3.26 | 274 | 9,026 |
+| 32,768 | 8 | 32 | 1,644 | 2,616 | 6.72 | 7.82 | 5.85 | 960 | 31,691 |
+| 32,768 | 32 | 128 | 1,877 | 10,067 | 19.04 | 20.19 | 11.26 | 1,540 | 50,820 |
+| 32,768 | 64 | 256 | 1,650 | 20,259 | 33.80 | 34.89 | 16.85 | 1,783 | 58,845 |
+
+All 24 runs completed every request (0 failed). Raw results: `results/*.json`; each run's console output: `results/*.log`. `python3 summarize.py results` reprints all three tables as one.
 
 ### Against vLLM's published figures
 
@@ -33,64 +54,104 @@ vLLM's day-0 announcement for Flint gives GB200 numbers at batch 1: 2.06 ms/toke
 - NVFP4 TPOT p50 1.76 ms at 8K and 1.93 ms at 32K; BF16 2.23 ms and 2.33 ms. TPOT here is measured through the HTTP server, like vLLM's 2.06 ms end-to-end figure, but at 8K and 32K context rather than 100K, and on B200 rather than GB200.
 - TTFT at 8K: 138 ms (NVFP4) and 126 ms (BF16), against 145 ms for vLLM's 8K prefill. TTFT includes HTTP and tokenization.
 
-### What the sweep shows
+### What the Flint sweep shows
 
-- **8K context scales.** From concurrency 1 to 64, output throughput rises 10.3× (523 → 5,406 tok/s) while each stream still decodes at a median 9.92 ms/token (about 100 tok/s) and the median first token arrives in 1.9 s.
-- **32K context saturates around concurrency 32.** Going from 32 to 64 adds 10% output throughput (1,760 → 1,941 tok/s) while median TPOT doubles (14.4 → 30.3 ms) and TTFT p99 doubles (9.5 → 19.0 s). Total throughput is 64K tok/s, almost all of it prompt tokens.
-- **The KV cache was not the limit.** In the 32K, concurrency-64 run the server log shows up to 64 requests running and 25 waiting, KV-cache usage at most 43.8%, and no preemptions. The likely limit is prefill: with chunked prefill each engine step has a 16,384-token budget (`max_num_batched_tokens`, the default here), so a 32K prompt takes at least two steps, and those steps are shared with every decoding request. A larger budget was not tested.
-- **At batch 1, NVFP4 takes 17–21% less time per output token than BF16** (1.76 vs 2.23 ms at 8K; 1.93 vs 2.33 ms at 32K). Prefill is about the same (8K: 138 vs 126 ms; 32K: 459 vs 474 ms).
+- **8K context scales.** From concurrency 1 to 64, NVFP4 output throughput rises 10.3× (523 → 5,406 tok/s) while each stream still decodes at a median 9.92 ms/token (about 100 tok/s) and the median first token arrives in 1.9 s.
+- **32K context saturates around concurrency 32.** Going from 32 to 64 adds 10% output throughput (NVFP4: 1,760 → 1,941 tok/s) while median TPOT doubles (14.4 → 30.3 ms) and TTFT p99 doubles (9.5 → 19.0 s). Total throughput is 64K tok/s, almost all of it prompt tokens.
+- **The KV cache was not the limit.** In the 32K, concurrency-64 runs the server logs show up to 64 requests running, peak KV-cache usage of 43.8% (NVFP4) and 68.8% (BF16), and no preemptions. The likely limit is prefill: with chunked prefill each engine step has a 16,384-token budget (`max_num_batched_tokens`, the default here), so a 32K prompt takes at least two steps, and those steps are shared with every decoding request. A larger budget was not tested.
+- **NVFP4 vs BF16.** At batch 1 NVFP4 takes 17–21% less time per output token (1.76 vs 2.23 ms at 8K; 1.93 vs 2.33 ms at 32K); prefill is about the same. At concurrency 64 NVFP4 gives 28% more output throughput at 8K (5,406 vs 4,237 tok/s) and 10% more at 32K (1,941 vs 1,772).
+
+## Flint vs Qwen3.6-35B-A3B (both BF16)
+
+The two models are the same size class:
+
+| | Flint | Qwen3.6-35B-A3B |
+|---|---|---|
+| Parameters | 39.8B total, about 2.5B active | 35B total, about 3B active |
+| Experts | 256 routed, 6 per token, plus 1 shared | 256 routed, 8 per token, plus 1 shared |
+| Layers | 49: 513-token sliding-window and full-attention layers, attention sinks | 40: Gated DeltaNet (linear attention) and full-attention layers |
+| Weights in GPU memory (BF16) | 74.23 GiB | 64.61 GiB |
+| KV-cache pool at startup | 87.52 GiB, 883,506 tokens | 94.73 GiB, 3,912,727 tokens |
+
+Flint's layer layout is from the model code in Recursive's `rec` engine (`engine/src/rec_mlx/model.py`) and its active-parameter count is computed from that config; Qwen's figures are from its model card as reproduced on Vultr's model page.
+
+Output tokens/s, Flint ÷ Qwen:
+
+| input | c=1 | c=8 | c=32 | c=64 |
+|---|---|---|---|---|
+| 8,192 | 1.38× | 1.20× | 1.06× | 1.08× |
+| 32,768 | 1.30× | 1.10× | 1.00× | 0.99× |
+
+- **Batch 1: Flint decodes faster, Qwen starts faster.** Flint takes 28–29% less time per output token (2.23 vs 3.15 ms at 8K; 2.33 vs 3.25 ms at 32K). Qwen's first token comes sooner (99 vs 126 ms at 8K; 424 vs 474 ms at 32K).
+- **Flint's lead shrinks with load.** At 8K it falls from 1.38× at c=1 to 1.06–1.08× at c=32–64. Under load Flint's median TTFT is also lower at 8K (571 vs 890 ms at c=64).
+- **At 32K with 32 or more requests the two are the same.** Output throughput is within 1% (1,535 vs 1,540 and 1,772 vs 1,783 tok/s), TPOT within 2% (19.01 vs 19.04 and 34.37 vs 33.80 ms), and TTFT p99 is about 19–20 s for both. Neither preempted; peak KV-cache usage was 68.8% (Flint) and 48.2% (Qwen) of their pools. Both used the same 16,384-token prefill budget, and that regime looks limited by prefill rather than by either model's decode speed.
+- **Different code paths.** Qwen ran with torch.compile and piecewise CUDA graphs; for Flint this vLLM build logs "`torch.compile` is turned on, but the model RecursiveSI/flint does not support it" and falls back to full CUDA graphs for decode only, so Flint's prefill runs uncompiled. Flint's 32K results under load may improve once vLLM compiles it.
 
 ## Setup
 
 | | |
 |---|---|
-| GPU | 1× NVIDIA B200, 183,359 MiB, driver 595.91.07; Runpod Secure Cloud on-demand pod |
+| GPU | 1× NVIDIA B200, 183,359 MiB, driver 595.91.07; Runpod Secure Cloud on-demand pod (two pods, same GPU model and driver) |
 | Image | `vllm/vllm-openai:flint`, index digest `sha256:be337371b88c770a25a7c029ecc1096dde132889853609b28093ddabc002b0bd` (linux/amd64 `sha256:81e0d5248b2f7373bc63891f4cbdb38c9b6a795b89d72b2921fc1f47e9a68989`), pushed 2026-10-21 16:10 UTC |
 | vLLM | 0.32.0rc1.dev348+ge7c846767, torch 2.14.0+cu130, CUDA 13.0 |
-| NVFP4 checkpoint | `RecursiveSI/flint-nvfp4-gguf` → `flint-nvfp4.gguf` (21.84 GiB in GPU memory once loaded), config and tokenizer from `RecursiveSI/flint` |
-| BF16 checkpoint | `RecursiveSI/flint` |
-| Kernels (from the server log) | FlashInfer attention, decode on `trtllm-gen` (sm100); NVFP4 GEMM `FlashInferCuteDslNvFp4W4A16LinearKernel`; TRT-LLM fused MoE (NVFP4) / `TrtLlmBf16ExpertsMonolithic` (BF16) |
-| KV cache | NVFP4: 139.72 GiB, 1,410,480 tokens. BF16: 87.52 GiB, 883,506 tokens. `gpu_memory_utilization` default 0.92; prefix caching and chunked prefill on (defaults) |
+| Flint NVFP4 checkpoint | `RecursiveSI/flint-nvfp4-gguf` → `flint-nvfp4.gguf` (21.84 GiB in GPU memory once loaded), config and tokenizer from `RecursiveSI/flint` |
+| Flint BF16 checkpoint | `RecursiveSI/flint` |
+| Qwen checkpoint | `Qwen/Qwen3.6-35B-A3B` (BF16), architecture `Qwen3_5MoeForConditionalGeneration`, image and video inputs disabled |
+| Flint kernels (from the server log) | FlashInfer attention with TRT-LLM attention ("required for attention sinks"), decode on `trtllm-gen` (sm100); NVFP4 GEMM `FlashInferCuteDslNvFp4W4A16LinearKernel`; TRT-LLM fused MoE (NVFP4) / `TrtLlmBf16ExpertsMonolithic` (BF16); no torch.compile, CUDA graphs for decode only |
+| Qwen kernels (from the server log) | FlashInfer attention, FlashInfer GDN prefill kernel, `TrtLlmBf16ExpertsMonolithic` MoE; torch.compile on (15 s), piecewise CUDA graphs |
+| KV cache | Flint NVFP4: 139.72 GiB, 1,410,480 tokens. Flint BF16: 87.52 GiB, 883,506 tokens. Qwen: 94.73 GiB, 3,912,727 tokens. `gpu_memory_utilization` default 0.92; prefix caching and chunked prefill on (defaults; Qwen's linear-attention state uses vLLM's "align" cache mode) |
 
-Same settings as the Oct 21 Serverless pass (`ATTENTION_BACKEND=FLASHINFER`, one GPU), except `--max-model-len 36864` (was 4096) so a 32,768-token prompt plus 1,024 output tokens fits.
+Flint keeps the Oct 21 Serverless settings (`ATTENTION_BACKEND=FLASHINFER`, one GPU). Qwen uses vLLM's defaults, which picked FlashInfer attention too. Both use `--max-model-len 36864` so a 32,768-token prompt plus 1,024 output tokens fits.
 
 ### Serve commands
 
-NVFP4, after `pip install gguf` (see "Problems found"). `serve.sh nvfp4` runs this; it was updated after the run to match what was typed by hand on the pod, and the server log's `non-default args` line shows these arguments:
+`serve.sh nvfp4 | bf16 | qwen` runs these.
+
+Flint NVFP4, after `pip install gguf` (see "Problems found"). `serve.sh` was updated after the first run to match what was typed by hand on the pod; the server log's `non-default args` line shows these arguments:
 
 ```
 python3 vllm_gguf.py serve /root/models/flint-nvfp4.gguf --tokenizer RecursiveSI/flint --hf-config-path RecursiveSI/flint \
   --served-model-name flint --attention-backend FLASHINFER --max-model-len 36864 --host 127.0.0.1 --port 8000
 ```
 
-BF16:
+Flint BF16 (`serve-bf16.cmd`):
 
 ```
 vllm serve RecursiveSI/flint --served-model-name flint --attention-backend FLASHINFER --max-model-len 36864 --host 127.0.0.1 --port 8000
 ```
 
-`serve.sh bf16` runs the BF16 command (`serve-bf16.cmd`).
+Qwen (`serve-qwen.cmd`):
+
+```
+vllm serve Qwen/Qwen3.6-35B-A3B --served-model-name qwen3.6 --limit-mm-per-prompt '{"image":0,"video":0}' \
+  --max-model-len 36864 --host 127.0.0.1 --port 8000
+```
 
 ### Bench command
 
-Flags were checked against `vllm bench serve --help=all` from the same image (`bench-help-all.txt`) before running. For each input length L ∈ {8192, 32768} and concurrency c ∈ {1, 8, 32, 64}:
+Flags were checked against `vllm bench serve --help=all` from the same image (`bench-help-all.txt`) before running. For each input length L ∈ {8192, 32768} and concurrency c ∈ {1, 8, 32, 64} (`sweep.sh nvfp4 | bf16 | qwen <c...>`):
 
 ```
-vllm bench serve --backend vllm --base-url http://127.0.0.1:8000 --model flint --tokenizer RecursiveSI/flint \
+vllm bench serve --backend vllm --base-url http://127.0.0.1:8000 --model <flint|qwen3.6> --tokenizer <RecursiveSI/flint|Qwen/Qwen3.6-35B-A3B> \
   --dataset-name random --random-input-len L --random-output-len 1024 --ignore-eos \
   --num-prompts max(8, 4c) --max-concurrency c --seed L+c \
   --percentile-metrics ttft,tpot,itl,e2el --metric-percentiles 50,99 \
-  --save-result --result-dir results --result-filename flint-<ckpt>-inL-out1024-cc.json
+  --save-result --result-dir results --result-filename <model>-<ckpt>-inL-out1024-cc.json
 ```
 
 - `--random-range-ratio` was left at its default, 0.0, so every prompt is exactly L tokens and every output exactly 1,024 (confirmed by `total_input_tokens` and `total_output_tokens` in each JSON).
-- Each run uses its own seed. With one shared seed, vLLM's random prompts for 32K start with the same tokens as the 8K ones, and the prefix cache (on by default) would skip part of the prefill. The server's prefix-cache hit rate stayed at 0.5%.
+- Each run uses its own seed. With one shared seed, vLLM's random prompts for 32K start with the same tokens as the 8K ones, and the prefix cache (on by default) would skip part of the prefill. Prefix-cache hit rates stayed at 0.5% (first pod) and 0.2% (second pod).
 - Request rate is unlimited, so the client keeps exactly c requests in flight.
-- `--num-warmups` stayed at 0. Each run starts with the tool's single test request, which isn't measured, and CUDA graphs were captured at server start.
+- `--num-warmups` stayed at 0. Each run starts with the tool's single test request, which isn't measured, and CUDA graphs were captured at server start. On the second pod, `WARMUP=1` also sent 4 unsaved requests at each input length (64 output tokens) before each model's sweep; on the first pod the NVFP4 c=1 runs were repeated after earlier requests had warmed the server.
 
 ## Cost
 
-Pod `bsh9fjju86vxwy` (1× B200, $7.99/hr on demand) ran 49 minutes, about **$6.56** at the hourly rate, including the 10.75 GB image pull, both checkpoint downloads and finding the two workarounds below. It was stopped afterwards, not terminated.
+| Pod | Ran | Cost at $7.99/hr |
+|---|---|---|
+| `bsh9fjju86vxwy`: Flint NVFP4 sweep, BF16 c=1 | 49 min | about $6.56 |
+| `pll7wuod9ttrz4`: Qwen sweep, Flint BF16 c=8–64 | about 29 min | about $3.86 |
+
+Both include image pulls and checkpoint downloads (and, on the first pod, finding the two workarounds below). Both pods were stopped afterwards.
 
 ## Problems found
 
@@ -102,12 +163,15 @@ Pod `bsh9fjju86vxwy` (1× B200, $7.99/hr on demand) ran 49 minutes, about **$6.5
 
 - Random token prompts, not real code; `--ignore-eos` forces full 1,024-token outputs.
 - One run per point, no repeats; small prompt counts at low concurrency (8 at c=1).
-- One B200 on one host; TTFT at high concurrency includes time queued for prefill.
+- Two pods on possibly different hosts; Flint BF16 c=1 and c=8–64 come from different pods.
+- Qwen at its vLLM defaults, Flint at the settings it needs; neither was tuned (no FP8 KV cache, no larger prefill budget, no speculative decoding).
+- TTFT at high concurrency includes time queued for prefill.
 
 ## Files
 
-- `results/` — 10 result JSONs and the console output of each run
-- `serve-nvfp4.log`, `serve-bf16.log`, `serve-bf16.cmd` — server logs and the BF16 command
+- `results/` — 24 result JSONs and the console output of each run
+- `serve-nvfp4.log`, `serve-bf16.log` (first pod), `serve-bf16-load.log`, `serve-qwen.log` (second pod) — server logs
+- `serve-bf16.cmd`, `serve-qwen.cmd` — the exact serve commands
+- `sweep-nvfp4.out`, `run-qwen-flint-bf16.out` — console output of the sweeps
 - `bench-help-all.txt` — `vllm bench serve --help=all` from the image
-- `sweep-nvfp4.out` — the NVFP4 sweep's console output
-- `pod.py` (create/status/stop/terminate the pod), `serve.sh`, `sweep.sh`, `summarize.py`, `vllm_gguf.py`
+- `pod.py` (create/start/status/stop/terminate the pod), `serve.sh`, `sweep.sh`, `summarize.py`, `vllm_gguf.py`

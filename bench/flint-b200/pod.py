@@ -1,6 +1,6 @@
 """Create, inspect, stop or terminate the Flint benchmark pod (Runpod REST v1).
 
-    python3 bench/flint-b200/pod.py create | status | stop | terminate --yes
+    python3 bench/flint-b200/pod.py create | start | status | stop | terminate --yes
 
 Uses RUNPOD_API_KEY from the environment. The pod runs vllm/vllm-openai:flint with
 sshd added at start (custom images don't run it), reachable on its public IP.
@@ -48,6 +48,13 @@ def main():
         s = {"id": p["id"], "costPerHr": p.get("costPerHr"), "created": datetime.now(timezone.utc).isoformat(timespec="seconds")}
         STATE.write_text(json.dumps(s))
         print(f"created pod {s['id']} at ${s['costPerHr']}/hr; billing starts now. Next: pod.py status")
+    elif cmd == "start":  # restart a stopped pod; its container disk comes back empty
+        st, p = rp.call("POST", f"{rp.REST}/pods/{s['id']}/start", key)
+        if not rp.ok(st):
+            sys.exit(f"start failed: {st} {p}")
+        s["created"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        STATE.write_text(json.dumps(s))
+        print(f"started pod {s['id']}; billing again from now (status counts from here). Next: pod.py status")
     elif cmd == "status":
         st, p = rp.call("GET", f"{rp.REST}/pods/{s['id']}", key)
         if not rp.ok(st):

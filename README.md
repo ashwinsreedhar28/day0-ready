@@ -11,11 +11,11 @@ First launch through the pipeline: [RecursiveSI/flint](https://huggingface.co/Re
 | stage | what | GPU | status |
 |---|---|---|---|
 | detect | every 30 min: new model-named `vllm/vllm-openai` tags, matched to a Hugging Face repo (24-lab watchlist, then HF search) | no | `.github/workflows/detect.yml`, `detect/poll.py`; starts a build per new launch |
-| build | worker-vllm `FROM vllm/vllm-openai:<day-0 tag>`, pushed to `ghcr.io` | no | `.github/workflows/build-day0.yml` |
+| build | worker-vllm `FROM vllm/vllm-openai:<day-0 tag>`, pushed to `ghcr.io`. Default worker branch: [`day0-integration`](https://github.com/ashwinsreedhar28/worker-vllm/tree/day0-integration), upstream main plus the version-guard fix (#360) and model-code startup errors (#363) | no | `.github/workflows/build-day0.yml` |
 | CPU checks | inside the built image: architecture resolution, transformers config, vLLM `ModelConfig`, tokenizer | no | `checks/cpu_check.py`, run by the build |
-| smoke test | one request on a Serverless endpoint, GPU class picked from the weight size; on failure: `GPU_MEMORY_UTILIZATION=0.85` (first-request OOM), next GPU class (startup OOM, capped by `max_gpu`), `TRUST_REMOTE_CODE=true` only when allowed | yes, capped | `.github/workflows/smoke.yml` (`pipeline/smoke.py`), started by every dispatched build |
+| smoke test | one request on a Serverless endpoint, GPU class picked from the weight size, starting from the model's vLLM recipe settings when one exists; on failure: `GPU_MEMORY_UTILIZATION=0.85` (first-request OOM), next GPU class (startup OOM), the attention backend the model's code asks for, or the B200 class when it asks for a Blackwell-only kernel (model-code errors, #363), `TRUST_REMOTE_CODE=true` only when allowed; GPU climbs capped by `max_gpu` | yes, capped | `.github/workflows/smoke.yml` (`pipeline/smoke.py`, `pipeline/recipes.py`), started by every dispatched build |
 | pre-warm | torch.compile cache on a network volume per (model, GPU) | yes | planned |
-| board | per launch: tag push time, model, build, CPU verdict, smoke test, tag → worker image | no | [`data/board.md`](data/board.md), regenerated on every recorded build |
+| board | per launch: tag push time, model, build, CPU verdict, smoke test, tag → worker image | no | [`data/board.md`](data/board.md), regenerated on every poll and every recorded build |
 | deploy recipe | per launch whose own model passed: the exact template and endpoint request bodies, image digest, GPU class, env | no | [`data/ready.json`](data/ready.json) |
 
 ## Run a build
@@ -44,3 +44,9 @@ python3 pipeline/smoke.py --env-file ~/.runpod.env \
 ```
 
 The result goes to `data/smoke/<image tag>.json` and shows up on the board.
+
+### Recipe settings
+
+When vLLM has a recipe for the model (`models/<org>/<repo>.yaml` in [vllm-project/recipes](https://github.com/vllm-project/recipes), or under `recipes/` in vllm-project/vllm), the smoke test starts from its single-GPU settings: attention and MoE backends, KV-cache dtype, dtype, quantization, memory utilization, loading flags, and the recipe's env vars, with the GPU generation's override block applied (Hopper on the 141gb class, Blackwell on 180gb). Parallelism, context length, parsers and opt-in features are left for the real deploy and listed under `recipe.skipped` in the result. `--set` and the ladder's changes win over the recipe, and `--trust-remote-code` in a recipe is only noted. `--recipe off` skips it.
+
+A recipe doesn't always exist on launch day: flint had none on recipes.vllm.ai a day later. The model-code rung covers that case. It reads the requirement in worker-vllm's startup error (#363) and retries with what it names, which is how flint gets from H200 to a passing B200 without a person (`tests/test_smoke.py::test_flint_climbs_to_flashinfer_then_b200`).

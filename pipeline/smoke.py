@@ -12,6 +12,12 @@ moves to the next rung, mirroring the failures seen in study/:
   first-request  engine dies on the first request (Qwen3.5: Triton autotune
   OOM            had no headroom at GPU_MEMORY_UTILIZATION=0.95)   -> 0.85
   startup OOM    the worker answers with a startup_error about GPU memory -> next GPU class
+  model code     the model's own vLLM code states a requirement (worker-vllm #363's
+                 startup_error): "requires FlashInfer attention" -> ATTENTION_BACKEND;
+                 a TRTLLM / sm100 / Blackwell requirement -> the B200 class
+
+Before the first rung, settings from the model's vLLM recipe are applied when
+one exists (recipes.py); --set and the ladder's changes take precedence.
 
 A worker that keeps restarting with no answer is treated as an unrecognised
 startup failure; its logs are in the console (endpoint kept at 0 workers).
@@ -25,12 +31,14 @@ on every exit path, and in CI (.github/workflows/smoke.yml) --gpu auto,
 
 import argparse
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import recipes  # noqa: E402
 import runpod_api as rp  # noqa: E402
 import sizing  # noqa: E402
 
@@ -57,10 +65,30 @@ def log(msg):
     print(f"{datetime.now().strftime('%H:%M:%S')} {msg}", flush=True)
 
 
+# worker-vllm #363: the model's own vLLM code raised a stated requirement at startup.
+MODEL_CODE = "failed inside vLLM's implementation of the model"
+ATTENTION_NEED = re.compile(r"requires (?:the )?(FlashInfer|FlashAttention|FLASH_ATTN|FLASHINFER|Triton|TRITON_ATTN|"
+                            r"FlexAttention|FLEX_ATTENTION)\b[^.]*?\battention", re.I)
+ATTENTION_BACKENDS = {"flashinfer": "FLASHINFER", "flashattention": "FLASH_ATTN", "flash_attn": "FLASH_ATTN",
+                      "triton": "TRITON_ATTN", "triton_attn": "TRITON_ATTN", "flexattention": "FLEX_ATTENTION",
+                      "flex_attention": "FLEX_ATTENTION"}
+# FlashInfer's TRT-LLM-gen kernels are sm100 (B200/GB200) only; flint's BF16 MoE asked for one by name.
+BLACKWELL_NEED = re.compile(r"\bTRTLLM\b|trtllm-gen|\bsm_?10\d\b|compute capability 10\.|\bBlackwell\b", re.I)
+BLACKWELL_CLASS = "180gb"
+
+
+def model_code_cause(text):
+    """The exception text inside a model-code startup_error, without the worker's generic advice."""
+    m = re.search(r"during startup: (.*?)\. The model's code requires", text, re.S)
+    return m.group(1) if m else text
+
+
 def classify_failure(job_status, output, crash_signals):
     text = json.dumps(output) if output is not None else ""
     if job_status == "FAILED" and "startup_error" in text and ("GPU memory" in text or "KV cache" in text):
         return "startup_oom"
+    if job_status == "FAILED" and MODEL_CODE in text:
+        return "model_code"
     if job_status == "FAILED" and ("EngineCore encountered an issue" in text or "out of memory" in text.lower()):
         return "first_request_failure"
     # Raw vLLM error, or the worker's startup_error once fix/remote-code-startup-error lands.
@@ -152,8 +180,12 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
 
 
 def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb", remote_code_possible=True,
-              allow_remote_code=True):
+              allow_remote_code=True, detail=""):
     """The ladder: which setting to change after a failure, or None to stop.
+
+    detail is the failed rung's output; a model_code failure is only retried
+    when it names something a setting or GPU class provides (flint: "requires
+    FlashInfer attention" on H200, then a TRTLLM MoE kernel that only B200 has).
 
     A crash loop is only retried with remote code when the CPU check didn't
     rule it out: flint (no auto_map) crash-looped on a Blackwell-only MoE
@@ -170,7 +202,24 @@ def next_rung(env, gpu_class, outcome, remote_code_tried, max_gpu="180gb", remot
     if (outcome == "startup_oom" and gpu_class in NEXT_GPU
             and order.index(NEXT_GPU[gpu_class]) <= order.index(max_gpu)):
         return env, NEXT_GPU[gpu_class]
+    if outcome == "model_code":
+        cause = model_code_cause(detail or "")
+        m = ATTENTION_NEED.search(cause)
+        backend = m and ATTENTION_BACKENDS.get(m.group(1).lower())
+        if backend and env.get("ATTENTION_BACKEND") != backend:
+            return {**env, "ATTENTION_BACKEND": backend}, gpu_class
+        if (BLACKWELL_NEED.search(cause) and gpu_class != BLACKWELL_CLASS
+                and order.index(BLACKWELL_CLASS) <= order.index(max_gpu)):
+            return env, BLACKWELL_CLASS
     return None
+
+
+def model_code_hint(detail, gpu_class, max_gpu):
+    """Why a model_code failure stopped, for the person reading the result."""
+    cause = model_code_cause(detail or "")
+    if BLACKWELL_NEED.search(cause) and gpu_class != BLACKWELL_CLASS:
+        return f"needs a Blackwell GPU ({BLACKWELL_CLASS}); --max-gpu is {max_gpu}"
+    return "the model's code needs a setting the ladder can't infer; see the message"
 
 
 def cpu_verdict(image):
@@ -222,6 +271,8 @@ def main():
                     "e.g. Hopper only: 'NVIDIA H100 80GB HBM3,NVIDIA H100 PCIe,NVIDIA H100 NVL' (no ladder climb)")
     ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                     help="extra worker env for every rung, e.g. --set ATTENTION_BACKEND=FLASHINFER (repeatable)")
+    ap.add_argument("--recipe", choices=["auto", "off"], default="auto",
+                    help="auto: start from the model's vLLM recipe settings when one exists (recipes.py)")
     ap.add_argument("--env-file")
     a = ap.parse_args()
     if any("=" not in s for s in a.set):
@@ -265,8 +316,20 @@ def main():
     remote_possible = verdict is None or "remote_code" in verdict
     if verdict:
         log(f"CPU check verdict for this image: {verdict}")
+    recipe = None
+    if a.recipe == "auto":
+        try:
+            recipe, src = recipes.fetch(a.model)
+            if recipe:
+                base["recipe"] = {"source": src}
+                log(f"recipe: {src}")
+            else:
+                log("recipe: none for this model")
+        except Exception as e:  # noqa: BLE001 - a recipe is a head start, never a requirement
+            log(f"recipe unavailable ({e})")
     label = a.image.rsplit(":", 1)[-1].replace(".", "")[:30]
     rungs, stopped = [], None
+    recipe_env = {}
     while time.time() < deadline:
         if a.budget_usd is not None:
             spent = spent_last_24h() + sum(r.get("est_cost_usd", 0) for r in rungs)
@@ -276,18 +339,31 @@ def main():
                            f"${worst:.2f} for a {gpu} rung > ${a.budget_usd:.2f} budget"}
                 log(f"stopping: {stopped['detail']}")
                 break
-        r = run_rung(key, a.image, a.model, env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk, gpu_types)
+        recipe_env = {}
+        if recipe:
+            rs = recipes.settings(recipe, gpu_types or GPU_CLASSES[gpu])
+            recipe_env = rs["env"]
+            base["recipe"].update(skipped=rs["skipped"], notes=rs["notes"])
+        rung_env = {**recipe_env, **env}  # --set and ladder changes beat the recipe
+        r = run_rung(key, a.image, a.model, rung_env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk,
+                     gpu_types)
+        if recipe_env:
+            r["recipe_env"] = recipe_env
         if gpu_types:
             r["gpu_types"] = gpu_types
         rungs.append(r)
         if r["outcome"] == "pass":
             break
-        nxt = next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env,
-                        gpu if gpu_types else a.max_gpu,  # an explicit GPU list never climbs classes
-                        remote_possible, allow_remote_code=not a.no_remote_code)
+        rung_max = gpu if gpu_types else a.max_gpu  # an explicit GPU list never climbs classes
+        nxt = next_rung(rung_env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in rung_env, rung_max,
+                        remote_possible, allow_remote_code=not a.no_remote_code, detail=r.get("output") or "")
         if nxt is None:
+            if r["outcome"] == "model_code":
+                r["hint"] = model_code_hint(r.get("output"), gpu, rung_max)
             break
-        env, gpu = nxt
+        # Keep only what the ladder or --set chose; the recipe is re-read for the next GPU class.
+        new_env, gpu = nxt
+        env = {k: v for k, v in new_env.items() if k in env or recipe_env.get(k) != v}
 
     passed = bool(rungs) and rungs[-1]["outcome"] == "pass"
     result = {**base, "passed": passed,

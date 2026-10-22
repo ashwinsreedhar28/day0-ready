@@ -26,9 +26,9 @@ Most of the upstream half is release cadence, not missing code. On vLLM's main b
 
 The worker half has the long tail, and it's the half Runpod controls:
 
-- **Freezes.** The worker image pinned vLLM 0.11.0 from November 2025 until 2026-02-12, and 0.16.0 from 2026-03-05 to 2026-05-01. On 245 of the 294 days of 2026 so far, a newer vLLM final image had been published than the one the latest worker image pinned. On those days the oldest such release was a median 20 days old (max 84), and the worker was a median 3 finals behind (max 8).
+- **Freezes.** The worker image pinned vLLM 0.11.0 from November 2025 until 2026-02-12, and 0.16.0 from 2026-03-05 to 2026-05-01. On 244 of the 294 days of 2026 so far, a newer vLLM final image had been published than the one the latest worker image pinned. On those days the oldest such release was a median 20 days old (max 84), and the worker was a median 3 finals behind (max 8).
 - **Rollbacks.** 6 of 23 models lost support after first getting it. For MiMo-V2.5-Pro, Laguna-XS.2, Mellum 2 and North-Mini-Code, the gap was 47 days: v2.22.4 rolled back to vLLM 0.20.2 on Jun 12, and v2.23.0 restored support on Jul 29. For Qwen3.8-Flash-Next and Hy4-preview it was 7 days: v2.27.1 rolled back from 0.29.0 to 0.28.0 on Sep 21, and v2.28.0 restored support on Sep 28.
-- **Tags with no image.** `v.2.15.0` (note the extra dot) doesn't match the `release.yml` tag trigger, and no image exists for it. `v2.29.0` (vLLM 0.31.0, tagged Oct 6) has no image on Docker Hub either. A CI fix for runner disk space landed Oct 7, and nothing has been re-tagged since. The newest published image is **v2.28.0 (vLLM 0.30.0)**.
+- **Tags with no image.** `v.2.15.0` (note the extra dot) doesn't match the `release.yml` tag trigger, and no image exists for it. `v2.29.0` (vLLM 0.31.0, tagged Oct 6) has no image on Docker Hub either. A CI fix for runner disk space landed Oct 7, and the next tag, `v2.30.0` (vLLM 0.32.0), was published on Oct 21 at 16:43 UTC. That is the newest image; before it, the newest was v2.28.0 (vLLM 0.30.0), from Sep 28.
 
 In the controls, 9 of 10 had a worker image listing their architecture on release day. The exception is Qwen3.6-35B-A3B, which waited 15 days because the Qwen3.5 architecture it reuses wasn't yet in the worker's frozen 0.16.0 pin.
 
@@ -62,7 +62,7 @@ Both vLLM compile-cache layouts key on `VllmConfig.compute_hash()`, which includ
 
 So the first start on a vLLM version the volume hasn't cached before misses and compiles from scratch. A version cached earlier can still hit, and an explicit `compilation_config.cache_dir` overrides the generated path. The worker's `compile_cache.py` never prunes old directories, so each new version adds one per model and config.
 
-PR #351 measured 108–133 s uncached vs 68–71 s cached on one setup (4090, Qwen3-8B). The 37–65 s difference shows the size of the cost; it was not measured across an upgrade. PR #351 itself (commit `7b8958e`) is only in `v2.29.0`, which has no published image.
+PR #351 measured 108–133 s uncached vs 68–71 s cached on one setup (4090, Qwen3-8B). The 37–65 s difference shows the size of the cost; it was not measured across an upgrade. PR #351 itself (commit `7b8958e`) first reached a published image in `v2.30.0` on Oct 21; `v2.29.0` also contains it but was never published.
 
 ## Caveats
 

@@ -1,0 +1,44 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint--test-model-code-day0-11e1368",
+ "model": "RecursiveSI/flint",
+ "passed": false,
+ "passing_env": null,
+ "passing_gpu_class": null,
+ "rungs": [
+  {
+   "env": {},
+   "gpu_class": "80gb",
+   "disk_gb": 150,
+   "started": "2026-10-21T23:51:51+00:00",
+   "endpoint_id": "z0jred7yhygbq7",
+   "delay_s": 554,
+   "exec_s": 0,
+   "job_status": "FAILED",
+   "output": "\"{'message': \\\"RecursiveSI/flint failed inside vLLM's implementation of the model during startup: AssertionError: Flint requires FlashInfer attention. The model's code requires something this worker's GPU or settings don't provide, so restarting this worker will not change it. Check the model card and vLLM's recipe for the attention backend (ATTENTION_BACKEND), GPU generation or dtype it needs. If the endpoint lists several GPU types, also remove the ones the model can't use.\\\", 'type': 'startup_error', 'code': None}\"",
+   "minutes": 9.5,
+   "worker_states": [
+    "idle",
+    "initializing",
+    "ready",
+    "running"
+   ],
+   "est_cost_usd": 0.76,
+   "outcome": "startup_error",
+   "logs": "https://console.runpod.io/serverless/user/endpoint/z0jred7yhygbq7",
+   "gpu_types": [
+    "NVIDIA H100 80GB HBM3",
+    "NVIDIA H100 PCIe",
+    "NVIDIA H100 NVL"
+   ]
+  }
+ ],
+ "finished_at": "2026-10-22T00:01:23+00:00",
+ "image_build": {
+  "run": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39694918727",
+  "digest": "sha256:04397a3af20af003f1dd374ccb38f8d55bca186bcb55d95eaebc18dd573b6ce9",
+  "worker": "ashwinsreedhar28/worker-vllm@11e1368",
+  "note": "test/model-code-day0 = fix/model-code-startup-error (a17e9aa) + a cherry-pick of #360's version guard (b779895), only so the image builds FROM vllm/vllm-openai:flint"
+ },
+ "log": "data/smoke/logs/day0-flint--test-model-code-day0-11e1368_h100.txt",
+ "note": "Final image of the model-code PR on an H100: vLLM picks FLASH_ATTN, flint's model code asserts, and after one vLLM launch the worker answers the job with that exact cause (log line 231). Earlier images of this branch: data/smoke/day0-flint--test-model-code-day0-9388b55.json (first, broader rule)."
+}

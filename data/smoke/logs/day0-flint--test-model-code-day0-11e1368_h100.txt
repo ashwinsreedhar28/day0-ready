@@ -1,0 +1,242 @@
+2026-10-21 20:00:44.167 | info | q7vgh3rhcg979f | With `vllm serve`, you should provide the model as a positional argument or in a config file instead of via the `--model` option. The `--model` option will be removed in a future version.\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418] \n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418]        █     █     █▄   ▄█\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.32.0rc1.dev348+ge7c846767\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418]   █▄█▀ █     █     █     █  model   RecursiveSI/flint\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:418] \n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:33 [api_utils.py:357] non-default args: {'model_tag': 'RecursiveSI/flint', 'host': '127.0.0.1', 'model': 'RecursiveSI/flint', 'max_model_len': 4096}\n
+2026-10-21 20:00:44.168 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:44 [model.py:733] Resolved architecture: FlintForCausalLM\n
+2026-10-21 20:00:44.311 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:44 [model.py:2152] Using max model len 4096\n
+2026-10-21 20:00:44.311 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:44 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=8192.\n
+2026-10-21 20:00:44.311 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:44 [kernel.py:476] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])\n
+2026-10-21 20:00:44.311 | info | q7vgh3rhcg979f | \n
+2026-10-21 20:00:44.427 | info | q7vgh3rhcg979f | Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n
+2026-10-21 20:00:44.427 | info | q7vgh3rhcg979f | \n
+2026-10-21 20:00:44.535 | info | q7vgh3rhcg979f | Fetching 20 files:  15%|█▌        | 3/20 [00:00<00:00, 25.88it/s]\n
+2026-10-21 20:00:45.311 | info | q7vgh3rhcg979f | Fetching 20 files:  55%|█████▌    | 11/20 [00:00<00:00, 53.52it/s]\n
+2026-10-21 20:00:48.077 | info | q7vgh3rhcg979f | Fetching 20 files: 100%|██████████| 20/20 [00:01<00:00, 17.69it/s]\n
+2026-10-21 20:00:48.077 | info | q7vgh3rhcg979f | Fetching 20 files: 100%|██████████| 20/20 [00:01<00:00, 19.97it/s]\n
+2026-10-21 20:00:48.077 | info | q7vgh3rhcg979f | W1022 00:00:48.076000 998 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead\n
+2026-10-21 20:00:54.242 | info | q7vgh3rhcg979f | W1022 00:00:48.076000 998 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead\n
+2026-10-21 20:00:54.242 | info | q7vgh3rhcg979f | W1022 00:00:48.077000 998 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead\n
+2026-10-21 20:00:54.242 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:54 [__init__.py:113] Registered model loader `<class 'vllm_bnb_plugin.bitsandbytes_loader.BitsAndBytesModelLoader'>` with load format `bitsandbytes`\n
+2026-10-21 20:00:55.600 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:54 [core.py:133] Initializing a V1 LLM engine (v0.32.0rc1.dev348+ge7c846767) with config: model='RecursiveSI/flint', speculative_config=None, tokenizer='RecursiveSI/flint', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=RecursiveSI/flint, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::qwen4_exp_qsa_prepare_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [8192], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)\n
+2026-10-21 20:00:55.600 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:55 [parallel_state.py:1911] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_bd9d1fee948c4950855c4dc6ff96150b backend=nccl\n
+2026-10-21 20:00:57.230 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:55 [parallel_state.py:2355] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A\n
+2026-10-21 20:00:57.230 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:55 [gpu_worker.py:510] Using V2 Model Runner\n
+2026-10-21 20:00:57.230 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:57 [model_runner.py:397] Loading model from scratch...\n
+2026-10-21 20:00:57.386 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:57 [cuda.py:508] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN'].\n
+2026-10-21 20:00:58.064 | info | q7vgh3rhcg979f | (EngineCore pid=998) INFO 10-22 00:00:57 [flash_attn.py:1117] Using FlashAttention version 3\n
+2026-10-21 20:00:58.064 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543] EngineCore failed to start.\n
+2026-10-21 20:00:59.788 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543] Traceback (most recent call last):\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     super().__init__(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self._init_executor()\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.driver_worker.load_model()\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.model = model or model_loader.load_model(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     model = self.create_model(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     model = initialize_model(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.model = FlintModel(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                  ^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                                                     ^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     + get_offloader().wrap_modules(\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.789 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     return list(modules_generator)\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 479, in __init__\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     self.self_attn = FlintAttention(\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]                      ^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 316, in __init__\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]     assert isinstance(impl, FlashInferImpl), "Flint requires FlashInfer attention"\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | error | q7vgh3rhcg979f | (EngineCore pid=998) ERROR 10-22 00:00:58 [core.py:1543] AssertionError: Flint requires FlashInfer attention\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f | Process EngineCore:\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f | Traceback (most recent call last):\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self.run()\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self._target(*self._args, **self._kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1547, in run_engine_core\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     raise e\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1515, in run_engine_core\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1194, in __init__\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     super().__init__(\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 144, in __init__\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self.model_executor = executor_class(vllm_config)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 120, in __init__\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self._init_executor()\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self.driver_worker.load_model()\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 598, in load_model\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 401, in load_model\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     self.model = model or model_loader.load_model(\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |                           ^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 76, in load_model\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     model = self.create_model(\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |             ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/base_loader.py", line 53, in create_model\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     model = initialize_model(\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |             ^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/model_loader/utils.py", line 101, in initialize_model\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |     model = model_class(vllm_config=vllm_config, prefix=prefix)\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.790 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 637, in __init__\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     self.model = FlintModel(\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |                  ^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 551, in __init__\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     self.start_layer, self.end_layer, self.layers = make_layers(\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |                                                     ^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 913, in make_layers\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     + get_offloader().wrap_modules(\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     return list(modules_generator)\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/utils.py", line 914, in <genexpr>\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 553, in <lambda>\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     lambda prefix: FlintDecoderLayer(\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |                    ^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 479, in __init__\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     self.self_attn = FlintAttention(\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |                      ^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/models/flint/model.py", line 316, in __init__\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |     assert isinstance(impl, FlashInferImpl), "Flint requires FlashInfer attention"\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f | AssertionError: Flint requires FlashInfer attention\n
+2026-10-21 20:00:59.791 | info | q7vgh3rhcg979f | (APIServer pid=413) INFO 10-22 00:00:59 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore\n
+2026-10-21 20:00:59.971 | info | q7vgh3rhcg979f | Traceback (most recent call last):\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/local/bin/vllm", line 10, in <module>\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     sys.exit(main())\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |              ^^^^^^\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 120, in main\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     args.dispatch_function(args)\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 156, in cmd\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     uvloop.run(run_server(args))\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     return __asyncio.run(\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     return runner.run(main)\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |     return self._loop.run_until_complete(task)\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "uvloop/loop.pyx", line 1515, in uvloop.loop.Loop.run_until_complete\n
+2026-10-21 20:01:03.171 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     return await main\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |            ^^^^^^^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 177, in run_server\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 195, in run_server_worker\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     async with build_async_engine_client(\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     return await anext(self.gen)\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 61, in build_async_engine_client\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     async with build_async_engine_client_from_engine_args(\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     return await anext(self.gen)\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 95, in build_async_engine_client_from_engine_args\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     async_llm = AsyncLLM.from_vllm_config(\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 263, in from_vllm_config\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     return cls(\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |            ^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 192, in __init__\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     self.engine_core = EngineCoreClient.make_async_mp_client(\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:01:03.172 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 170, in make_async_mp_client\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     return AsyncMPClient(\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     return func(*args, **kwargs)\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |            ^^^^^^^^^^^^^^^^^^^^^\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 1157, in __init__\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     super().__init__(\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 695, in __init__\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     with launch_core_engines(\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     next(self.gen)\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1388, in launch_core_engines\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     wait_for_engine_startup(\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1468, in wait_for_engine_startup\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f |     raise RuntimeError(\n
+2026-10-21 20:01:03.173 | info | q7vgh3rhcg979f | 
+2026-10-21 20:01:03.173 | error | q7vgh3rhcg979f | 2026-10-22 00:01:03,169 ERROR root: vLLM serve exited during startup with code 1\n
+2026-10-21 20:01:05.050 | error | q7vgh3rhcg979f | 2026-10-22 00:01:03,206 ERROR root: vLLM cannot start on this configuration; answering jobs with the cause: RecursiveSI/flint failed inside vLLM's implementation of the model during startup: AssertionError: Flint requires FlashInfer attention. The model's code requires something this worker's GPU or settings don't provide, so restarting this worker will not change it. Check the model card and vLLM's recipe for the attention backend (ATTENTION_BACKEND), GPU generation or dtype it needs. If the endpoint lists several GPU types, also remove the ones the model can't use.\n
+2026-10-21 20:01:05.050 | info | q7vgh3rhcg979f | --- Starting Serverless Worker |  Version 1.12.0 ---\n
+2026-10-21 20:01:05.689 | info | q7vgh3rhcg979f | Running 7 fitness check(s)...
+2026-10-21 20:01:05.689 | info | q7vgh3rhcg979f | GPU binary test passed: 1 GPU(s) healthy (CUDA 13.2)
+2026-10-21 20:01:07.448 | info | q7vgh3rhcg979f | Memory check passed: 1899.84GB available (of 2015.49GB total)
+2026-10-21 20:01:07.448 | info | q7vgh3rhcg979f | Disk space check passed: 149.97GB free (100.0% available)
+2026-10-21 20:01:07.448 | info | q7vgh3rhcg979f | Network connectivity passed: Connected to 8.8.8.8 (18ms)
+2026-10-21 20:01:07.448 | info | q7vgh3rhcg979f | CUDA version check passed: 13.0 (minimum: 11.8)
+2026-10-21 20:01:07.448 | info | q7vgh3rhcg979f | CUDA initialization passed: 1 device(s) initialized successfully
+2026-10-21 20:01:07.557 | info | q7vgh3rhcg979f | GPU compute benchmark passed: Matrix multiply completed in 69ms
+2026-10-21 20:01:07.770 | info | q7vgh3rhcg979f | All fitness checks passed. (2507.03ms)
+2026-10-21 20:01:07.771 | info | q7vgh3rhcg979f | Jobs in queue: 1

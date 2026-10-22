@@ -1,0 +1,18 @@
+== nvfp4  input 8192  output 1024  concurrency 1  prompts 8
+== nvfp4  input 8192  output 1024  concurrency 8  prompts 32
+== nvfp4  input 8192  output 1024  concurrency 32  prompts 128
+== nvfp4  input 8192  output 1024  concurrency 64  prompts 256
+== nvfp4  input 32768  output 1024  concurrency 1  prompts 8
+== nvfp4  input 32768  output 1024  concurrency 8  prompts 32
+== nvfp4  input 32768  output 1024  concurrency 32  prompts 128
+== nvfp4  input 32768  output 1024  concurrency 64  prompts 256
+| ckpt | input | conc | done | TTFT p50 ms | TTFT p99 ms | TPOT p50 ms | TPOT p99 ms | ITL p50 ms | out tok/s | total tok/s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| nvfp4 | 8192 | 1 | 8/8 | 138 | 153 | 1.76 | 1.86 | 1.79 | 523 | 4703 |
+| nvfp4 | 8192 | 8 | 32/32 | 507 | 638 | 3.27 | 3.49 | 3.19 | 2124 | 19118 |
+| nvfp4 | 8192 | 32 | 128/128 | 1200 | 2027 | 6.58 | 7.38 | 5.89 | 4130 | 37169 |
+| nvfp4 | 8192 | 64 | 256/256 | 1886 | 3860 | 9.92 | 11.39 | 8.34 | 5406 | 48656 |
+| nvfp4 | 32768 | 1 | 8/8 | 459 | 507 | 1.93 | 2.00 | 1.90 | 420 | 13852 |
+| nvfp4 | 32768 | 8 | 32/32 | 1646 | 2575 | 4.81 | 5.90 | 3.98 | 1247 | 41144 |
+| nvfp4 | 32768 | 32 | 128/128 | 3782 | 9492 | 14.43 | 17.46 | 9.04 | 1760 | 58093 |
+| nvfp4 | 32768 | 64 | 256/256 | 2692 | 19009 | 30.25 | 31.95 | 14.98 | 1941 | 64046 |

@@ -1,3 +1,7 @@
 src/
 __pycache__/
 .env
+
+# bench pod state (bench/*/pod.py)
+.pod.json
+.ssh_target

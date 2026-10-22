@@ -71,6 +71,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML (vLLM recipes)
+        run: pip install pyyaml==6.0.3
+
       - name: Run smoke test
         id: smoke
         env:

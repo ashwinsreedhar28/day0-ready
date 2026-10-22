@@ -47,7 +47,7 @@ def run_ladder(monkeypatch, script, env=None, gpu="24gb"):
         rungs.append((r["outcome"], dict(env), gpu))
         if r["outcome"] == "pass":
             return rungs
-        nxt = smoke.next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env)
+        nxt = smoke.next_rung(env, gpu, r["outcome"], "TRUST_REMOTE_CODE" in env, detail=r.get("output") or "")
         if nxt is None:
             return rungs
         env, gpu = nxt
@@ -166,6 +166,7 @@ def test_budget_stops_before_spending(monkeypatch, tmp_path):
     monkeypatch.setattr(smoke, "ROOT", tmp_path)
     monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
     monkeypatch.setattr(smoke, "spent_last_24h", lambda: 9.80)
+    monkeypatch.setattr(smoke.recipes, "fetch", lambda m: (None, None))
     monkeypatch.setattr(smoke.rp, "call", lambda *a, **k: pytest.fail("over budget: no endpoint"))
     monkeypatch.setattr(sys, "argv", ["smoke", "--image", "ghcr.io/x/w:day0-q-abc1234", "--model", "Qwen/Qwen3-8B",
                                       "--gpu", "24gb", "--disk-gb", "60", "--budget-usd", "10"])
@@ -189,3 +190,87 @@ def test_gpu_types_override_reaches_the_endpoint(monkeypatch):
     r = smoke.run_rung("k", "img", "m", {}, "80gb", "13.0", 0, "t", 150, ["NVIDIA H100 80GB HBM3"])
     assert bodies[0]["gpuTypeIds"] == ["NVIDIA H100 80GB HBM3"] and r["outcome"] == "error"
     assert smoke.next_rung({}, "80gb", "startup_oom", False, max_gpu="80gb") is None  # no climb past the list
+
+
+def _model_code(cause):
+    # worker-vllm #363's startup_error, as the job returns it.
+    return {"error": {"type": "startup_error", "message": (
+        f"RecursiveSI/flint failed inside vLLM's implementation of the model during startup: {cause}. The model's "
+        "code requires something this worker's GPU or settings don't provide, so restarting this worker will not "
+        "change it. Check the model card and vLLM's recipe for the attention backend (ATTENTION_BACKEND), GPU "
+        "generation or dtype it needs.")}}
+
+
+FLINT_ATTN = _model_code("AssertionError: Flint requires FlashInfer attention")
+FLINT_MOE = _model_code("RuntimeError: Flint BF16 decode MoE requires the FlashInfer TRTLLM BF16 MoE backend "
+                        "without padding (got UnquantizedMoeBackend.TRITON)")
+
+
+def test_flint_climbs_to_flashinfer_then_b200(monkeypatch):
+    # The Oct 21 flint launch, without the human: H200 picks FA3, then the BF16 MoE wants a TRTLLM kernel.
+    rungs = run_ladder(monkeypatch, [("FAILED", FLINT_ATTN, RUN), ("FAILED", FLINT_MOE, RUN), ("COMPLETED", ["ok"], RUN)],
+                       gpu="141gb")
+    assert rungs == [("model_code", {}, "141gb"), ("model_code", {"ATTENTION_BACKEND": "FLASHINFER"}, "141gb"),
+                     ("pass", {"ATTENTION_BACKEND": "FLASHINFER"}, "180gb")]
+
+
+def test_model_code_blackwell_respects_max_gpu():
+    detail = smoke.json.dumps(FLINT_MOE)
+    env = {"ATTENTION_BACKEND": "FLASHINFER"}
+    assert smoke.next_rung(env, "141gb", "model_code", False, max_gpu="141gb", detail=detail) is None
+    assert smoke.model_code_hint(detail, "141gb", "141gb") == "needs a Blackwell GPU (180gb); --max-gpu is 141gb"
+    assert smoke.next_rung(env, "180gb", "model_code", False, detail=detail) is None  # already on B200
+
+
+def test_model_code_without_a_known_fix_stops():
+    detail = smoke.json.dumps(_model_code("NotImplementedError: Foo needs bfloat16 weights"))
+    assert smoke.next_rung({}, "24gb", "model_code", False, detail=detail) is None
+    # The attention fix is tried once: same requirement again means the backend didn't help.
+    detail = smoke.json.dumps(FLINT_ATTN)
+    assert smoke.next_rung({"ATTENTION_BACKEND": "FLASHINFER"}, "24gb", "model_code", False, detail=detail) is None
+
+
+def test_model_code_reads_only_the_cause_not_the_advice():
+    # The worker's advice mentions ATTENTION_BACKEND and "GPU generation"; neither is a requirement.
+    detail = smoke.json.dumps(_model_code("ValueError: Foo only supports head_dim 128"))
+    assert smoke.classify_failure("FAILED", smoke.json.loads(detail), 0) == "model_code"
+    assert smoke.next_rung({}, "24gb", "model_code", False, detail=detail) is None
+
+
+def test_recipe_settings_seed_each_rung_and_set_wins(monkeypatch, tmp_path):
+    import json
+    recipe = {"model": {"base_args": ["--dtype", "bfloat16", "--max-model-len", "262144"], "base_env": {}},
+              "hardware_overrides": {"blackwell": {"extra_args": ["--moe-backend", "flashinfer_trtllm"]}},
+              "variants": {"default": {"precision": "bf16"}}}
+    envs = []
+
+    def call(method, url, key, body=None):
+        if url.endswith("/templates") and method == "POST":
+            envs.append(body["env"])
+            return 201, {"id": "t"}
+        if url.endswith("/endpoints") and method == "POST":
+            return 201, {"id": "e"}
+        if url.endswith("/run"):
+            return 200, {"id": "j"}
+        if url.endswith("/health"):
+            return 200, {"workers": {"running": 1}}
+        if "/status/" in url:
+            out = {"error": {"type": "startup_error", "message": "X ran out of GPU memory during startup."}}
+            return 200, ({"status": "FAILED", "error": out} if len(envs) == 1 else {"status": "COMPLETED", "output": ["ok"]})
+        return 204, None
+
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
+    monkeypatch.setattr(smoke.rp, "call", call)
+    monkeypatch.setattr(smoke.time, "sleep", lambda s: None)
+    monkeypatch.setattr(smoke.recipes, "fetch", lambda m: (recipe, "https://example/recipe.yaml"))
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "ghcr.io/x/w:day0-r-abc1234", "--model", "o/r", "--gpu", "141gb",
+                                      "--max-gpu", "180gb", "--disk-gb", "60", "--set", "DTYPE=float16"])
+    assert smoke.main() == 0
+    # H200 has no hopper block; B200 adds the blackwell MoE backend. --set DTYPE beats the recipe's bfloat16.
+    assert {k: v for k, v in envs[0].items() if k not in ("MODEL_NAME", "MAX_MODEL_LEN")} == {"DTYPE": "float16"}
+    assert {k: v for k, v in envs[1].items() if k not in ("MODEL_NAME", "MAX_MODEL_LEN")} == {
+        "DTYPE": "float16", "MOE_BACKEND": "flashinfer_trtllm"}
+    r = json.loads((tmp_path / "data" / "smoke" / "day0-r-abc1234.json").read_text())
+    assert r["recipe"]["source"] == "https://example/recipe.yaml" and "--max-model-len 262144" in r["recipe"]["skipped"]
+    assert r["deploy"]["template"]["env"]["MOE_BACKEND"] == "flashinfer_trtllm"

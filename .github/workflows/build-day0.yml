@@ -19,7 +19,7 @@ on:
         default: "ashwinsreedhar28/worker-vllm"
       worker_ref:
         description: "branch, tag or SHA of worker_repo"
-        default: "fix/version-guard-any-base-tag"
+        default: "day0-integration"
       push_image:
         description: "push the image to GHCR if the build succeeds"
         type: boolean
@@ -50,7 +50,7 @@ env:
   VLLM_TAG: ${{ inputs.vllm_tag || 'step-5-preview' }}
   MODEL: ${{ inputs.model || 'stepfun-ai/Step-5-Preview' }}
   WORKER_REPO: ${{ inputs.worker_repo || 'ashwinsreedhar28/worker-vllm' }}
-  WORKER_REF: ${{ inputs.worker_ref || 'fix/version-guard-any-base-tag' }}
+  WORKER_REF: ${{ inputs.worker_ref || 'day0-integration' }}
   PUSH_IMAGE: ${{ github.event_name == 'push' || inputs.push_image }}
 
 defaults:
@@ -100,7 +100,7 @@ jobs:
           sha="$(git -C worker rev-parse --short HEAD)"
           # The default worker branch owns day0-<tag>; any other branch gets its own
           # name so a test build never overwrites the image the board points at.
-          if [ "$WORKER_REPO@$WORKER_REF" = "ashwinsreedhar28/worker-vllm@fix/version-guard-any-base-tag" ]; then
+          if [ "$WORKER_REPO@$WORKER_REF" = "ashwinsreedhar28/worker-vllm@day0-integration" ]; then
             name="day0-${safe_tag}"; results="data/results/${safe_tag}.json"
           else
             ref="$(slug "$WORKER_REF" | cut -c1-40)"

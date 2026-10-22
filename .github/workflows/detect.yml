@@ -32,14 +32,24 @@ jobs:
         id: poll
         run: python3 detect/poll.py ${{ inputs.since && format('--since {0}', inputs.since) || '' }}
 
-      - name: Commit state
+      - name: Commit state and board
         run: |
           git config user.name "day0-ready bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/state.json
-          git diff --cached --quiet && exit 0
-          git commit -m "detect: $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          # Rebuild the board on the latest branch each try (a smoke run may have
+          # recorded a result meanwhile), so the board's "Last poll" stays current.
+          cp data/state.json /tmp/state.json
+          branch="${GITHUB_REF_NAME}"
+          for i in 1 2 3; do
+            git fetch -q origin "$branch" && git reset -q --hard "origin/$branch"
+            cp /tmp/state.json data/state.json
+            python3 detect/board.py > /dev/null
+            git add data/state.json data/board.md data/ready.json
+            git diff --cached --quiet && exit 0
+            git commit -q -m "detect: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push -q origin "HEAD:$branch" && exit 0
+            sleep 5
+          done
           exit 1
 
       - name: Start builds for new launches

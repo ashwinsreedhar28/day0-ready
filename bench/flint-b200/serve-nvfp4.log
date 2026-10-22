@@ -1,0 +1,1307 @@
+W1022 01:46:18.381000 6950 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1022 01:46:18.381000 6950 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1022 01:46:18.382000 6950 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418] 
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418]        █     █     █▄   ▄█
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.32.0rc1.dev348+ge7c846767
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418]   █▄█▀ █     █     █     █  model   /root/models/flint-nvfp4.gguf
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:418] 
+(APIServer pid=6950) INFO 10-22 01:46:23 [api_utils.py:357] non-default args: {'model_tag': '/root/models/flint-nvfp4.gguf', 'host': '127.0.0.1', 'model': '/root/models/flint-nvfp4.gguf', 'tokenizer': 'RecursiveSI/flint', 'hf_config_path': 'RecursiveSI/flint', 'max_model_len': 36864, 'served_model_name': ['flint'], 'attention_backend': 'FLASHINFER'}
+(APIServer pid=6950) INFO 10-22 01:46:23 [model.py:733] Resolved architecture: FlintForCausalLM
+(APIServer pid=6950) INFO 10-22 01:46:23 [model.py:2152] Using max model len 36864
+(APIServer pid=6950) INFO 10-22 01:46:23 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=16384.
+(APIServer pid=6950) INFO 10-22 01:46:23 [kernel.py:476] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]Fetching 20 files: 100%|██████████| 20/20 [00:00<00:00, 1713.67it/s]
+W1022 01:46:26.316000 7234 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1022 01:46:26.316000 7234 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1022 01:46:26.316000 7234 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+(EngineCore pid=7234) INFO 10-22 01:46:30 [core.py:133] Initializing a V1 LLM engine (v0.32.0rc1.dev348+ge7c846767) with config: model='/root/models/flint-nvfp4.gguf', speculative_config=None, tokenizer='RecursiveSI/flint', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=36864, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=flint, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::qwen4_exp_qsa_prepare_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512, 528, 544, 560, 576, 592, 608, 624, 640, 656, 672, 688, 704, 720, 736, 752, 768, 784, 800, 816, 832, 848, 864, 880, 896, 912, 928, 944, 960, 976, 992, 1008, 1024], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 1024, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=7234) INFO 10-22 01:46:33 [parallel_state.py:1911] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_a2c9108d5c7d417a8b86a177ec2f042a backend=nccl
+(EngineCore pid=7234) INFO 10-22 01:46:33 [parallel_state.py:2355] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+(EngineCore pid=7234) INFO 10-22 01:46:33 [gpu_worker.py:510] Using V2 Model Runner
+(EngineCore pid=7234) INFO 10-22 01:46:34 [model_runner.py:397] Loading model from scratch...
+(EngineCore pid=7234) INFO 10-22 01:46:34 [__init__.py:1207] Using FlashInferCuteDslNvFp4W4A16LinearKernel for NVFP4 GEMM
+(EngineCore pid=7234) INFO 10-22 01:46:34 [cuda.py:448] Using AttentionBackendEnum.FLASHINFER backend.
+(EngineCore pid=7234) INFO 10-22 01:46:34 [cuda.py:448] Using AttentionBackendEnum.FLASHINFER backend.
+(EngineCore pid=7234) INFO 10-22 01:46:34 [linear.py:236] Flint dense GEMV installed on 196 linear layers
+(EngineCore pid=7234) WARNING 10-22 01:46:34 [vllm.py:3532] `torch.compile` is turned on, but the model /root/models/flint-nvfp4.gguf does not support it. Please open an issue on GitHub if you want it to be supported.
+(EngineCore pid=7234) INFO 10-22 01:46:34 [base_loader.py:82] Initializing model took 0.324674 seconds
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.0.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.0.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.0.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.0.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.1.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.1.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.1.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.1.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.2.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.2.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.2.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.2.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.3.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.3.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.3.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.3.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.4.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.4.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.4.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.4.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.5.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.5.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.5.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.5.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.6.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.6.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.6.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.6.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.7.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.7.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.7.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.7.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.8.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.8.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.8.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.8.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.9.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.9.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.9.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.9.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.10.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.10.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.10.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.10.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.11.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.11.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.11.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.11.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.12.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.12.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.12.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.12.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.13.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.13.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.13.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.13.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.14.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.14.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.14.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.14.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.15.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.15.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.15.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.15.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.16.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.16.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.16.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.16.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.17.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.17.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.17.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.17.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.18.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.18.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.18.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.18.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.19.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.19.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.19.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.19.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.20.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.20.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.20.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.20.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.21.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.21.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.21.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.21.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.22.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.22.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.22.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.22.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.23.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.23.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.23.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.23.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.24.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.24.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.24.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.24.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.25.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.25.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.25.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.25.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.26.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.26.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.26.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.26.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.27.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.27.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.27.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.27.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.28.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.28.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.28.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.28.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.29.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.29.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.29.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.29.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.30.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.30.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.30.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.30.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.31.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.31.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.31.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.31.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.32.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.32.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.32.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.32.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.33.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.33.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.33.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.33.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.34.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.34.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.34.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.34.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.35.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.35.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.35.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.35.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.36.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.36.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.36.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.36.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.37.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.37.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.37.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.37.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.38.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.38.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.38.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.38.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.39.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.39.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.39.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.39.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.40.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.40.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.40.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.40.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.41.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.41.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.41.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.41.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.42.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.42.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.42.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.42.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.43.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.43.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.43.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.43.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.44.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.44.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.44.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.44.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.45.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.45.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.45.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.45.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.46.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.46.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.46.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.46.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.47.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.47.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.47.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.47.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.48.input_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.48.post_attention_layernorm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.48.self_attn.k_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) WARNING 10-22 01:46:51 [utils.py:333] Attempted to load weight model.layers.48.self_attn.q_norm.weight with dtype torch.float32 into parameter with dtype torch.bfloat16
+(EngineCore pid=7234) INFO 10-22 01:46:51 [default_loader.py:501] Loading weights took 197518.83 seconds
+(EngineCore pid=7234) INFO 10-22 01:46:52 [linear.py:160] Flint dense W4A16 (N=5120, K=2048): M<=16 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:53 [linear.py:160] Flint dense W4A16 (N=2048, K=4096): M<=32 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:54 [linear.py:160] Flint dense W4A16 + SiLU-and-mul (N=12288, K=2048): M<=16 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:55 [linear.py:160] Flint dense W4A16 (N=2048, K=6144): M<=32 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:56 [linear.py:160] Flint dense W4A16 + SiLU-and-mul (N=2048, K=2048): M<=32 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:57 [linear.py:160] Flint dense W4A16 (N=2048, K=1024): M<=32 -> Flint CuTe GEMV
+(EngineCore pid=7234) INFO 10-22 01:46:58 [model_runner.py:429] Model loading took 21.84 GiB memory and 23.915460 seconds
+(EngineCore pid=7234) INFO 10-22 01:46:58 [topk_topp_sampler.py:147] Using FlashInfer for top-p & top-k sampling.
+(EngineCore pid=7234) INFO 10-22 01:46:58 [torch_utils.py:295] Reducing Torch threads from 30 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=7234) INFO 10-22 01:46:58 [utils.py:348] Using LBHNC KV cache layout.
+[2026-10-22 01:47:00.635] [info] TRT-LLM fused MoE cooperative launch SM allocation: 140 SMs used for MoE, 8 SMs reserved for overlapping kernels (total SMs: 148)
+(EngineCore pid=7234) WARNING 10-22 01:47:01 [kv_cache_planning.py:537] Add 7 padding layers, may waste at most 20.00% KV cache memory
+(EngineCore pid=7234) INFO 10-22 01:47:01 [flashinfer.py:966] FlashInfer resolved query dtypes: prefill=torch.bfloat16, decode=torch.bfloat16, decode_backend=trtllm-gen, kv_cache_dtype=torch.bfloat16, arch=sm100
+(EngineCore pid=7234) WARNING 10-22 01:47:01 [compilation.py:1473] Cudagraph mode FULL_AND_PIECEWISE requires piecewise capture, but the loaded model provides neither a compiled submodule nor breakable CUDA graphs. Overriding to FULL_DECODE_ONLY.
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s](EngineCore pid=7234) INFO 10-22 01:47:02 [flashinfer.py:772] Using TRTLLM attention (required for attention sinks).
+Capturing CUDA graphs (FULL):  50%|█████     | 1/2 [00:01<00:01,  1.90s/it]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:02<00:00,  1.16it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:02<00:00,  1.02s/it]
+(EngineCore pid=7234) INFO 10-22 01:47:04 [model_runner.py:1140] Graph capturing finished in 3 secs, took 0.58 GiB
+(EngineCore pid=7234) INFO 10-22 01:47:05 [gpu_worker.py:763] Available KV cache memory: 139.72 GiB
+(EngineCore pid=7234) INFO 10-22 01:47:05 [gpu_worker.py:778] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.9200 is equivalent to --gpu-memory-utilization=0.9155 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9245. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=7234) WARNING 10-22 01:47:05 [kv_cache_planning.py:537] Add 7 padding layers, may waste at most 20.00% KV cache memory
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kv_cache_utils.py:1101] GPU KV cache size: 1,410,480 tokens, Maximum concurrency for 36,864 tokens per request: 38.26x
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kv_cache_utils.py:865] kv cache group sizes (16, 16, 16, 16)
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kv_cache_utils.py:866] kv lcm block sizes 16
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kernel_warmup.py:178] JIT kernel warmup starting.
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kernel_warmup.py:191] JIT kernel warmup finished in 0.00s.
+(EngineCore pid=7234) INFO 10-22 01:47:05 [kernel_warmup.py:100] Warming up ll_bf16 router GEMM kernels for shapes: ((2048, 256),).
+(EngineCore pid=7234) INFO 10-22 01:47:06 [kernel_warmup.py:486] Using FlashInfer managed autotune cache (root=flashinfer default)
+2026-10-22 01:47:06,069 - INFO - autotuner.py:1048 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+2026-10-22 01:47:06,133 - INFO - autotune_cache.py:495 - flashinfer.jit: [Autotuner]: Managed autotune cache attached for this process: ManagedAutotuneCache(env_dir='/root/.cache/flashinfer/autotune/v2/4d253454fcd4592c', hits=0, misses=0)
+(EngineCore pid=7234) INFO 10-22 01:47:06 [kernel_warmup.py:394] Running FlashInfer autotune with 16384 tokens and token buckets (1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 768, 1024, 1280, 1536, 1792, 2048, 2560, 3072, 3584, 4096, 8192, 16384).
+2026-10-22 01:47:06,264 - INFO - autotuner.py:1071 - flashinfer.jit: [Autotuner]: Autotuning process ends
+(EngineCore pid=7234) INFO 10-22 01:47:16 [kernel_warmup.py:293] Warming up FlashInfer attention.
+Capturing CUDA graphs (FULL):   0%|          | 0/83 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):   1%|          | 1/83 [00:00<00:14,  5.55it/s]Capturing CUDA graphs (FULL):   2%|▏         | 2/83 [00:00<00:13,  6.15it/s]Capturing CUDA graphs (FULL):   4%|▎         | 3/83 [00:00<00:12,  6.44it/s]Capturing CUDA graphs (FULL):   5%|▍         | 4/83 [00:00<00:11,  6.62it/s]Capturing CUDA graphs (FULL):   6%|▌         | 5/83 [00:00<00:11,  6.69it/s]Capturing CUDA graphs (FULL):   7%|▋         | 6/83 [00:00<00:11,  6.76it/s]Capturing CUDA graphs (FULL):   8%|▊         | 7/83 [00:01<00:11,  6.72it/s]Capturing CUDA graphs (FULL):  10%|▉         | 8/83 [00:01<00:11,  6.75it/s]Capturing CUDA graphs (FULL):  11%|█         | 9/83 [00:01<00:10,  6.78it/s]Capturing CUDA graphs (FULL):  12%|█▏        | 10/83 [00:01<00:10,  6.82it/s]Capturing CUDA graphs (FULL):  13%|█▎        | 11/83 [00:01<00:10,  6.80it/s]Capturing CUDA graphs (FULL):  14%|█▍        | 12/83 [00:01<00:10,  6.79it/s]Capturing CUDA graphs (FULL):  16%|█▌        | 13/83 [00:01<00:10,  6.81it/s]Capturing CUDA graphs (FULL):  17%|█▋        | 14/83 [00:02<00:10,  6.83it/s]Capturing CUDA graphs (FULL):  18%|█▊        | 15/83 [00:02<00:09,  6.84it/s]Capturing CUDA graphs (FULL):  19%|█▉        | 16/83 [00:02<00:09,  6.83it/s]Capturing CUDA graphs (FULL):  20%|██        | 17/83 [00:02<00:09,  6.85it/s]Capturing CUDA graphs (FULL):  22%|██▏       | 18/83 [00:02<00:09,  6.85it/s]Capturing CUDA graphs (FULL):  23%|██▎       | 19/83 [00:02<00:09,  6.87it/s]Capturing CUDA graphs (FULL):  24%|██▍       | 20/83 [00:02<00:09,  6.89it/s]Capturing CUDA graphs (FULL):  25%|██▌       | 21/83 [00:03<00:09,  6.89it/s]Capturing CUDA graphs (FULL):  27%|██▋       | 22/83 [00:03<00:08,  6.89it/s]Capturing CUDA graphs (FULL):  28%|██▊       | 23/83 [00:03<00:08,  6.88it/s]Capturing CUDA graphs (FULL):  29%|██▉       | 24/83 [00:03<00:08,  6.86it/s]Capturing CUDA graphs (FULL):  30%|███       | 25/83 [00:03<00:08,  6.69it/s]Capturing CUDA graphs (FULL):  31%|███▏      | 26/83 [00:03<00:08,  6.71it/s]Capturing CUDA graphs (FULL):  33%|███▎      | 27/83 [00:03<00:08,  6.74it/s]Capturing CUDA graphs (FULL):  34%|███▎      | 28/83 [00:04<00:08,  6.73it/s]Capturing CUDA graphs (FULL):  35%|███▍      | 29/83 [00:04<00:08,  6.65it/s]Capturing CUDA graphs (FULL):  36%|███▌      | 30/83 [00:04<00:08,  6.59it/s]Capturing CUDA graphs (FULL):  37%|███▋      | 31/83 [00:04<00:07,  6.68it/s]Capturing CUDA graphs (FULL):  39%|███▊      | 32/83 [00:04<00:07,  6.68it/s]Capturing CUDA graphs (FULL):  40%|███▉      | 33/83 [00:04<00:07,  6.75it/s]Capturing CUDA graphs (FULL):  41%|████      | 34/83 [00:05<00:07,  6.77it/s]Capturing CUDA graphs (FULL):  42%|████▏     | 35/83 [00:05<00:07,  6.82it/s]Capturing CUDA graphs (FULL):  43%|████▎     | 36/83 [00:05<00:06,  6.88it/s]Capturing CUDA graphs (FULL):  45%|████▍     | 37/83 [00:05<00:06,  6.89it/s]Capturing CUDA graphs (FULL):  46%|████▌     | 38/83 [00:05<00:06,  6.87it/s]Capturing CUDA graphs (FULL):  47%|████▋     | 39/83 [00:05<00:06,  6.87it/s]Capturing CUDA graphs (FULL):  48%|████▊     | 40/83 [00:05<00:06,  6.92it/s]Capturing CUDA graphs (FULL):  49%|████▉     | 41/83 [00:06<00:06,  6.93it/s]Capturing CUDA graphs (FULL):  51%|█████     | 42/83 [00:06<00:06,  6.78it/s]Capturing CUDA graphs (FULL):  52%|█████▏    | 43/83 [00:06<00:05,  6.80it/s]Capturing CUDA graphs (FULL):  53%|█████▎    | 44/83 [00:06<00:05,  6.84it/s]Capturing CUDA graphs (FULL):  54%|█████▍    | 45/83 [00:06<00:05,  6.89it/s]Capturing CUDA graphs (FULL):  55%|█████▌    | 46/83 [00:06<00:05,  6.90it/s]Capturing CUDA graphs (FULL):  57%|█████▋    | 47/83 [00:06<00:05,  6.89it/s]Capturing CUDA graphs (FULL):  58%|█████▊    | 48/83 [00:07<00:05,  6.93it/s]Capturing CUDA graphs (FULL):  59%|█████▉    | 49/83 [00:07<00:04,  6.93it/s]Capturing CUDA graphs (FULL):  60%|██████    | 50/83 [00:07<00:04,  6.92it/s]Capturing CUDA graphs (FULL):  61%|██████▏   | 51/83 [00:07<00:04,  6.93it/s]Capturing CUDA graphs (FULL):  63%|██████▎   | 52/83 [00:07<00:04,  6.91it/s]Capturing CUDA graphs (FULL):  64%|██████▍   | 53/83 [00:07<00:04,  6.92it/s]Capturing CUDA graphs (FULL):  65%|██████▌   | 54/83 [00:07<00:04,  6.87it/s]Capturing CUDA graphs (FULL):  66%|██████▋   | 55/83 [00:08<00:04,  6.80it/s]Capturing CUDA graphs (FULL):  67%|██████▋   | 56/83 [00:08<00:03,  6.82it/s]Capturing CUDA graphs (FULL):  69%|██████▊   | 57/83 [00:08<00:03,  6.81it/s]Capturing CUDA graphs (FULL):  70%|██████▉   | 58/83 [00:08<00:03,  6.81it/s]Capturing CUDA graphs (FULL):  71%|███████   | 59/83 [00:08<00:03,  6.88it/s]Capturing CUDA graphs (FULL):  72%|███████▏  | 60/83 [00:08<00:03,  6.83it/s]Capturing CUDA graphs (FULL):  73%|███████▎  | 61/83 [00:08<00:03,  6.83it/s]Capturing CUDA graphs (FULL):  75%|███████▍  | 62/83 [00:09<00:03,  6.87it/s]Capturing CUDA graphs (FULL):  76%|███████▌  | 63/83 [00:09<00:02,  6.87it/s]Capturing CUDA graphs (FULL):  77%|███████▋  | 64/83 [00:09<00:02,  6.93it/s]Capturing CUDA graphs (FULL):  78%|███████▊  | 65/83 [00:09<00:02,  6.93it/s]Capturing CUDA graphs (FULL):  80%|███████▉  | 66/83 [00:09<00:02,  6.97it/s]Capturing CUDA graphs (FULL):  81%|████████  | 67/83 [00:09<00:02,  6.98it/s]Capturing CUDA graphs (FULL):  82%|████████▏ | 68/83 [00:09<00:02,  7.00it/s]Capturing CUDA graphs (FULL):  83%|████████▎ | 69/83 [00:10<00:02,  6.97it/s]Capturing CUDA graphs (FULL):  84%|████████▍ | 70/83 [00:10<00:01,  6.97it/s]Capturing CUDA graphs (FULL):  86%|████████▌ | 71/83 [00:10<00:01,  6.99it/s]Capturing CUDA graphs (FULL):  87%|████████▋ | 72/83 [00:10<00:01,  7.01it/s]Capturing CUDA graphs (FULL):  88%|████████▊ | 73/83 [00:10<00:01,  7.25it/s]Capturing CUDA graphs (FULL):  89%|████████▉ | 74/83 [00:10<00:01,  7.36it/s]Capturing CUDA graphs (FULL):  90%|█████████ | 75/83 [00:10<00:01,  7.54it/s]Capturing CUDA graphs (FULL):  92%|█████████▏| 76/83 [00:11<00:00,  7.63it/s]Capturing CUDA graphs (FULL):  94%|█████████▍| 78/83 [00:11<00:00,  8.87it/s]Capturing CUDA graphs (FULL):  96%|█████████▋| 80/83 [00:11<00:00, 10.70it/s]Capturing CUDA graphs (FULL): 100%|██████████| 83/83 [00:11<00:00,  7.25it/s]
+(EngineCore pid=7234) INFO 10-22 01:47:31 [model_runner.py:1140] Graph capturing finished in 12 secs, took 0.40 GiB
+(EngineCore pid=7234) INFO 10-22 01:47:31 [gpu_worker.py:982] CUDA graph pool memory: 0.4 GiB (actual), 0.79 GiB (estimated), difference: 0.39 GiB (98.5%).
+(EngineCore pid=7234) INFO 10-22 01:47:31 [gpu_worker.py:1045] Free memory on device (177.54/178.34 GiB) on startup. Desired GPU memory utilization is (0.92, 164.08 GiB). Actual usage is 22.62 GiB for consumed memory (weights + non-torch), 1.73 GiB for peak activation, and 0.4 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=149435412296` (139.17 GiB) to fit into requested memory, or `--kv-cache-memory=163887156736` (152.63 GiB) to fully utilize gpu memory. Current kv cache memory in use is 139.72 GiB.
+(EngineCore pid=7234) INFO 10-22 01:47:32 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=7234) INFO 10-22 01:47:32 [core.py:402] init engine (profile, create kv cache, warmup model) took 34.23 s
+Fetching 20 files:   0%|          | 0/20 [00:00<?, ?it/s]Fetching 20 files: 100%|██████████| 20/20 [00:00<00:00, 1772.70it/s]
+(EngineCore pid=7234) INFO 10-22 01:47:33 [kernel.py:476] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(APIServer pid=6950) INFO 10-22 01:47:33 [entry.py:136] Supported tasks: ['generate']
+(APIServer pid=6950) INFO 10-22 01:47:33 [factories.py:89] Scale-out endpoints are disabled. Restart vllm serve with --enable-scale-out to enable them.
+(APIServer pid=6950) INFO 10-22 01:47:34 [hf.py:647] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=6950) WARNING 10-22 01:47:34 [model.py:1893] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'temperature': 1.0, 'top_k': 20, 'top_p': 0.95}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+(APIServer pid=6950) INFO 10-22 01:47:34 [entry.py:140] Starting vLLM server on http://127.0.0.1:8000
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:186] Available routes are:
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /openapi.json, Methods: GET, HEAD
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /docs, Methods: GET, HEAD
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /docs/oauth2-redirect, Methods: GET, HEAD
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /redoc, Methods: GET, HEAD
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /load, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /version, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /kv_event_sources, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /health, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /metrics, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /tokenize, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /detokenize, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/models, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/systemone, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/decisions, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /ping, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /ping, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /invocations, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/chat/completions, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/chat/completions/batch, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/responses, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/responses/{response_id}, Methods: GET
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/responses/{response_id}/cancel, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/completions, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/messages, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/messages/count_tokens, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /generative_scoring, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /scale_elastic_ep, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /is_scaling_elastic_ep, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/chat/completions/render, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/messages/render, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/completions/render, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/responses/render, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/chat/completions/derender, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /v1/completions/derender, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /inference/v1/generate, Methods: POST
+(APIServer pid=6950) INFO 10-22 01:47:34 [launcher.py:195] Route: /inference/v1/abort_requests, Methods: POST
+INFO:     Started server process [6950]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:41348 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41352 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:48:54 [loggers.py:335] Engine 000: Avg prompt throughput: 3199.8 tokens/s, Avg generation throughput: 6.4 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 20.0%
+(APIServer pid=6950) INFO 10-22 01:49:04 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 20.0%
+INFO:     127.0.0.1:48326 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:49:14 [loggers.py:335] Engine 000: Avg prompt throughput: 2457.3 tokens/s, Avg generation throughput: 305.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.2%, Prefix cache hit rate: 12.4%
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48336 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:49:24 [loggers.py:335] Engine 000: Avg prompt throughput: 4095.6 tokens/s, Avg generation throughput: 514.1 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 7.6%
+(APIServer pid=6950) INFO 10-22 01:49:34 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 7.6%
+INFO:     127.0.0.1:60710 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:49:44 [loggers.py:335] Engine 000: Avg prompt throughput: 9836.1 tokens/s, Avg generation throughput: 409.6 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 17.2%
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60712 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:49:54 [loggers.py:335] Engine 000: Avg prompt throughput: 9836.3 tokens/s, Avg generation throughput: 409.6 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 20.0%
+(APIServer pid=6950) INFO 10-22 01:50:04 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 20.0%
+INFO:     127.0.0.1:38134 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:51:14 [loggers.py:335] Engine 000: Avg prompt throughput: 1638.4 tokens/s, Avg generation throughput: 175.7 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.2%, Prefix cache hit rate: 19.1%
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:51:24 [loggers.py:335] Engine 000: Avg prompt throughput: 4095.7 tokens/s, Avg generation throughput: 519.8 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.2%, Prefix cache hit rate: 17.3%
+INFO:     127.0.0.1:38136 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38136 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:51:34 [loggers.py:335] Engine 000: Avg prompt throughput: 819.1 tokens/s, Avg generation throughput: 123.7 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 16.9%
+INFO:     127.0.0.1:58092 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58102 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58132 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58140 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58164 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58170 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58102 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58132 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58140 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58164 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58170 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:51:44 [loggers.py:335] Engine 000: Avg prompt throughput: 13105.3 tokens/s, Avg generation throughput: 1425.1 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 1.6%, Prefix cache hit rate: 13.0%
+INFO:     127.0.0.1:58098 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58102 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58132 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58140 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58164 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58170 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58102 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58132 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58140 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58164 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58170 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58098 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58102 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:51:54 [loggers.py:335] Engine 000: Avg prompt throughput: 13106.6 tokens/s, Avg generation throughput: 1851.4 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 10.6%
+(APIServer pid=6950) INFO 10-22 01:52:04 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 10.6%
+INFO:     127.0.0.1:43426 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43434 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43434 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43434 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43464 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43472 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43488 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43500 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43514 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43520 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43540 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43556 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43570 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43576 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43614 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43630 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43634 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43638 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43640 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43642 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43650 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43656 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43660 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43662 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43676 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43712 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:52:14 [loggers.py:335] Engine 000: Avg prompt throughput: 26205.8 tokens/s, Avg generation throughput: 2193.0 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 6.4%, Prefix cache hit rate: 7.7%
+INFO:     127.0.0.1:43434 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43464 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43472 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43488 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43500 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43514 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43520 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43540 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43556 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43570 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43576 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43638 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43640 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43642 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43650 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43614 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43630 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43634 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43656 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43660 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43662 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43676 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43434 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43464 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:52:24 [loggers.py:335] Engine 000: Avg prompt throughput: 26207.9 tokens/s, Avg generation throughput: 4358.8 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 6.0%
+INFO:     127.0.0.1:43472 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43488 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43500 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43514 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43520 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43540 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43556 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43570 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43576 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43638 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43640 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43642 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43650 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43614 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43630 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43634 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43656 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43660 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43662 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43676 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43434 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43464 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43472 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43488 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43500 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43514 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43520 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43540 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43556 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43570 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43576 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43638 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43640 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43642 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43650 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43614 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43630 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43634 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43656 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43660 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43676 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43662 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43712 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:52:34 [loggers.py:335] Engine 000: Avg prompt throughput: 52425.1 tokens/s, Avg generation throughput: 3495.9 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 6.0%, Prefix cache hit rate: 4.2%
+INFO:     127.0.0.1:43434 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43450 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:52:44 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 3057.3 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 4.2%
+(APIServer pid=6950) INFO 10-22 01:52:54 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 4.2%
+INFO:     127.0.0.1:45506 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45524 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45534 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45538 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45564 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45572 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45578 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45602 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45612 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45620 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45628 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45636 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45658 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45674 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45696 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45720 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45728 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45730 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45744 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45748 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45758 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45766 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45770 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45776 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45790 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45800 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45816 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45824 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45832 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45840 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45852 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45866 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45882 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45890 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45906 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45932 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45958 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45972 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45980 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46000 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46010 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46012 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46016 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46028 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46052 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46062 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46064 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46066 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46086 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:04 [loggers.py:335] Engine 000: Avg prompt throughput: 52267.1 tokens/s, Avg generation throughput: 118.1 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 12.0%, Prefix cache hit rate: 3.2%
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45524 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45534 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45538 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45564 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45572 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45578 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45602 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45612 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45620 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45628 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45636 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45658 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45674 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45696 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45720 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45728 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45730 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45744 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45748 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45758 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45766 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45770 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45776 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45790 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45800 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45816 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45824 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45832 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45840 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45852 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45866 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45882 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45890 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45906 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45932 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45958 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45972 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45980 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46000 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46010 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46012 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46016 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46028 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46052 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46062 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46064 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46066 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:14 [loggers.py:335] Engine 000: Avg prompt throughput: 22874.1 tokens/s, Avg generation throughput: 6438.3 tokens/s, Running: 31 reqs, Waiting: 28 reqs, GPU KV cache usage: 7.5%, Prefix cache hit rate: 2.9%
+INFO:     127.0.0.1:46082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46086 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:24 [loggers.py:335] Engine 000: Avg prompt throughput: 29478.5 tokens/s, Avg generation throughput: 6277.1 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 13.2%, Prefix cache hit rate: 2.6%
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45524 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45534 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45538 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45564 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45572 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45578 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45602 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45612 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45620 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45628 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45636 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45658 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45674 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45696 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45730 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45720 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45728 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45744 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45748 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45758 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45766 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45770 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45776 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45790 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45800 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45816 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45824 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45832 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45840 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45882 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45852 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45866 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45890 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45906 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45932 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45958 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45972 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45980 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46000 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46010 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46012 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46016 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46028 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46052 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46062 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46064 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46066 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46086 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:34 [loggers.py:335] Engine 000: Avg prompt throughput: 52408.5 tokens/s, Avg generation throughput: 4964.5 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 12.9%, Prefix cache hit rate: 2.2%
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45524 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45534 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45538 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45564 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45572 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45578 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45592 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45602 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45612 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45620 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45628 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45636 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45658 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45674 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45690 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45696 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45706 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45730 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45720 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45728 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45744 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45748 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45758 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45766 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45770 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45776 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45790 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45800 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45816 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45824 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45832 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45840 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45882 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45852 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45866 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45890 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45906 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45932 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45958 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45972 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45980 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46000 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46010 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46012 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46016 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46028 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46052 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46062 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46064 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46066 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46086 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:44 [loggers.py:335] Engine 000: Avg prompt throughput: 51591.6 tokens/s, Avg generation throughput: 4972.9 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 12.6%, Prefix cache hit rate: 2.1%
+INFO:     127.0.0.1:45512 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45524 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:53:54 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 3418.4 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 2.1%
+INFO:     127.0.0.1:57882 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:04 [loggers.py:335] Engine 000: Avg prompt throughput: 6553.2 tokens/s, Avg generation throughput: 172.8 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.7%, Prefix cache hit rate: 2.1%
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:14 [loggers.py:335] Engine 000: Avg prompt throughput: 13105.2 tokens/s, Avg generation throughput: 423.0 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.7%, Prefix cache hit rate: 2.0%
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:24 [loggers.py:335] Engine 000: Avg prompt throughput: 6553.3 tokens/s, Avg generation throughput: 223.3 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 2.0%
+INFO:     127.0.0.1:52314 - "POST /tokenize HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:34 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 2.0%
+INFO:     127.0.0.1:52328 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52328 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52328 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52344 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52350 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52360 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52366 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52372 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52380 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52328 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52344 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52350 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52360 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52366 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52372 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52380 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:44 [loggers.py:335] Engine 000: Avg prompt throughput: 52417.9 tokens/s, Avg generation throughput: 951.9 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 5.3%, Prefix cache hit rate: 1.8%
+INFO:     127.0.0.1:52328 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52344 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52350 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52360 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52366 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52372 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52380 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:54:54 [loggers.py:335] Engine 000: Avg prompt throughput: 26212.3 tokens/s, Avg generation throughput: 1505.4 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 1.7%
+INFO:     127.0.0.1:52328 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52344 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52350 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52360 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52366 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52372 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52380 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52328 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52344 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:55:04 [loggers.py:335] Engine 000: Avg prompt throughput: 26210.8 tokens/s, Avg generation throughput: 819.1 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 1.6%
+(APIServer pid=6950) INFO 10-22 01:55:14 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 1.6%
+INFO:     127.0.0.1:46866 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46874 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46874 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46874 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46886 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46902 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46908 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46924 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46934 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46944 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46956 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46964 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46976 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46990 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46998 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47014 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47042 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47056 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47020 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47090 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47108 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:55:34 [loggers.py:335] Engine 000: Avg prompt throughput: 16376.4 tokens/s, Avg generation throughput: 3.1 tokens/s, Running: 7 reqs, Waiting: 14 reqs, GPU KV cache usage: 6.1%, Prefix cache hit rate: 1.5%
+INFO:     127.0.0.1:47118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47126 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47134 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47160 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47170 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:55:44 [loggers.py:335] Engine 000: Avg prompt throughput: 88450.9 tokens/s, Avg generation throughput: 908.8 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 21.2%, Prefix cache hit rate: 1.3%
+INFO:     127.0.0.1:46874 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46886 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46902 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46908 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46924 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46934 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46944 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46956 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46964 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46976 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46990 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46998 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47014 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47042 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47056 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47020 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47082 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:55:54 [loggers.py:335] Engine 000: Avg prompt throughput: 32766.8 tokens/s, Avg generation throughput: 2366.6 tokens/s, Running: 21 reqs, Waiting: 10 reqs, GPU KV cache usage: 15.5%, Prefix cache hit rate: 1.2%
+INFO:     127.0.0.1:47090 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47108 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47126 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47134 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47160 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47170 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:56:04 [loggers.py:335] Engine 000: Avg prompt throughput: 72067.9 tokens/s, Avg generation throughput: 1434.4 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 21.3%, Prefix cache hit rate: 1.1%
+INFO:     127.0.0.1:46874 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46886 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46902 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46908 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46924 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46934 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46944 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46956 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46964 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46976 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46990 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46998 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47014 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47042 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47056 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47020 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47090 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47108 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47126 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:56:14 [loggers.py:335] Engine 000: Avg prompt throughput: 49142.6 tokens/s, Avg generation throughput: 1861.6 tokens/s, Running: 21 reqs, Waiting: 9 reqs, GPU KV cache usage: 15.4%, Prefix cache hit rate: 1.0%
+INFO:     127.0.0.1:47134 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47160 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47170 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:56:24 [loggers.py:335] Engine 000: Avg prompt throughput: 55658.5 tokens/s, Avg generation throughput: 1944.4 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 21.4%, Prefix cache hit rate: 1.0%
+INFO:     127.0.0.1:46874 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46886 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46902 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46908 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46916 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46924 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46934 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46944 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46956 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46964 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46976 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46990 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46992 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46998 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47014 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47036 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47042 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47056 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47020 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47090 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47108 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47118 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47126 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47134 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47160 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47170 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:56:34 [loggers.py:335] Engine 000: Avg prompt throughput: 65533.3 tokens/s, Avg generation throughput: 1350.7 tokens/s, Running: 22 reqs, Waiting: 10 reqs, GPU KV cache usage: 16.0%, Prefix cache hit rate: 0.9%
+(APIServer pid=6950) INFO 10-22 01:56:44 [loggers.py:335] Engine 000: Avg prompt throughput: 39312.3 tokens/s, Avg generation throughput: 2427.8 tokens/s, Running: 32 reqs, Waiting: 0 reqs, GPU KV cache usage: 21.5%, Prefix cache hit rate: 0.9%
+INFO:     127.0.0.1:46874 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46880 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:56:54 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 806.3 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.9%
+(APIServer pid=6950) INFO 10-22 01:57:04 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.9%
+INFO:     127.0.0.1:45130 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45142 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45142 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45142 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45156 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45166 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45182 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45186 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45194 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45224 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45234 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45250 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45256 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45258 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45274 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45290 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45302 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45304 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45318 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45320 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45338 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45340 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45356 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45368 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45382 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45390 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45400 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45408 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45416 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45420 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45436 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45478 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45492 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45494 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45506 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45508 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:57:44 [loggers.py:335] Engine 000: Avg prompt throughput: 29430.8 tokens/s, Avg generation throughput: 8.2 tokens/s, Running: 10 reqs, Waiting: 25 reqs, GPU KV cache usage: 8.4%, Prefix cache hit rate: 0.8%
+INFO:     127.0.0.1:45510 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45518 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45526 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45546 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45562 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45574 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45582 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45588 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45600 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45610 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45624 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45670 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45686 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45208 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45466 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45660 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:57:54 [loggers.py:335] Engine 000: Avg prompt throughput: 108125.7 tokens/s, Avg generation throughput: 168.3 tokens/s, Running: 43 reqs, Waiting: 21 reqs, GPU KV cache usage: 30.1%, Prefix cache hit rate: 0.8%
+(APIServer pid=6950) INFO 10-22 01:58:04 [loggers.py:335] Engine 000: Avg prompt throughput: 72042.2 tokens/s, Avg generation throughput: 1678.5 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 42.4%, Prefix cache hit rate: 0.7%
+(APIServer pid=6950) INFO 10-22 01:58:14 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 4293.8 tokens/s, Running: 63 reqs, Waiting: 0 reqs, GPU KV cache usage: 42.5%, Prefix cache hit rate: 0.7%
+INFO:     127.0.0.1:45142 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45156 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45166 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45182 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45186 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45194 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45224 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45234 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45250 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45256 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45258 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45274 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45290 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45302 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45304 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45318 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45320 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45338 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45340 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45356 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45368 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45382 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45390 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45400 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45408 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45416 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45420 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45436 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45478 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45492 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45494 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45506 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45510 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:58:24 [loggers.py:335] Engine 000: Avg prompt throughput: 98240.8 tokens/s, Avg generation throughput: 433.4 tokens/s, Running: 57 reqs, Waiting: 6 reqs, GPU KV cache usage: 39.4%, Prefix cache hit rate: 0.7%
+INFO:     127.0.0.1:45518 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45526 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45546 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45562 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45574 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45582 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45588 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45600 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45610 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45624 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45670 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45686 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45208 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45466 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45660 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:58:34 [loggers.py:335] Engine 000: Avg prompt throughput: 107616.8 tokens/s, Avg generation throughput: 364.6 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 43.8%, Prefix cache hit rate: 0.6%
+(APIServer pid=6950) INFO 10-22 01:58:44 [loggers.py:335] Engine 000: Avg prompt throughput: 3275.6 tokens/s, Avg generation throughput: 4222.3 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 42.9%, Prefix cache hit rate: 0.6%
+INFO:     127.0.0.1:45142 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45156 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45166 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45182 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45186 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45194 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45224 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45234 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45250 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45256 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45258 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45274 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45290 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45302 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45304 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45318 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45320 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45338 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45340 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45356 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45368 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45382 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45390 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45400 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:58:54 [loggers.py:335] Engine 000: Avg prompt throughput: 62253.8 tokens/s, Avg generation throughput: 1831.8 tokens/s, Running: 57 reqs, Waiting: 6 reqs, GPU KV cache usage: 39.9%, Prefix cache hit rate: 0.6%
+INFO:     127.0.0.1:45408 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45416 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45420 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45436 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45478 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45492 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45494 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45506 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45510 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45518 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45526 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45546 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45562 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45574 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45582 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45588 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45600 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45610 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45624 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45670 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45686 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45712 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:59:04 [loggers.py:335] Engine 000: Avg prompt throughput: 104849.3 tokens/s, Avg generation throughput: 358.4 tokens/s, Running: 57 reqs, Waiting: 6 reqs, GPU KV cache usage: 39.3%, Prefix cache hit rate: 0.5%
+INFO:     127.0.0.1:45208 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45466 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45660 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:59:14 [loggers.py:335] Engine 000: Avg prompt throughput: 42573.0 tokens/s, Avg generation throughput: 2819.1 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 42.6%, Prefix cache hit rate: 0.5%
+INFO:     127.0.0.1:45142 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45148 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45156 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45166 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45182 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45186 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45194 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45224 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45234 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45250 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45256 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45258 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45274 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45290 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:59:24 [loggers.py:335] Engine 000: Avg prompt throughput: 22932.7 tokens/s, Avg generation throughput: 3235.1 tokens/s, Running: 58 reqs, Waiting: 4 reqs, GPU KV cache usage: 40.5%, Prefix cache hit rate: 0.5%
+INFO:     127.0.0.1:45302 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45304 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45318 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45320 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45336 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45338 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45340 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45356 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45362 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45368 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45382 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45390 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45400 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45408 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45416 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45420 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45436 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45450 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45478 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45492 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45494 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45506 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45508 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45510 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45512 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45518 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45526 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45528 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45542 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45546 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45554 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45562 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45566 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:59:34 [loggers.py:335] Engine 000: Avg prompt throughput: 104835.9 tokens/s, Avg generation throughput: 364.7 tokens/s, Running: 58 reqs, Waiting: 5 reqs, GPU KV cache usage: 39.9%, Prefix cache hit rate: 0.5%
+INFO:     127.0.0.1:45574 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45582 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45588 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45600 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45610 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45624 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45632 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45670 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45686 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45700 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45712 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45208 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45466 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45608 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45646 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45660 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 01:59:44 [loggers.py:335] Engine 000: Avg prompt throughput: 81907.4 tokens/s, Avg generation throughput: 1391.2 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 42.3%, Prefix cache hit rate: 0.5%
+(APIServer pid=6950) INFO 10-22 01:59:54 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 4318.6 tokens/s, Running: 64 reqs, Waiting: 0 reqs, GPU KV cache usage: 43.2%, Prefix cache hit rate: 0.5%
+INFO:     127.0.0.1:45142 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45148 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=6950) INFO 10-22 02:00:04 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 716.8 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.5%
+(APIServer pid=6950) INFO 10-22 02:00:14 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.5%
+(APIServer pid=6950) INFO 10-22 02:07:27 [launcher.py:254] [shutdown] API server: shutdown triggered
+(APIServer pid=6950) INFO 10-22 02:07:27 [launcher.py:270] [shutdown] API server: stopping engine client mode=abort timeout=0s
+(APIServer pid=6950) INFO 10-22 02:07:27 [core_client.py:788] [shutdown] MPClient: start timeout=0s
+(APIServer pid=6950) INFO 10-22 02:07:27 [core_client.py:790] [shutdown] MPClient: stopping engine manager
+(APIServer pid=6950) INFO 10-22 02:07:27 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore
+(APIServer pid=6950) WARNING 10-22 02:07:27 [utils.py:648] [shutdown] Process manager: force killing remaining processes count=1
+(APIServer pid=6950) WARNING 10-22 02:07:27 [utils.py:653] [shutdown] Process manager: force killing remaining process EngineCore pid 7234
+(EngineCore pid=7234) INFO 10-22 02:07:27 [core.py:1487] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=7234) INFO 10-22 02:07:27 [core.py:1668] [shutdown] EngineCore: start mode=abort timeout=0s
+(APIServer pid=6950) INFO 10-22 02:07:27 [core_client.py:792] [shutdown] MPClient: engine manager stopped
+(APIServer pid=6950) INFO 10-22 02:07:27 [core_client.py:793] [shutdown] MPClient: cleaning up background resources
+(APIServer pid=6950) INFO 10-22 02:07:27 [core_client.py:795] [shutdown] MPClient: complete
+(APIServer pid=6950) INFO 10-22 02:07:27 [launcher.py:279] [shutdown] API server: engine client stopped
+(APIServer pid=6950) INFO 10-22 02:07:27 [launcher.py:282] [shutdown] API server: signalling HTTP server shutdown
+(APIServer pid=6950) INFO 10-22 02:07:27 [launcher.py:304] [shutdown] API server: shutting down FastAPI HTTP server
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

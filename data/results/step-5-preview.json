@@ -2,19 +2,19 @@
   "vllm_tag": "step-5-preview",
   "model": "stepfun-ai/Step-5-Preview",
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview",
-  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview-b779895",
-  "digest": "sha256:a9aee9946079e7ac7dd1c2b9d5f82c4bc2318520eef08991d36864263157b691",
-  "worker": "ashwinsreedhar28/worker-vllm@b779895",
-  "worker_ref": "fix/version-guard-any-base-tag",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-step-5-preview-11e1368",
+  "digest": "sha256:8bd8e89fa2a2e7d32fd8d83e9db230760ebe39d47f5bdfc42fc1eb4c940726f6",
+  "worker": "ashwinsreedhar28/worker-vllm@11e1368",
+  "worker_ref": "day0-integration",
   "build": "success",
-  "build_s": 263,
+  "build_s": 253,
   "pushed": "success",
   "verdict": "native",
-  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39688228097",
-  "finished_at": "2026-10-21T22:47:25Z",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39718801214",
+  "finished_at": "2026-10-22T03:55:01Z",
   "checks": {
     "model": "stepfun-ai/Step-5-Preview",
-    "checked_at": "2026-10-21T22:46:46Z",
+    "checked_at": "2026-10-22T03:54:23Z",
     "steps": {
       "versions": {
         "ok": true,
@@ -23,7 +23,7 @@
           "transformers": "5.19.0",
           "torch": "2.13.0+cu130"
         },
-        "s": 5.8
+        "s": 5.2
       },
       "hub_config": {
         "ok": true,
@@ -62,7 +62,7 @@
           "model_impl": "auto",
           "runner_type": "generate"
         },
-        "s": 12.0
+        "s": 11.2
       },
       "tokenizer": {
         "ok": true,

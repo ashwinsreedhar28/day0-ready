@@ -1,9 +1,10 @@
 # Day-0 board
 
-Last poll: 2026-10-23T00:37:20Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-10-23T01:07:20Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | tag → worker image |
 |---|---|---|---|---|---|---|
+| `minimax-m31-flash-x86_64-cu134` | 2026-10-23 01:07 | MiniMaxAI/MiniMax-M3.1-Flash | pending |  |  |  |
 | `flint` | 2026-10-21 16:09 | RecursiveSI/flint (HF search, 127 likes) | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665308085) → `worker-vllm:day0-flint` | **native**: vLLM resolves the architecture natively | pass: flint, 180gb, ATTENTION_BACKEND=FLASHINFER, 13.1 min | backfill |
 | `reflection-beam` | 2026-10-16 08:16 | no match | pending |  |  |  |
 | `muse-spark-open` | 2026-10-15 17:17 | meta-models/Muse-Spark-Open-816B-A42B | pending |  |  |  |

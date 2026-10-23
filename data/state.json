@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-10-23T00:37:20Z",
+ "last_poll": "2026-10-23T01:07:20Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -59,6 +59,14 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "mimo-v26"
+  },
+  "minimax-m31-flash": {
+   "family": "minimax-m31-flash",
+   "first_seen": "2026-10-23T01:07:20Z",
+   "match": "watchlist",
+   "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+   "vllm_tag": "minimax-m31-flash-x86_64-cu134",
+   "vllm_tag_pushed": "2026-10-23T01:07:01.42608Z"
   },
   "muse-glimmer": {
    "first_seen": "2026-10-21T19:28:09Z",

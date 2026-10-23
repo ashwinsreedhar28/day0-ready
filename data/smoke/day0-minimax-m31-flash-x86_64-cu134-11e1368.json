@@ -1,0 +1,12 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-minimax-m31-flash-x86_64-cu134-11e1368",
+ "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+ "weights_gb": 224.0,
+ "passed": false,
+ "skipped": {
+  "reason": "needs_multi_gpu",
+  "detail": "224 GB of weights is more than one 180 GB GPU holds"
+ },
+ "rungs": [],
+ "finished_at": "2026-10-23T01:22:23+00:00"
+}

@@ -1,0 +1,75 @@
+{
+  "vllm_tag": "minimax-m31-flash-x86_64-cu134",
+  "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-minimax-m31-flash-x86_64-cu134",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-minimax-m31-flash-x86_64-cu134-11e1368",
+  "digest": "sha256:51babfdf66b0c7e877b6f8d497e5fac6ddbdfcd993fd2d37ade5f6c7663b09c2",
+  "worker": "ashwinsreedhar28/worker-vllm@11e1368",
+  "worker_ref": "day0-integration",
+  "build": "success",
+  "build_s": 330,
+  "pushed": "success",
+  "verdict": "native",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39882185176",
+  "finished_at": "2026-10-23T01:22:12Z",
+  "checks": {
+    "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+    "checked_at": "2026-10-23T01:14:34Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev23341+g8744dd2fb.d20261022",
+          "transformers": "5.19.0",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 8.4
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "MiniMaxM3SparseForConditionalGeneration"
+          ],
+          "model_type": "minimax_m3_vl",
+          "auto_map": [
+            "AutoConfig"
+          ]
+        },
+        "s": 0.4
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "MiniMaxM3SparseForConditionalGeneration": true
+        },
+        "s": 2.4
+      },
+      "transformers_config": {
+        "ok": true,
+        "value": "MiniMaxM3VLConfig",
+        "s": 0.0
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "MiniMaxM3SparseForConditionalGeneration",
+          "architectures": "['MiniMaxM3SparseForConditionalGeneration']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 18.6
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 200061
+        },
+        "s": 1.5
+      }
+    },
+    "verdict": "native"
+  }
+}

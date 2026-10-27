@@ -39,3 +39,35 @@ def test_ready_lists_only_launch_models_on_board_images():
     assert e["deploy"]["template"]["env"]["ATTENTION_BACKEND"] == "FLASHINFER"
     assert e["deploy"]["template"]["containerDiskInGb"] == 150
     assert e["deploy"]["endpoint"]["gpuTypeIds"] == ["NVIDIA B200"]
+
+
+SWEEP = {"image": FLINT["image"], "model": "RecursiveSI/flint", "gpu_type": "NVIDIA B200", "verdict": "ok",
+         "recommended": "S3", "fast_start": "S2", "finished_at": "2027-01-12T00:00:00+00:00", "stopped": None,
+         "configs": [{"config": "S2", "engine_init_s_p50": 30.1, "output_tok_s_c30": 900.0},
+                     {"config": "S3", "engine_init_s_p50": 41.2, "output_tok_s_c30": 1510.4}],
+         "recommended_block": {"config": "S3", "env": {"MODEL_NAME": "RecursiveSI/flint", "MAX_NUM_SEQS": "32"}}}
+
+
+def test_sweep_cell():
+    assert board.sweep_text(SWEEP) == ("S3: 41.2 s engine init, 1510 tok/s at C=30; "
+                                       "fast start S2: 30.1 s, 900 tok/s (NVIDIA B200)")
+    assert board.sweep_text({**SWEEP, "recommended": None, "verdict": "inconclusive",
+                             "stopped": {"reason": "inconclusive"}}) == "inconclusive (stopped: inconclusive)"
+
+
+def test_ready_gains_the_sweeps_recommended_block():
+    builds = {FLINT["image"]: FLINT_BUILD}
+    e = board.ready_entries({"day0-flint": FLINT}, builds, {FLINT["image"]: SWEEP})[0]
+    assert e["recommended"]["config"] == "S3"
+    assert e["env"] == {"ATTENTION_BACKEND": "FLASHINFER"}  # the day-0 block stays as it was
+    other_model = {**SWEEP, "model": "Qwen/Qwen3-8B"}
+    assert "recommended" not in board.ready_entries({"day0-flint": FLINT}, builds, {FLINT["image"]: other_model})[0]
+    assert "recommended" not in board.ready_entries({"day0-flint": FLINT}, builds)[0]
+
+
+def test_latest_sweep_per_image(tmp_path):
+    for name, finished in (("a", "2027-01-12T00:00:00+00:00"), ("b", "2027-01-13T00:00:00+00:00")):
+        (tmp_path / "sweep" / name).mkdir(parents=True)
+        (tmp_path / "sweep" / name / "summary.json").write_text(
+            __import__("json").dumps({**SWEEP, "finished_at": finished, "recommended": name}))
+    assert board.load_sweeps(tmp_path)[FLINT["image"]]["recommended"] == "b"

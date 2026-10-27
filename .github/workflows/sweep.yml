@@ -1,0 +1,129 @@
+name: Optimal-config sweep
+
+# Runs pipeline/sweep.py for one model on one GPU type (docs/optimal-config.md)
+# and records data/sweep/<image tag>/, the board and data/ready.json. By hand
+# only (Actions > Run workflow), after the model's smoke test passed on the image.
+#
+# Spend limits, all in this file or pipeline/sweep.py:
+# - cap_minutes: worker-minutes for the whole sweep, priced at the class's
+#   highest listed rate (default 180, ~$5 on 48 GB).
+# - The runner refuses to start below the cap's cost + $5 of account balance.
+# - 80 GB and larger classes run in the gpu-large environment, which can
+#   require an approval before the job starts.
+# - Endpoints are scaled to 0 on every exit path; a volume the runner created
+#   is deleted at the end.
+#
+# Needs the repo secret RUNPOD_API_KEY. Not triggered by pull requests, so a
+# fork can't spend it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: "worker image with the boot report (pinned ...-<sha> tag)"
+        required: true
+      model:
+        description: "Hugging Face model id"
+        required: true
+      gpu_class:
+        description: "GPU class; the first type that starts the S0 warm-up is pinned"
+        default: 48gb
+        type: choice
+        options: [24gb, 48gb, 80gb, 141gb, 180gb]
+      gpu_type:
+        description: "pin one Runpod GPU type id instead (e.g. NVIDIA L40S)"
+        default: ""
+      volume_id:
+        description: "network volume id, or auto (one in a data center with the class in stock)"
+        default: auto
+      create_volume:
+        description: "with auto and no fitting volume: create one and delete it at the end"
+        type: boolean
+        default: true
+      s0_env:
+        description: "S0's env as JSON; empty: the passing env in data/smoke/<image tag>.json"
+        default: ""
+      configs:
+        description: "configs to run"
+        default: "S0,S1,S2,S3,S4,S5,W"
+      cap_minutes:
+        description: "worker-minute cap for the sweep"
+        default: "180"
+
+permissions:
+  contents: write  # records data/sweep/, data/board.md, data/ready.json
+
+concurrency:
+  group: sweep-${{ inputs.image }}
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    environment: ${{ contains(fromJSON('["80gb", "141gb", "180gb"]'), inputs.gpu_class) && 'gpu-large' || 'gpu-small' }}
+    env:
+      IMAGE: ${{ inputs.image }}
+      MODEL: ${{ inputs.model }}
+      GPU_CLASS: ${{ inputs.gpu_class || '48gb' }}
+      GPU_TYPE: ${{ inputs.gpu_type }}
+      VOLUME_ID: ${{ inputs.volume_id || 'auto' }}
+      CREATE_VOLUME: ${{ inputs.create_volume }}
+      S0_ENV: ${{ inputs.s0_env }}
+      CONFIGS: ${{ inputs.configs || 'S0,S1,S2,S3,S4,S5,W' }}
+      CAP_MINUTES: ${{ inputs.cap_minutes || '180' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML (vLLM recipes)
+        run: pip install pyyaml==6.0.3
+
+      - name: Run sweep
+        id: sweep
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$RUNPOD_API_KEY" ]; then echo "::error::repo secret RUNPOD_API_KEY is not set"; exit 1; fi
+          python3 pipeline/sweep.py --preflight --gpu-class "$GPU_CLASS" | tee preflight.log
+          args=(--image "$IMAGE" --model "$MODEL" --gpu-class "$GPU_CLASS" --volume-id "$VOLUME_ID"
+                --configs "$CONFIGS" --cap-minutes "$CAP_MINUTES" --max-hours 5)
+          [ -n "$GPU_TYPE" ] && args+=(--gpu-type "$GPU_TYPE")
+          [ "$CREATE_VOLUME" = "true" ] && args+=(--create-volume)
+          if [ -n "$S0_ENV" ]; then args+=(--s0-env "$S0_ENV"); else args+=(--from-smoke "data/smoke/${IMAGE##*:}.json"); fi
+          python3 pipeline/sweep.py "${args[@]}" | tee sweep.log || true
+          echo "dir=data/sweep/${IMAGE##*:}" >> "$GITHUB_OUTPUT"
+
+      - name: Record result
+        if: always() && steps.sweep.outputs.dir != ''
+        run: |
+          dir="${{ steps.sweep.outputs.dir }}"
+          [ -f "$dir/summary.json" ] || { echo "::error::no summary.json"; exit 1; }
+          rm -rf /tmp/sweep && cp -r "$dir" /tmp/sweep
+          git config user.name "day0-ready bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          branch="${GITHUB_REF_NAME}"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "$branch" && git reset -q --hard "origin/$branch"
+            rm -rf "$dir" && mkdir -p "$(dirname "$dir")" && cp -r /tmp/sweep "$dir"
+            python3 detect/board.py > /dev/null
+            git add "$dir" data/board.md data/ready.json
+            git commit -q -m "sweep: ${IMAGE##*:} ($(jq -r '.verdict + (if .recommended then ": " + .recommended else "" end)' "$dir/summary.json"))"
+            git push -q origin "HEAD:$branch" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Sweep: \`${IMAGE##*/}\` with \`$MODEL\`"
+            echo '```'
+            cat preflight.log sweep.log 2>/dev/null || echo "no log"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

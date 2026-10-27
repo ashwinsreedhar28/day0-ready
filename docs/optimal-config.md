@@ -1,0 +1,180 @@
+# Optimal-config sweep (spec)
+
+Status: spec v1, 2026-10-27. Nothing here has run yet. A pilot on one small model and one 48 GB GPU validates the runner first; sweeps of real day-0 launches, B200 and multi-GPU start in January 2027.
+
+## Why
+
+The day-0 smoke test records the **first** configuration that answers a request, not the best one. Flint's entry in `data/ready.json` is `ATTENTION_BACKEND=FLASHINFER` at `MAX_MODEL_LEN=4096`, with no network volume, on whichever GPU in a class list was free. That proves the model serves. It says nothing about how fast a worker starts or how much it serves once started.
+
+This sweep runs **after** a smoke pass and produces a recommended configuration for each model by day 1–2: an env block the worker reads, plus the measurements behind it.
+
+## Scope
+
+- One sweep = one model × one GPU type × one worker image digest.
+- It starts only after the model's smoke test passed on that image.
+- Single GPU. Multi-GPU is described at the end and waits for multi-GPU smoke tests.
+- It measures speed, not output quality. Configurations that change outputs (quantization, KV-cache precision, speculative decoding) are out of scope unless the model's publisher ships the variant (config Q).
+
+## What is swept, and what isn't
+
+Two things vary. One is a gate.
+
+- **Cold start**: how long vLLM takes to get from launch to ready. On Serverless every scale-from-zero pays it. The ranked part is vLLM's engine init (memory profiling, KV-cache setup, warm-up and CUDA-graph capture), because that is what the settings below change. Weight loading is reported but not ranked: it depends on the network volume and the host's page cache, not the config (5.8–293 s for the same file in [vllm-coldstart](https://github.com/ashwinsreedhar28/vllm-coldstart) step 2).
+- **Throughput at the worker's full load**: output tokens/s with as many requests in flight as one worker accepts (`MAX_CONCURRENCY`, 30 by default in worker-vllm's `main.py`). Serverless never sends one worker more than that, so it's the load point that matters.
+- **Fit** (gate): a configuration either holds the target context at that load, or it's excluded. The checks are in [Measurements](#fit).
+
+Not swept, and why:
+
+| knob | why it's left out |
+|---|---|
+| loader strategy (`runai_streamer`, `prefetch`, `eager` load) | inside page-cache noise in vllm-coldstart step 2 |
+| `RUNPOD_SKIP_AUTO_SYSTEM_CHECKS` | worker-vllm runs `vllm serve` as a subprocess, so the SDK's CUDA check in the handler can't force vLLM to spawn; it matters only for in-process handlers |
+| KV-cache fp8, quantization, speculative decoding | change outputs; need a quality eval this spec doesn't have |
+| `TENSOR_PARALLEL_SIZE` > 1 for a model that fits one GPU | more GPUs per worker is a cost decision, not a config one |
+| compile cache on the volume | a precondition (worker-vllm #351), on in every config |
+
+## Fixed conditions (every config)
+
+- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both.
+- A network volume in a data center that has that GPU. Weights live under a shared `HF_HOME` on the volume. Each config gets its own `VLLM_CACHE_ROOT` on the volume, so one config's compile cache or startup plan can't leak into another's (vLLM's startup-plan key ignores `gpu_memory_utilization`, vllm#60143).
+- `MAX_MODEL_LEN` = the model's recipe `context_length`, capped at 32,768. Without a recipe, the config's `max_position_embeddings`, same cap.
+- Endpoint: `workersMax` 1, `idleTimeout` 5 s, FlashBoot off, `MAX_CONCURRENCY` 30.
+- `DAY0_BOOT_REPORT=1` (see [Boot report](#boot-report)).
+
+## Configurations
+
+One change at a time from S1, the way vllm-coldstart's configs A–F were run, then one run that combines the winners.
+
+| id | env on top of the fixed conditions | what it tests |
+|---|---|---|
+| **S0** | the smoke test's passing env (e.g. flint: `ATTENTION_BACKEND=FLASHINFER`) | day-0 settings under sweep conditions |
+| **S1** | S0 + `VLLM_ENABLE_STARTUP_PLAN=1` | reuse the saved memory profile (4.6 s off engine init for Qwen3-8B in vllm-coldstart) |
+| **S2** | S1 + `ENFORCE_EAGER=true` | skip CUDA-graph capture: faster start, slower decode |
+| **S3** | S1 + `MAX_NUM_SEQS=32` | vLLM captures CUDA graphs for batches up to `min(2 × max_num_seqs, 512)` (1,024 on B200), and its default `max_num_seqs` is 256 (1,024 on 70 GB+ GPUs), so the default captures the full 512 or 1,024. 32 still covers `MAX_CONCURRENCY` 30, with 64 as the largest graph: less to capture, less memory held for graphs |
+| **S4** | S1 + `GPU_MEMORY_UTILIZATION=0.95` | more KV cache vs less headroom (vLLM's default is 0.92; 0.95 is the Hub template's default and what made Qwen3.5 run out of memory on its first request in the lag study) |
+| **S5** (conditional) | S1 + `MAX_NUM_BATCHED_TOKENS=8192` | vLLM's server default is 2,048 tokens per step on GPUs under 70 GB and on A100, so a 4,096-token prompt takes two steps; 8,192 is what it already uses on H100/H200 (16,384 on B200). Runs only when the launch log shows a default below 8,192 |
+| Q (optional) | S1 with the recipe's vendor-official FP8/NVFP4 checkpoint | fit and speed of the official quantized variant; quality not evaluated |
+| L (optional) | S1 + `MAX_NUM_BATCHED_TOKENS` = 2× the launch-log default, benched with 32K-token prompts | long-context models only |
+| **W** | S1 + every change that won on its own | confirms the changes combine |
+
+Q runs only when the model's recipe lists a variant from the model's own publisher. L runs only when the recipe marks long context as a main use.
+
+## Measurements
+
+### Boot report
+
+A worker started with `DAY0_BOOT_REPORT=1` keeps a small record of its own boot: the times it launched vLLM and saw it healthy, whether it had to relaunch vLLM with a smaller memory footprint, and these lines from vLLM's log:
+
+- `Model loading took X GiB memory and Y seconds`
+- `init engine (profile, create kv cache, warmup model) took Z s`
+- `torch.compile took … s`, `Graph capturing finished in … secs`
+- `Available KV cache memory: … GiB`, `GPU KV cache size: N tokens`, `max_num_batched_tokens=…`
+
+A job with input `{"day0_boot_report": true}` returns that record instead of running a request. This is a sweep-only addition to the worker branch day0-ready builds from, off by default. Without it the numbers that matter are only in the console's worker logs.
+
+### Cold start
+
+Per config: one warm-up start, discarded (it downloads nothing new but fills the config's compile cache and startup plan), then **3 measured cold starts**. Before each, the runner sets `workersMax` to 0, waits until no worker is left, sets it back to 1, and sends the boot-report job.
+
+- **Ranked:** engine init seconds (median of 3).
+- **Reported:** model loading seconds, vLLM launch → healthy seconds, and the job's `delayTime` and `executionTime` from the Serverless API. `delayTime` includes scheduling and image pull (17–79 s in vllm-coldstart, which is more than any config changes), so it's context, not a ranking.
+
+### Throughput
+
+Per config, once, on a warm worker (`workersMin` 1 for the duration):
+
+- Requests go through the endpoint's OpenAI-compatible route (`/openai/v1/completions`), the way users call it. The prompts are fixed token ids (random, seeded, the same for every config) so every request is exactly 4,096 input tokens without a tokenizer. Each asks for 512 output tokens with `ignore_eos`, streamed.
+- **C=1**, 8 requests: TPOT p50 (time per output token).
+- **C=30**, 120 requests, at most 30 in flight: **output tokens/s** (ranked), TTFT p50/p99, TPOT p50, failed requests.
+- After each level, the runner reads vLLM's `/metrics` through the worker's route passthrough (`{"route": "/metrics"}`) and cross-checks generated tokens and preemptions against the client's count.
+- TTFT and TPOT include Runpod's gateway, so they're reported, not ranked. Output tokens/s over 120 requests is robust to it.
+
+### Fit
+
+A configuration fits only if all three hold:
+
+1. The boot report shows no relaunch with a smaller memory footprint. The worker does that silently when vLLM runs out of memory at startup, changing two settings the sweep didn't ask for.
+2. The C=30 run has 0 failed requests and vLLM reports 0 preemptions.
+3. vLLM's KV-cache size is at least 30 × 4,608 = 138,240 tokens, so 30 requests of the bench shape fit at once.
+
+A configuration that doesn't fit is recorded as such and can't be recommended.
+
+## Picking the recommendation
+
+1. Candidates: configurations that fit.
+2. Throughput floor: 95% of the best C=30 output tokens/s among candidates.
+3. Among candidates at or above the floor, recommend the one with the lowest median engine init. Differences smaller than the noise band count as ties: the larger of 2 s and the spread (max − min) of S1's three runs. Ties go to the config with fewer env changes from S0.
+4. If the fastest-starting candidate overall is below the throughput floor (usually S2, eager), record it next to the recommendation as a **fast-start profile**, with both numbers. Scale-from-zero-heavy endpoints may prefer it.
+5. If S1's three engine-init times spread by more than 20% of their median, the model is marked **inconclusive** and nothing is recommended. That points to a host or volume problem, and more runs would just spend money on noise.
+
+Throughput is one run per config, and the result says so.
+
+## Stop rules and budget
+
+- Per config: 1 warm-up + 3 cold starts + 1 throughput run. A config that fails to start gets one more cold start; if that fails too, it's recorded as failed and the sweep moves on.
+- The runner estimates spend as worker-alive minutes × the class's highest listed Serverless rate (`pipeline/sizing.py`) and stops when the next step would pass the cap.
+
+| GPU | rough cost per config | cap per model |
+|---|---|---|
+| ≤ 48 GB (e.g. Qwen3-8B on an L40S) | ~20 min, ~$0.60 | 180 GPU-min (~$5) |
+| 80 GB | ~25 min | 180 GPU-min (~$14) |
+| 141 GB (H200) | ~25 min | 180 GPU-min (~$18) |
+| 180 GB (B200; an ~80 GB model loads in ~4–5 min) | ~25 min | 240 GPU-min (~$35) |
+| multi-GPU | above × GPU count | per-sweep approval |
+
+- The network volume is billed monthly: delete it when the sweep is done, or keep one per data center for all sweeps there.
+
+## Outputs
+
+- `data/sweep/<image tag>/<config>.json`: every run (boot report, job timings, bench results, metrics deltas, cost).
+- `data/sweep/<image tag>/summary.json`: one row per config, the fit verdict, the recommendation and any fast-start profile.
+- `data/ready.json`: each entry gains a `recommended` block next to the day-0 one. It's the same shape as the template env the worker already reads, so it can be pasted into a Runpod template:
+
+```json
+"recommended": {
+  "config": "S3",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-<tag>-<sha>",
+  "digest": "sha256:…",
+  "gpu_type": "NVIDIA L40S",
+  "gpu_count": 1,
+  "env": {"MODEL_NAME": "Qwen/Qwen3-8B", "MAX_MODEL_LEN": "32768",
+          "VLLM_ENABLE_STARTUP_PLAN": "1", "MAX_NUM_SEQS": "32"},
+  "measured": {"engine_init_s_p50": 0.0, "output_tok_s_c30": 0.0},
+  "sweep": "data/sweep/<image tag>/summary.json"
+}
+```
+
+- `data/board.md`: a "recommended" column with the config id and its two headline numbers.
+- For [serverless-lakehouse](https://github.com/ashwinsreedhar28/serverless-lakehouse):
+  - silver `config_runs`, one row per cold start or throughput run: `sweep_id, model, image_digest, gpu_type, config_id, run_kind (warmup|cold|bench), run_index, started_at, delay_s, execution_s, launch_to_healthy_s, engine_init_s, model_load_s, kv_cache_tokens, relaunched, concurrency, requests, failed, output_tok_s, ttft_p50_ms, tpot_p50_ms, est_cost_usd`
+  - gold `config_summary`, one row per model × config: `sweep_id, model, gpu_type, config_id, env_json, fits, engine_init_s_p50, engine_init_s_min, engine_init_s_max, model_load_s_p50, output_tok_s_c30, tpot_p50_ms_c1, recommended, profile (recommended|fast_start|none), verdict (ok|inconclusive|failed)`
+
+## Multi-GPU (January, after multi-GPU smoke tests exist)
+
+MiniMax-M3.1-Flash is the live example: 224 GB of weights, more than one 180 GB B200 holds. The detector caught it 19 s after vLLM pushed its image and built a worker in 15 minutes, but there is no smoke test, let alone a sweep, for it yet.
+
+- **GPU count:** the smallest tensor-parallel size in {2, 4, 8} where the weights are at most 80% of total GPU memory **and** the KV floor above still fits. The 80% rule alone would pick 2× H200 for MiniMax (224 ≤ 225.6) and leave ~35 GB for everything else.
+- `TENSOR_PARALLEL_SIZE` must equal the endpoint's `gpuCount`. The worker doesn't infer it, and a mismatch costs a full boot plus an out-of-memory relaunch. The size must divide the model's attention and KV head counts.
+- To verify before spending: the Serverless `gpuCount` limits for that GPU type, shared-memory size for NCCL on Serverless workers, and whether the volume's data center has that many GPUs of the type together.
+- Configs shrink to S0–S3. Cost scales with GPU count (prices are per GPU): MiniMax at TP=2 on B200 is ~$50–60 for S0–S3, so each multi-GPU sweep gets its own approval and cap.
+- If no single 8-GPU node fits, the result is "official quantized variant (Q) or not a Serverless model", not a sweep.
+
+## Known issues that affect the numbers
+
+- vllm#60143: the startup-plan key ignores `gpu_memory_utilization`. Per-config cache roots work around it.
+- worker-vllm's out-of-memory relaunch sets `MAX_NUM_BATCHED_TOKENS=8192`, which **raises** the budget on GPUs under 70 GB (vLLM's default there is 2,048). Worth a worker-vllm issue on its own; the fit gate excludes any config that relaunched.
+- worker-vllm's README lists `GPU_MEMORY_UTILIZATION` 0.9 and the Hub template 0.95; vLLM's own default, which the day-0 builds use, is 0.92.
+
+## Pilot
+
+Before any real sweep: Qwen3-8B (16.4 GB of weights), one 48 GB GPU type, S0–S5 + W, under a $8 cap. Qwen3-8B on a 24 GB card can't hold 30 × 4,608 tokens of KV cache, so a 4090 would fail fit. Qwen3-8B also has the most existing reference numbers (worker-vllm #351, vllm-coldstart). The pilot checks that the runner, the boot report and the fit checks work. It doesn't recommend a config for a launch.
+
+## Decisions
+
+- D1: throughput is measured through the Serverless endpoint, not on a pod: same worker, same concurrency cap, same gateway users get.
+- D2: one prompt shape, 4,096 in / 512 out (config L adds 32K for long-context models).
+- D3: the selection rule above. It started as "best throughput within 5 s of the best cold start" and moved to engine init with a measured noise band, because client-side timings can't resolve 5 s.
+- D4: target context = recipe `context_length` capped at 32,768 (the smoke test's 4,096 isn't a serving config).
+- D5: a network volume for every config.
+- D6: config Q only for a variant from the model's own publisher, flagged as not quality-checked.
+- D7: rank on engine-side times from the worker's boot report, not on client-side wall clock.

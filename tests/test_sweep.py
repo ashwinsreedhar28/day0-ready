@@ -562,3 +562,34 @@ def test_a_worker_swap_mid_bench_voids_the_counters(fake, tmp_path):
     s0 = json.loads((tmp_path / "S0.json").read_text())
     assert s0["bench"]["worker_changed"] is True and s0["bench"]["metrics"]["c30"] is None
     assert s["configs"][0]["fits"] is False
+
+
+def test_a_type_served_on_another_device_is_recorded_and_held(fake, tmp_path):
+    """Oct 28 pilot: one requested type, a different nvidia-smi name; later starts must match it."""
+    api = fake()
+    orig = api.boot
+    names = iter(["NVIDIA RTX PRO 6000 Blackwell Server Edition"] * 2 + ["NVIDIA RTX 6000 Ada Generation"]
+                 + ["NVIDIA RTX PRO 6000 Blackwell Server Edition"] * 50)
+
+    def served(eid):
+        b = orig(eid)
+        b["gpu"] = next(names)
+        return b
+
+    api.boot = served
+    one = args(configs=["S0"], gpu_types=["NVIDIA RTX 6000 Ada Generation"])
+    s = sweep.Sweep("k", one, 32768, 151936, tmp_path).run()
+    assert s["gpu_type"] == "NVIDIA RTX 6000 Ada Generation"
+    assert s["device"] == "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+    s0 = json.loads((tmp_path / "S0.json").read_text())
+    cold = [r for r in s0["runs"] if r["kind"] == "cold"]
+    assert cold[1].get("wrong_device") == "NVIDIA RTX 6000 Ada Generation" and cold[2]["retry"] is True
+    assert s["configs"][0]["fits"] is True  # three good cold starts on the one device
+
+
+def test_several_types_and_an_unknown_device_stop(fake, tmp_path):
+    api = fake()
+    orig = api.boot
+    api.boot = lambda eid: {**orig(eid), "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition"}
+    s = sweep.Sweep("k", args(configs=["S0"]), 32768, 151936, tmp_path).run()
+    assert s["stopped"]["reason"] == "gpu" and "--gpu-type" in s["stopped"]["detail"]

@@ -398,6 +398,7 @@ class Sweep:
         self.key, self.a, self.max_len, self.vocab, self.out = key, a, max_len, vocab, out_dir
         self.sweep_id = f"{a.image.rsplit(':', 1)[-1]}-{a.gpu_class}-{time.strftime('%Y%m%d%H%M', time.gmtime())}"
         self.gpu_type = a.gpu_type          # pinned after the first warm-up when None
+        self.device = None                  # the GPU name the workers report (nvidia-smi), set by the first warm-up
         self.gpu_class = VRAM_CLASS.get(a.gpu_type, a.gpu_class) if a.gpu_type else a.gpu_class
         self.minutes = 0.0
         self.step_minutes = {"cold": [], "bench": []}
@@ -480,6 +481,10 @@ class Sweep:
             rec["output"] = json.dumps(out)[:400] if out is not None else None
         elif boot.get("process_start") is not None and boot.get("process_start") == self.last_start.get(eid):
             rec.update(ok=False, reused_worker=True)  # the last start's worker answered: not a cold start
+        if boot and self.device and boot.get("gpu") != self.device:
+            # Runpod can serve a GPU type id on a different device; a start on another device than the
+            # warm-up misses the compile cache and the startup plan, so it isn't a comparable cold start.
+            rec.update(ok=False, wrong_device=boot.get("gpu"))
         if boot:
             self.last_start[eid] = boot.get("process_start")
         if boot and boot.get("startup_error"):
@@ -531,6 +536,9 @@ class Sweep:
             if not start_ok(rec["boot"]):
                 rec["error"] = f"bench worker did not start ({status})"
                 return rec
+            if self.device and rec["boot"].get("gpu") != self.device:
+                rec["error"] = f"bench worker is on {rec['boot'].get('gpu')}, not {self.device}"
+                return rec
             url = f"{rp.JOBS}/{eid}/openai/v1/completions"
             probe = bench_client.stream_one(url, self.key, bench_client.body(model, self.probe, 16), timeout=180)
             rec["probe"] = probe
@@ -576,17 +584,26 @@ class Sweep:
             if not runs[-1]["ok"]:
                 rec["failed"] = "warm-up start failed twice"
                 return rec
+            got = runs[-1]["boot"].get("gpu")
             if not self.gpu_type:
-                got = runs[-1]["boot"].get("gpu")
-                if got not in types:
-                    raise Stop("gpu", f"worker reported GPU {got!r}, not one of {types}")
-                self.gpu_type, self.gpu_class = got, VRAM_CLASS.get(got, self.a.gpu_class)
-                log(f"  pinned to {got}")
+                if got in types:
+                    self.gpu_type = got
+                elif len(types) == 1:
+                    # Oct 28 pilot: a request for "NVIDIA RTX 6000 Ada Generation" got a worker whose
+                    # nvidia-smi said "NVIDIA RTX PRO 6000 Blackwell Server Edition".
+                    self.gpu_type = types[0]
+                    log(f"  requested {types[0]}, the worker reports {got}; both are recorded")
+                else:
+                    raise Stop("gpu", f"worker reported GPU {got!r}, not one of {types}; pass --gpu-type to pin one")
+                self.gpu_class = VRAM_CLASS.get(self.gpu_type, self.a.gpu_class)
+                log(f"  pinned to {self.gpu_type} (device {got})")
                 if len(types) > 1:  # same template; a new endpoint limited to that one type
                     self.delete(eid, tid)
-                    eid, tid, _ = self.create(cid, env, [got])
+                    eid, tid, _ = self.create(cid, env, [self.gpu_type])
                     rec["endpoint_id"] = eid
-            rec["gpu_type"] = self.gpu_type
+            if not self.device:
+                self.device = got
+            rec["gpu_type"], rec["device"] = self.gpu_type, self.device
             for i in range(1, COLD_RUNS + 1):
                 runs = self.start_with_retry(eid, "cold", i)
                 rec["runs"] += runs
@@ -666,7 +683,7 @@ class Sweep:
             rec = {**rec, "recommended": None, "fast_start": None, "verdict": "inconclusive"}
         out = {
             "sweep_id": self.sweep_id, "model": self.a.model, "image": self.a.image, "digest": image_digest(self.a.image),
-            "gpu_type": self.gpu_type, "gpu_class": self.gpu_class, "volume_id": self.a.volume_id,
+            "gpu_type": self.gpu_type, "device": self.device, "gpu_class": self.gpu_class, "volume_id": self.a.volume_id,
             "max_model_len": self.max_len, "s0_env": self.a.s0_env, "kv_floor_tokens": KV_FLOOR,
             "bench": {"prompt_tokens": PROMPT_TOKENS, "output_tokens": OUTPUT_TOKENS, "c1_requests": C1_REQUESTS,
                       "c30_requests": C30_REQUESTS, "seed": self.a.seed},
@@ -704,7 +721,7 @@ def recommended_block(summary, rec):
     s = rec["stats"]
     env = {k: v for k, v in rec["template_env"].items() if k not in SWEEP_ONLY}
     return {"config": rec["config"], "image": summary["image"], "digest": summary["digest"],
-            "gpu_type": summary["gpu_type"], "gpu_count": 1, "env": env,
+            "gpu_type": summary["gpu_type"], "device": summary.get("device"), "gpu_count": 1, "env": env,
             "measured": {"engine_init_s_p50": s["engine_init_s_p50"], "output_tok_s_c30": s["output_tok_s_c30"]},
             "fast_start": summary.get("fast_start"),
             "sweep": f"data/sweep/{summary['image'].rsplit(':', 1)[-1]}/summary.json"}

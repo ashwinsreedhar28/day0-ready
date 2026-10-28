@@ -36,7 +36,7 @@ Not swept, and why:
 
 ## Fixed conditions (every config)
 
-- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both.
+- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both. Runpod can serve a type id on another device (the pilot asked for an RTX 6000 Ada and got a worker reporting "NVIDIA RTX PRO 6000 Blackwell Server Edition"), so the runner records the device the first warm-up reports and rejects any later start on a different one.
 - A network volume in a data center that has that GPU. Weights live under a shared `HF_HOME` on the volume. Each config gets its own `VLLM_CACHE_ROOT` on the volume, so one config's compile cache or startup plan can't leak into another's (vLLM's startup-plan key ignores `gpu_memory_utilization`, vllm#60143).
 - `MAX_MODEL_LEN` = the model's recipe `context_length`, capped at 32,768. Without a recipe, the config's `max_position_embeddings`, same cap.
 - Endpoint: `workersMax` toggled between 0 and 1 by the runner, `idleTimeout` 30 s, FlashBoot off, `MAX_CONCURRENCY` 30. Cold starts don't depend on the idle timeout (the runner sets `workersMax` to 0 between them); it's there so an endpoint left behind scales itself down.

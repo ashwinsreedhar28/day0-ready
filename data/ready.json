@@ -5,6 +5,8 @@
   "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-flint-b779895",
   "digest": "sha256:d3c8a43934c83bc3c943e8d4bd230ee4dcfc8f5004e5ea281b27a3635bac8070",
   "gpu_class": "180gb",
+  "gpu_count": 1,
+  "device": null,
   "env": {
    "ATTENTION_BACKEND": "FLASHINFER"
   },

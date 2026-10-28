@@ -90,3 +90,13 @@ def test_qwen3_14b_needs_two_24_gb_cards():
     assert not row(one, "24gb")["smoke_fits"] and row(two, "24gb")["smoke_fits"]
     assert row(two, "24gb")["usd_per_hr"] == 2 * row(one, "24gb")["usd_per_hr"]
     assert 60_000 < row(two, "24gb")["kv_tokens"] < 80_000
+
+
+def test_a_tensor_parallel_boot_reports_per_gpu_memory():
+    # 2-GPU PoC: Qwen3-14B on 2x RTX 4090 logged 13.88 GiB of weights and 6.67 GiB of KV per GPU,
+    # 87,408 tokens for the pair. Scaled, that's the config's 163,840 B/token.
+    m = predict.from_numbers(13.88, 6.67, 87_408, gpus=2)
+    assert m["weights_gib"] == 27.76
+    assert m["kv_bytes_per_token"] == pytest.approx(163_840, rel=0.001)
+    two = predict.predict(m, gpus=2)
+    assert row(two, "24gb")["kv_tokens"] < 87_408   # 3 GiB per GPU is conservative (measured ~1.5)

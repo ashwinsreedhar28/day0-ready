@@ -1,6 +1,6 @@
 # Multi-GPU smoke tests
 
-Status: 2026-10-28. `smoke.py --gpu-count N` exists; one proof-of-concept run below. Automatic multi-GPU smoke tests and multi-GPU sweeps wait for January.
+Status: 2026-10-28. `smoke.py --gpu-count N` exists; a 2-GPU proof of concept passed (below). Automatic multi-GPU smoke tests and multi-GPU sweeps wait for January.
 
 ## Why
 
@@ -21,7 +21,9 @@ The launches that matter most are often too big for one GPU. MiniMax-M3.1-Flash 
 
 Qwen3-14B (29.5 GB of weights, so it doesn't fit one 24 GB card) on 2 GPUs of the 24 GB class with `TENSOR_PARALLEL_SIZE=2`, one request, capped at 30 minutes. It answers three platform questions in one boot: whether a Serverless worker gets 2 GPUs of one type, whether NCCL works with the worker's shared memory, and whether worker-vllm passes the size through. `predict.py` expects ~69,700 KV tokens on 2× RTX 4090.
 
-Result: not run yet.
+**Result (Oct 28, 04:44 UTC): pass in 4.3 min, ~$0.16.** The worker got 2× NVIDIA GeForce RTX 4090 (24,564 MiB each, no MIG), vLLM came up with `TENSOR_PARALLEL_SIZE=2` in 170 s from launch (engine init 80.9 s), and the chat request answered. So a Serverless worker does get 2 GPUs of one type, NCCL works under the worker's shared memory without NVLink, and worker-vllm passes the size through.
+
+Under tensor parallel vLLM prints memory per GPU: 13.88 GiB of weights and 6.67 GiB of KV per card, 87,408 tokens for the pair. Scaled by 2 that's 27.8 GiB and 163,872 B/token, which matches the config's 2 × 40 × 8 × 128 × 2 = 163,840. `predict.py` expected 69,720 tokens (20% under: it charges 3 GiB of overhead per GPU, the PoC needed ~1.5); `from_numbers(..., gpus=N)` scales a TP boot.
 
 ## Not built yet
 

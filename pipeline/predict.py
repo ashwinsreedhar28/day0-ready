@@ -55,16 +55,20 @@ _KV_GIB = re.compile(r"Available KV cache memory: ([\d.]+) GiB")
 _KV_TOK = re.compile(r"KV cache size: ([\d,]+) tokens")
 
 
-def from_numbers(weights_gib, kv_gib, kv_tokens):
-    return {"weights_gib": weights_gib, "kv_bytes_per_token": round(kv_gib * GIB / kv_tokens), "source": "measured"}
+def from_numbers(weights_gib, kv_gib, kv_tokens, gpus=1):
+    """Whole-model numbers. Under tensor parallel vLLM prints weights and KV memory per GPU
+    (2-GPU PoC, Oct 28: Qwen3-14B logged 13.88 GiB of its 27.8), with tokens for the whole group,
+    so a boot on N GPUs is scaled by N."""
+    return {"weights_gib": round(weights_gib * gpus, 2),
+            "kv_bytes_per_token": round(kv_gib * gpus * GIB / kv_tokens), "source": "measured"}
 
 
-def from_log(text):
+def from_log(text, gpus=1):
     """Measured numbers from a worker or vLLM log; None if a line is missing."""
     load, kv, tok = _LOAD.findall(text), _KV_GIB.findall(text), _KV_TOK.findall(text)
     if not (load and kv and tok):
         return None
-    return from_numbers(float(load[-1]), float(kv[-1]), int(tok[-1].replace(",", "")))
+    return from_numbers(float(load[-1]), float(kv[-1]), int(tok[-1].replace(",", "")), gpus)
 
 
 def from_record(rec):
@@ -170,10 +174,12 @@ def main():
     ap.add_argument("--record", help="a sweep config record (data/sweep/<tag>/<config>.json)")
     ap.add_argument("--config", help="config.json, for an estimate (needs --weights-gib)")
     ap.add_argument("--gpus", type=int, default=1, help="GPUs per worker (tensor parallel)")
+    ap.add_argument("--boot-gpus", type=int, default=1,
+                    help="GPUs the --log boot ran on (vLLM prints per-GPU memory under tensor parallel)")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     if a.log:
-        m = from_log(Path(a.log).read_text(errors="replace"))
+        m = from_log(Path(a.log).read_text(errors="replace"), a.boot_gpus)
     elif a.record:
         m = from_record(json.loads(Path(a.record).read_text()))
     elif a.config:

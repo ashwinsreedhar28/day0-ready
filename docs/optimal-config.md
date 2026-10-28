@@ -36,7 +36,7 @@ Not swept, and why:
 
 ## Fixed conditions (every config)
 
-- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both. Runpod can serve a type id on another device (the pilot asked for an RTX 6000 Ada and got a worker reporting "NVIDIA RTX PRO 6000 Blackwell Server Edition"), so the runner records the device the first warm-up reports and rejects any later start on a different one. The device is nvidia-smi's name plus the MIG profile when the worker got a slice (pilot runs 1 and 4: 2g.48gb slices on L40S and RTX 6000 Ada type ids). MIG type ids from the catalog can be pinned too.
+- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both. Runpod can serve a type id on another device (the pilot asked for an RTX 6000 Ada and got a worker reporting "NVIDIA RTX PRO 6000 Blackwell Server Edition"), so the runner records the device the first warm-up reports and rejects any later start on a different one. The device is nvidia-smi's name plus the MIG profile when the worker got a slice (pilot runs 1 and 4: 2g.48gb slices on L40S and RTX 6000 Ada type ids). The REST API doesn't take MIG type ids for an endpoint (run 6), so a slice can't be requested directly.
 - A network volume in a data center that has that GPU. Weights live under a shared `HF_HOME` on the volume. Each config gets its own `VLLM_CACHE_ROOT` on the volume, so one config's compile cache or startup plan can't leak into another's (vLLM's startup-plan key ignores `gpu_memory_utilization`, vllm#60143).
 - `MAX_MODEL_LEN` = the model's recipe `context_length`, capped at 32,768. Without a recipe, the config's `max_position_embeddings`, same cap.
 - Endpoint: `workersMax` toggled between 0 and 1 by the runner, `idleTimeout` 30 s, FlashBoot off, `MAX_CONCURRENCY` 30. Cold starts don't depend on the idle timeout (the runner sets `workersMax` to 0 between them); it's there so an endpoint left behind scales itself down.
@@ -229,9 +229,11 @@ Image `day0-v0.32.0--day0-sweep-3b31d89` (vLLM v0.32.0), `MAX_MODEL_LEN` 32,768,
 
 **Runs 5 and 5b** (Oct 28, 05:12 and 05:15 UTC; $0), pinned to "NVIDIA RTX A6000" to avoid slices. Run 5: no data center with network volumes listed the A6000 in stock. Run 5b: one did (US-KS-2), but no worker appeared in two 10-minute waits, and the sweep stopped as `no_gpu`.
 
-What the four runs say about the 48 GB tier: Runpod's pricing lists "L40, L40S, 6000 Ada, MIG 48GB" as one $1.75/h tier, so an L40S or RTX 6000 Ada type id can be served on a MIG slice by design. The tier without slices (A6000, A40, $1.22/h) had no stock that night. On a slice, engine init was 7–10× an L40S's. Changes: the device check compares nvidia-smi's name plus the MIG profile (a whole RTX PRO 6000 and a slice report the same name), and the catalog's MIG type ids ("NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb") can be pinned with `--gpu-type`. `--data-center` pins a new volume's data center.
+What the four runs say about the 48 GB tier: Runpod's pricing lists "L40, L40S, 6000 Ada, MIG 48GB" as one $1.75/h tier, so an L40S or RTX 6000 Ada type id can be served on a MIG slice by design. The tier without slices (A6000, A40, $1.22/h) had no stock that night. On a slice, engine init was 7–10× an L40S's. Changes: the device check compares nvidia-smi's name plus the MIG profile (a whole RTX PRO 6000 and a slice report the same name). `--data-center` pins a new volume's data center.
 
-**Run 6**: pinned to the 2g.48gb slice itself, the device this tier hands out most often in these runs.
+**Run 6** (Oct 28, 05:43 UTC; $0): pinned to "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb", which the catalog lists in stock. `POST /endpoints` answered 400: `gpuTypeIds` only takes the REST API's own enum, which has no RTX PRO 6000 MIG ids. So a slice can be detected (the boot report's MIG line) but not requested, and the runner now refuses a MIG `--gpu-type` before creating anything.
+
+**Run 7**: pinned to "NVIDIA L40S" with the volume in US-NC-1.
 
 Spend so far: ~$3.38 of the $8.
 

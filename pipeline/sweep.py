@@ -86,7 +86,8 @@ METRICS = ("vllm:generation_tokens_total", "vllm:prompt_tokens_total", "vllm:num
 # cards), so a type takes the largest class that lists it.
 VRAM_CLASS = {t: cls for cls in ("24gb", "48gb", "80gb", "141gb", "180gb") for t in GPU_CLASSES[cls]}
 # MIG slices have their own type ids in the catalog, priced with the class of the same memory
-# ("MIG 48GB" sits with L40S at $1.75/h). Pinnable with --gpu-type; not in the smoke test's classes.
+# ("MIG 48GB" sits with L40S at $1.75/h). device_name() returns these for a slice; POST /endpoints
+# doesn't take them (pilot run 6), so they're known here but can't be pinned.
 MIG_TYPES = {"NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb": "24gb",
              "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb": "48gb"}
 VRAM_CLASS.update(MIG_TYPES)
@@ -1081,6 +1082,10 @@ def main():
     a.configs = [c.strip() for c in a.configs.split(",") if c.strip()]
     if a.gpu_type and a.gpu_type not in VRAM_CLASS:
         sys.exit(f"unknown GPU type {a.gpu_type!r}; known: {sorted(VRAM_CLASS)}")
+    if a.gpu_type in MIG_TYPES:
+        # Pilot run 6: POST /endpoints answered 400, gpuTypeIds' enum has no RTX PRO 6000 MIG ids.
+        sys.exit(f"Runpod's REST API doesn't take {a.gpu_type!r} for an endpoint; a slice can only be "
+                 "detected (the boot report's MIG line), not requested")
 
     cfg = hf_config(a.model) if not (a.max_model_len and a.vocab_size) else {}
     max_len = a.max_model_len or max_model_len(recipes.fetch(a.model)[0], cfg)

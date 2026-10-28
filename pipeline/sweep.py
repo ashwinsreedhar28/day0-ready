@@ -524,7 +524,7 @@ class Sweep:
                                  f"would pass the {self.a.cap_minutes} min cap")
         # The deadline uses the step's worst case (a start that times out, then scale-down), so the
         # job's own timeout never cuts a step short and skips the cleanup.
-        worst = self.a.start_minutes + (10 if kind == "cold" else 25)
+        worst = self.a.cold_minutes + (10 if kind == "cold" else 25)
         if time.time() + worst * 60 > self.deadline:
             raise Stop("deadline", f"--max-hours {self.a.max_hours}: no time left for a {kind} step")
 
@@ -575,9 +575,12 @@ class Sweep:
         rec = {"kind": kind, "index": index, "retry": retry, "started_at": now_iso()}
         if not set_workers(self.key, eid, max_=1):
             log("workersMax=1 did not show up in 90 s; submitting anyway")
-        watch = {"give_up_s": min(NO_GPU_MINUTES, self.a.start_minutes / 2) * 60}
-        status, out, s = run_job(self.key, eid, {"day0_boot_report": True}, timeout=self.a.start_minutes * 60,
-                                 watch=watch)
+        # A warm-up downloads weights and fills the caches; later starts only load them. Run 4: two
+        # cold starts with a worker up never answered and each cost the full 25 min.
+        limit = self.a.start_minutes if kind == "warmup" else self.a.cold_minutes
+        rec["limit_min"] = limit
+        watch = {"give_up_s": min(NO_GPU_MINUTES, limit / 2) * 60}
+        status, out, s = run_job(self.key, eid, {"day0_boot_report": True}, timeout=limit * 60, watch=watch)
         boot = boot_of(out) if status == "COMPLETED" else None
         rec.update(job_status=status, delay_s=round((s.get("delayTime") or 0) / 1000, 1) if s else None,
                    execution_s=round((s.get("executionTime") or 0) / 1000, 1) if s else None, boot=boot,
@@ -647,7 +650,7 @@ class Sweep:
             rec["runs"].append(second)
             self.check_probe(second)
             if second["no_gpu"]:
-                raise Stop("no_gpu", f"no worker got a GPU in two waits of {min(NO_GPU_MINUTES, self.a.start_minutes / 2):.0f} "
+                raise Stop("no_gpu", f"no worker got a GPU in two waits of {min(NO_GPU_MINUTES, second['limit_min'] / 2):.0f} "
                                      f"min (states seen: {second['worker_states'] or 'none'}); the volume's data "
                                      f"center may not have the GPU type free")
             return second
@@ -673,7 +676,7 @@ class Sweep:
         rec = {"started_at": now_iso()}
         try:
             set_workers(self.key, eid, max_=1)  # back-to-back requests keep the worker; no workersMin to leak
-            status, out, _ = run_job(self.key, eid, {"day0_boot_report": True}, timeout=self.a.start_minutes * 60)
+            status, out, _ = run_job(self.key, eid, {"day0_boot_report": True}, timeout=self.a.cold_minutes * 60)
             rec["boot"] = boot_of(out) if status == "COMPLETED" else None
             if not start_ok(rec["boot"]):
                 rec["error"] = f"bench worker did not start ({status})"
@@ -1016,7 +1019,9 @@ def main():
     ap.add_argument("--configs", default=",".join(ORDER))
     ap.add_argument("--cap-minutes", type=float, default=180, help="worker-minute cap for the whole sweep")
     ap.add_argument("--max-hours", type=float, default=4.5, help="wall-clock limit")
-    ap.add_argument("--start-minutes", type=float, default=25, help="limit for one start, download included")
+    ap.add_argument("--start-minutes", type=float, default=25, help="limit for a warm-up start, download included")
+    ap.add_argument("--cold-minutes", type=float, default=15,
+                    help="limit for a cold start or the bench's start (weights and caches already on the volume)")
     ap.add_argument("--max-model-len", type=int, help="override the recipe / config context length")
     ap.add_argument("--vocab-size", type=int)
     ap.add_argument("--disk-gb", type=int, default=40)

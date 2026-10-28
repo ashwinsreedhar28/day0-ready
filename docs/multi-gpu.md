@@ -29,7 +29,7 @@ Under tensor parallel vLLM prints memory per GPU: 13.88 GiB of weights and 6.67 
 
 The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4`, recipe setting `BLOCK_SIZE=128`, `TENSOR_PARALLEL_SIZE=2` on the 141gb class, capped at 45 minutes.
 
-**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started at 05:18 with TP=2, NCCL initialized, and Hopper kernels were picked for the MoE and sparse attention, then the worker restarted until the cap. It wasn't a crash: the worker log has no traceback, and both boots end with worker-vllm's "Received signal 15, shutting down vLLM", a stop from outside.
+**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started twice (05:09 and 05:18) with TP=2; both times NCCL initialized and Hopper kernels were picked for the MoE and sparse attention. It wasn't a crash: the worker log has no traceback, and both boots end with worker-vllm's "Received signal 15, shutting down vLLM", a stop from outside.
 
 | | vLLM start | weights downloaded | stopped | after start |
 |---|---|---|---|---|

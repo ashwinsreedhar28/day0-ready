@@ -55,8 +55,20 @@ def test_s5_only_where_the_default_budget_is_small():
     assert sweep.s5_applies({}, [boot(25, mnbt=2048)])[0] is True
     assert sweep.s5_applies({}, [boot(25, mnbt=8192)])[0] is False
     assert sweep.s5_applies({"MAX_NUM_BATCHED_TOKENS": "4096"}, [boot(25)])[0] is False
-    runs, why = sweep.s5_applies({}, [{"vllm": {}}])
-    assert runs is False and "no max_num_batched_tokens" in why
+    # v0.32.0 didn't print the line in the pilot: fall back to vLLM's per-GPU defaults.
+    runs, why = sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA L40S")
+    assert runs is True and "2048" in why and "log line was missing" in why
+    assert sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA H100 80GB HBM3")[0] is False
+    assert sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA A100 80GB PCIe")[0] is True   # A100 keeps 2,048
+    assert sweep.s5_applies({}, [], None)[0] is False
+
+
+def test_default_batch_budget_uses_the_device_the_worker_saw():
+    whole = {"gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition", "gpu_memory_mib": [97887], "gpu_devices": []}
+    assert sweep.default_batch_budget(whole, "NVIDIA RTX 6000 Ada Generation") == 8192
+    sliced = {**whole, "gpu_devices": ["GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition", "MIG 2g.48gb Device 0:"]}
+    assert sweep.default_batch_budget(sliced, "NVIDIA RTX 6000 Ada Generation") == 2048  # MIG: the type's class
+    assert sweep.default_batch_budget({"gpu_memory_mib": [183359]}, "NVIDIA B200") == 16384
 
 
 def test_target_context():
@@ -184,17 +196,23 @@ def test_nothing_fits():
 class FakeRunpod:
     """Templates, endpoints, health and jobs, with timings that depend on the config's env."""
 
-    def __init__(self, boot_missing=False, no_gpu=False, flaky_health=False):
+    def __init__(self, boot_missing=False, no_gpu=False, flaky_health=False, ghost=None):
         self.templates, self.endpoints, self.jobs, self.deleted = {}, {}, {}, []
         self.metric_reads, self.boot_missing, self.no_gpu, self.n = {}, boot_missing, no_gpu, 0
         self.flaky_health, self.health_calls = flaky_health, 0
         self.alive = {}       # endpoint -> health polls left before its worker is gone after max -> 0
         self.volumes = {}
+        self.openai_jobs, self.job_index = {}, {}
+        self.ghost, self.boots_by_ep = ghost or {}, {}   # endpoint -> starts after which it never schedules
 
     def env(self, eid):
         return self.templates[self.endpoints[eid]["templateId"]]["env"]
 
+    def is_ghost(self, eid):
+        return eid in self.ghost and self.boots_by_ep.get(eid, 0) >= self.ghost[eid]
+
     def boot(self, eid):
+        self.boots_by_ep[eid] = self.boots_by_ep.get(eid, 0) + 1
         env = self.env(eid)
         init = 30.0
         if env.get("VLLM_ENABLE_STARTUP_PLAN"):
@@ -237,7 +255,7 @@ class FakeRunpod:
         m = re.fullmatch(r"/endpoints/(\w+)", path)
         if m and method == "PATCH":
             ep = self.endpoints[m.group(1)]
-            if body.get("workersMax") == 0 and ep.get("workersMax", 0) > 0:
+            if body.get("workersMax") == 0 and ep.get("workersMax", 0) > 0 and not self.is_ghost(ep["id"]):
                 self.alive[ep["id"]] = 1   # the worker shows up in one more health poll
             ep.update(body)
             return 200, ep
@@ -259,6 +277,8 @@ class FakeRunpod:
             if self.flaky_health and self.health_calls % 2:
                 return 0, "ConnectionResetError"
             eid = m.group(1)
+            if self.is_ghost(eid):
+                return 200, {"workers": {}}
             if self.alive.get(eid):
                 self.alive[eid] -= 1
                 return 200, {"workers": {"running": 1}}
@@ -269,6 +289,11 @@ class FakeRunpod:
         if m:
             jid = f"j{len(self.jobs)}"
             self.jobs[jid] = (m.group(1), body["input"])
+            if body["input"].get("openai_route"):
+                assert body["input"]["openai_input"]["stream"] is False
+                assert "stream_options" not in body["input"]["openai_input"]
+                n = self.openai_jobs[m.group(1)] = self.openai_jobs.get(m.group(1), 0) + 1
+                self.job_index[jid] = n - 1
             return 200, {"id": jid}
         m = re.fullmatch(r"/(\w+)/status/(\w+)", path)
         if m:
@@ -278,13 +303,29 @@ class FakeRunpod:
             if job_input.get("route") == "/metrics":
                 n = self.metric_reads[eid] = self.metric_reads.get(eid, 0) + 1
                 gen = {1: 16, 2: 16 + 8 * 512, 3: 16 + 128 * 512}[n]
-                text = f'vllm:generation_tokens_total{{engine="0"}} {gen}.0\nvllm:num_preemptions_total{{engine="0"}} 0.0\n'
+                done = {1: 1, 2: 9, 3: 129}[n]
+                text = (f'vllm:generation_tokens_total{{engine="0"}} {gen}.0\n'
+                        f'vllm:num_preemptions_total{{engine="0"}} 0.0\n'
+                        f'vllm:request_time_per_output_token_seconds_sum{{engine="0"}} {done * 0.03}\n'
+                        f'vllm:request_time_per_output_token_seconds_count{{engine="0"}} {done}\n'
+                        f'vllm:time_to_first_token_seconds_sum{{engine="0"}} {done * 0.5}\n'
+                        f'vllm:time_to_first_token_seconds_count{{engine="0"}} {done}\n')
                 return 200, {"status": "COMPLETED", "output": [text]}
+            if job_input.get("openai_route"):
+                # 30 at a time on the worker: batch b ends at (b + 1) x the time one batch of 512-token
+                # answers takes at this config's throughput.
+                i = self.job_index[m.group(2)]
+                batch = 30 * job_input["openai_input"]["max_tokens"] / self.tok_s(eid)
+                return 200, {"status": "COMPLETED", "delayTime": (i // 30) * batch * 1000,
+                             "executionTime": batch * 1000,
+                             "output": [{"usage": {"completion_tokens": job_input["openai_input"]["max_tokens"]}}]}
+            if self.is_ghost(eid):
+                return 200, {"status": "IN_QUEUE"}
             if self.boot_missing:
                 return 200, {"status": "COMPLETED", "output": [{"error": {"message": "unknown input"}}]}
             return 200, {"status": "COMPLETED", "delayTime": 61000, "executionTime": 40,
                          "output": [{"day0_boot_report": self.boot(eid)}]}
-        if "/cancel/" in path:
+        if "/cancel/" in path or path.endswith("/purge-queue"):
             return 200, {}
         raise AssertionError(f"unexpected call {method} {url}")
 
@@ -370,13 +411,16 @@ def test_stops_without_a_boot_report(fake, tmp_path):
     api = fake(boot_missing=True)
     s = sweep.Sweep("k", args(), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "no_boot_report" and s["recommended"] is None
+    assert s["verdict"] == "incomplete"
     assert len(api.jobs) == 1  # no retry: the image can't answer, a second start would say the same
 
 
 def test_stops_when_no_gpu_is_free(fake, tmp_path):
     fake(no_gpu=True)
     s = sweep.Sweep("k", args(start_minutes=0.001), 32768, 151936, tmp_path).run()
-    assert s["stopped"]["reason"] == "no_gpu"
+    assert s["stopped"]["reason"] == "no_gpu" and "two waits" in s["stopped"]["detail"]
+    s0 = json.loads((tmp_path / "S0.json").read_text())
+    assert [r["retry"] for r in s0["runs"]] == [False, True]  # one more wait before giving up
     assert s["worker_minutes"] == 0.0  # a throttled start never had a worker to pay for
 
 
@@ -593,3 +637,70 @@ def test_several_types_and_an_unknown_device_stop(fake, tmp_path):
     api.boot = lambda eid: {**orig(eid), "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition"}
     s = sweep.Sweep("k", args(configs=["S0"]), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "gpu" and "--gpu-type" in s["stopped"]["detail"]
+
+
+def test_jobs_level_counts_short_and_failed_jobs(fake, monkeypatch):
+    api = fake()
+    api.endpoints["e9"] = {"id": "e9", "templateId": "t9", "workersMax": 1, "workersMin": 0}
+    api.templates["t9"] = {"id": "t9", "env": {}}
+    real = api.call
+
+    def call(method, url, key, body=None):
+        st, r = real(method, url, key, body)
+        m = re.search(r"/status/(j\d+)$", url)
+        if m and api.job_index.get(m.group(1)) == 3:
+            return 200, {"status": "FAILED", "error": "worker restarted"}
+        if m and api.job_index.get(m.group(1)) == 4:
+            return 200, {**r, "output": [{"usage": {"completion_tokens": 118}}]}
+        return st, r
+
+    monkeypatch.setattr(rp, "call", call)
+    summary, recs = sweep.jobs_level("k", "e9", "m", bench_client.prompts(60, 8, 32000), 512)
+    assert summary["requests"] == 60 and summary["failed"] == 2 and summary["output_tokens"] == 58 * 512
+    # two batches of 30 at the fake S0 rate of 700 tok/s; the two bad jobs count as no tokens
+    assert summary["output_tok_s"] == pytest.approx(58 * 512 / (2 * 30 * 512 / 700), rel=0.01)
+    assert summary["via"] == "jobs API, not streamed"
+    assert any("worker restarted" in (r["error"] or "") for r in recs)
+
+
+def test_route_probe_is_checked_on_a_retried_warm_up(fake, tmp_path, monkeypatch):
+    api = fake()
+    orig = api.boot
+    calls = {"n": 0}
+
+    def first_fails(eid):
+        calls["n"] += 1
+        b = orig(eid)
+        if calls["n"] == 1:
+            b["startup_error"], b["vllm"] = True, {}
+        return b
+
+    api.boot = first_fails
+    monkeypatch.setattr(bench_client, "stream_one", lambda url, key, payload, timeout=900: {
+        "ok": False, "error": "HTTP 400", "out_tokens": 0, "chunks": 0})
+    s = sweep.Sweep("k", args(), 32768, 151936, tmp_path).run()
+    assert s["stopped"]["reason"] == "bench_route"
+
+
+def test_an_endpoint_that_never_schedules_is_replaced(fake, tmp_path):
+    """Pilot runs 2-3: S1's fourth start saw no worker at all; a new endpoint takes over."""
+    api = fake(ghost={"e1": 3})   # e1 is S1's endpoint (type pinned, so no pin re-create)
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
+    s1 = json.loads((tmp_path / "S1.json").read_text())
+    assert s1["recreated_from"] == ["e1"] and s1["endpoint_id"] != "e1"
+    assert [(r["kind"], r["index"], r["retry"], r["ok"]) for r in s1["runs"]] == [
+        ("warmup", 0, False, True), ("cold", 1, False, True), ("cold", 2, False, True),
+        ("cold", 3, False, False), ("cold", 3, True, True)]
+    assert s["stopped"] is None and s["verdict"] == "ok" and s["recommended"]
+    assert sum(p.startswith("/endpoints/") for p in api.deleted) == len(api.endpoints)
+
+
+def test_a_stopped_sweep_reports_best_so_far_not_a_recommendation(fake, tmp_path):
+    api = fake(ghost={"e1": 3})
+    real = api.is_ghost
+    api.is_ghost = lambda eid: real(eid) or (eid == "e2")   # the replacement never schedules either
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
+    assert s["stopped"]["reason"] == "no_gpu" and s["verdict"] == "incomplete"
+    assert s["recommended"] is None and s["best_so_far"] == "S0" and "recommended_block" not in s

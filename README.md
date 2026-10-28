@@ -35,7 +35,7 @@ The smoke test records the first configuration that answers a request, not the b
 - Only configurations that fit count: no out-of-memory relaunch, no failed or preempted requests, and enough KV cache for 30 requests.
 - Each sweep has a worker-minute cap, and the runner checks the account balance before it starts.
 
-Actions → **Optimal-config sweep** → Run workflow, with the pinned image and the model. Results land in `data/sweep/<image tag>/` (one file per config, `summary.json`, and two JSONL tables for a lakehouse), and a recommendation becomes a `recommended` env block in `data/ready.json` and a column on the board. `python3 pipeline/sweep.py --plan ...` prints the configs and the budget without calling Runpod. The first run is a pilot on Qwen3-8B on one 48 GB GPU, to check the runner before any real launch.
+Actions → **Optimal-config sweep** → Run workflow, with the pinned image and the model. Results land in `data/sweep/<image tag>/` (one file per config, `summary.json`, and two JSONL tables for a lakehouse), and a recommendation becomes a `recommended` env block in `data/ready.json` and a column on the board. `python3 pipeline/sweep.py --plan ...` prints the configs and the budget without calling Runpod, and `python3 pipeline/predict.py --log <worker log>` picks the GPU class from one boot's weights and KV bytes per token. The first run is a pilot on Qwen3-8B on one 48 GB GPU, to check the runner before any real launch.
 
 ## Run a build
 

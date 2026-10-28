@@ -51,6 +51,9 @@ on:
         default: "1"
         type: choice
         options: ["1", "2", "4", "8"]
+      gpu_types:
+        description: "comma-separated Runpod GPU type ids instead of the class list (no ladder climb)"
+        default: ""
 
 permissions:
   contents: write  # records data/smoke/, data/board.md, data/ready.json
@@ -74,6 +77,8 @@ jobs:
       SET: ${{ inputs.set }}
       MAX_MINUTES: ${{ inputs.max_minutes }}
       GPU_COUNT: ${{ inputs.gpu_count || '1' }}
+      GPU_TYPES: ${{ inputs.gpu_types }}
+      MIN_BALANCE: ${{ vars.SMOKE_MIN_BALANCE || '15' }}
       BUDGET_USD: ${{ vars.SMOKE_BUDGET_USD || '10' }}
     steps:
       - uses: actions/checkout@v4
@@ -92,7 +97,9 @@ jobs:
         run: |
           if [ -z "$RUNPOD_API_KEY" ]; then echo "::error::repo secret RUNPOD_API_KEY is not set"; exit 1; fi
           args=(--image "$IMAGE" --model "$MODEL" --gpu "$GPU" --max-gpu "$MAX_GPU"
-                --max-minutes "$MAX_MINUTES" --budget-usd "$BUDGET_USD" --gpu-count "$GPU_COUNT")
+                --max-minutes "$MAX_MINUTES" --budget-usd "$BUDGET_USD" --gpu-count "$GPU_COUNT"
+                --min-balance "$MIN_BALANCE")
+          [ -n "$GPU_TYPES" ] && args+=(--gpu-types "$GPU_TYPES")
           [ "$ALLOW_REMOTE_CODE" = "true" ] || args+=(--no-remote-code)
           read -ra kvs <<< "$SET"
           for kv in "${kvs[@]}"; do args+=(--set "$kv"); done

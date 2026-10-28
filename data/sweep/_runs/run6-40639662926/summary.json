@@ -1,0 +1,51 @@
+{
+ "sweep_id": "day0-v0.32.0--day0-sweep-8cf6da4-48gb-202610280543",
+ "model": "Qwen/Qwen3-8B",
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--day0-sweep-8cf6da4",
+ "digest": "sha256:cd9e0c27ede30fb58b9e263fc3a3893740dd47c0cc3133381744511a88a1876e",
+ "gpu_type": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb",
+ "device": null,
+ "gpu_class": "48gb",
+ "volume_id": "ki7c6czmhq",
+ "max_model_len": 32768,
+ "s0_env": {},
+ "kv_floor_tokens": 138240,
+ "bench": {
+  "prompt_tokens": 4096,
+  "output_tokens": 512,
+  "c1_requests": 8,
+  "c30_requests": 120,
+  "seed": 0
+ },
+ "noise_band_from": "S0",
+ "spread_s": null,
+ "noise_band_s": null,
+ "recommended": null,
+ "fast_start": null,
+ "floor_tok_s": null,
+ "verdict": "incomplete",
+ "best_so_far": null,
+ "winners": null,
+ "configs": [
+  {
+   "config": "S0",
+   "skipped": null,
+   "failed": null,
+   "deleted": null,
+   "env": {}
+  }
+ ],
+ "worker_minutes": 0.0,
+ "est_cost_usd": 0.0,
+ "cap_minutes": 200.0,
+ "stopped": {
+  "reason": "api",
+  "detail": "endpoint 400: [{\"error\":\"At #/paths/endpoints/post for POST https://rest.runpod.io/v1/endpoints, The request body is defined as an object. However, it does not meet the schema requirements of the specification. Suggestion: Ensure that the object being submitted, matches the schema correctly\",\"problems\":[\"At /endpoints/properties/gpuTypeIds/items/enum: value must be one of 'AMD Instinct MI300X OAM', 'NVIDIA A100 80GB PCIe', 'NVIDIA A100-SXM4-40GB', 'NVIDIA A100-SXM4-80GB', 'NVIDIA A40', 'NVIDIA B200', 'NVIDIA "
+ },
+ "finished_at": "2026-10-28T05:43:54+00:00",
+ "volume": {
+  "id": "ki7c6czmhq",
+  "created": true,
+  "deleted": true
+ }
+}

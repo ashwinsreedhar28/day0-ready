@@ -1,0 +1,393 @@
+{
+ "config": "S0",
+ "env": {},
+ "n_changes": 0,
+ "runs": [
+  {
+   "kind": "warmup",
+   "index": 0,
+   "retry": false,
+   "started_at": "2026-10-28T00:23:58+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 165.7,
+   "execution_s": 0.3,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793147201.3592765,
+    "launch_to_healthy_s": 118.08,
+    "launched_at": 1793147083.2774782,
+    "launches": 1,
+    "process_start": 1793147082.9488246,
+    "process_to_healthy_s": 118.41,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 58.39,
+     "graph_capture_gib": 0.62,
+     "graph_capture_s": 13,
+     "kv_cache_gib": 23.68,
+     "kv_cache_tokens": 172416,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.26,
+     "model_load_gib": 15.27,
+     "model_load_s": 22.650249,
+     "torch_compile_s": 36.92,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 2.6
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "initializing",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "route_probe": {
+    "ok": true,
+    "error": null,
+    "prompt_tokens": 64,
+    "out_tokens": 16,
+    "chunks": 16,
+    "e2e_s": 0.642,
+    "ttft_s": 0.2739,
+    "tpot_s": 0.0245
+   },
+   "minutes": 3.58,
+   "est_cost_usd": 0.1
+  },
+  {
+   "kind": "cold",
+   "index": 1,
+   "retry": false,
+   "started_at": "2026-10-28T00:27:39+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 92.3,
+   "execution_s": 0.2,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "compile_cache_hit"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793147363.5757072,
+    "launch_to_healthy_s": 86.06,
+    "launched_at": 1793147277.516499,
+    "launches": 1,
+    "process_start": 1793147277.2668161,
+    "process_to_healthy_s": 86.31,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 19.89,
+     "graph_capture_gib": 0.62,
+     "graph_capture_s": 13,
+     "kv_cache_gib": 24.67,
+     "kv_cache_tokens": 179664,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.48,
+     "model_load_gib": 15.27,
+     "model_load_s": 39.453555,
+     "torch_compile_s": 0.69,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 35.86
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "minutes": 2.21,
+   "est_cost_usd": 0.06
+  },
+  {
+   "kind": "cold",
+   "index": 2,
+   "retry": false,
+   "started_at": "2026-10-28T00:30:12+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 58.6,
+   "execution_s": 0.3,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "compile_cache_hit"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793147483.4493763,
+    "launch_to_healthy_s": 52.04,
+    "launched_at": 1793147431.4113781,
+    "launches": 1,
+    "process_start": 1793147431.167853,
+    "process_to_healthy_s": 52.28,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 19.85,
+     "graph_capture_gib": 0.62,
+     "graph_capture_s": 13,
+     "kv_cache_gib": 24.67,
+     "kv_cache_tokens": 179664,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.48,
+     "model_load_gib": 15.27,
+     "model_load_s": 6.116652,
+     "torch_compile_s": 0.68,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 2.82
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "running",
+    "throttled"
+   ],
+   "no_gpu": false,
+   "minutes": 1.44,
+   "est_cost_usd": 0.04
+  },
+  {
+   "kind": "cold",
+   "index": 3,
+   "retry": false,
+   "started_at": "2026-10-28T00:32:20+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 59.4,
+   "execution_s": 0.3,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "compile_cache_hit"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793147612.0783882,
+    "launch_to_healthy_s": 52.05,
+    "launched_at": 1793147560.0330405,
+    "launches": 1,
+    "process_start": 1793147559.7732685,
+    "process_to_healthy_s": 52.31,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 19.92,
+     "graph_capture_gib": 0.62,
+     "graph_capture_s": 13,
+     "kv_cache_gib": 24.67,
+     "kv_cache_tokens": 179664,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.48,
+     "model_load_gib": 15.27,
+     "model_load_s": 7.134087,
+     "torch_compile_s": 0.68,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 2.99
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "minutes": 1.78,
+   "est_cost_usd": 0.05
+  }
+ ],
+ "started_at": "2026-10-28T00:23:57+00:00",
+ "template_env": {
+  "MODEL_NAME": "Qwen/Qwen3-8B",
+  "MAX_MODEL_LEN": "32768",
+  "MAX_CONCURRENCY": "30",
+  "DAY0_BOOT_REPORT": "1",
+  "VLLM_CACHE_ROOT": "/runpod-volume/day0-sweep/day0-v0.32.0--day0-sweep-3b31d89-48gb-202610280023/S0"
+ },
+ "endpoint_id": "9m9cy2ojl2rlj0",
+ "gpu_type": "NVIDIA L40S",
+ "device": "NVIDIA L40S",
+ "bench": {
+  "started_at": "2026-10-28T00:34:28+00:00",
+  "boot": {
+   "argv": [
+    "vllm",
+    "serve",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8000",
+    "--max-model-len",
+    "32768",
+    "--model",
+    "Qwen/Qwen3-8B"
+   ],
+   "flags": [
+    "compile_cache_hit"
+   ],
+   "gpu": "NVIDIA L40S",
+   "healthy_at": 1793147765.4101226,
+   "launch_to_healthy_s": 52.04,
+   "launched_at": 1793147713.3668904,
+   "launches": 1,
+   "process_start": 1793147713.12054,
+   "process_to_healthy_s": 52.29,
+   "relaunches": [],
+   "startup_error": false,
+   "version": 1,
+   "vllm": {
+    "engine_init_s": 19.67,
+    "graph_capture_gib": 0.62,
+    "graph_capture_s": 13,
+    "kv_cache_gib": 24.67,
+    "kv_cache_tokens": 179664,
+    "max_concurrency_at_tokens": 32768,
+    "max_concurrency_x": 5.48,
+    "model_load_gib": 15.27,
+    "model_load_s": 6.335584,
+    "torch_compile_s": 0.68,
+    "vllm_version": "0.32.0",
+    "weights_load_s": 2.83
+   }
+  },
+  "probe": {
+   "ok": true,
+   "error": null,
+   "prompt_tokens": 64,
+   "out_tokens": 16,
+   "chunks": 16,
+   "e2e_s": 0.779,
+   "ttft_s": 0.2921,
+   "tpot_s": 0.03243
+  },
+  "stream_buffered": false,
+  "c1": {
+   "concurrency": 1,
+   "requests": 8,
+   "failed": 0,
+   "wall_s": 97.42,
+   "output_tokens": 4096,
+   "output_tok_s": 42.0,
+   "ttft_p50_ms": 582.0,
+   "ttft_p99_ms": 614.9,
+   "tpot_p50_ms": 22.7,
+   "e2e_p50_s": 12.185,
+   "chunks_per_token": 1.0,
+   "errors": []
+  },
+  "c30": {
+   "concurrency": 30,
+   "requests": 120,
+   "failed": 116,
+   "wall_s": 96.05,
+   "output_tokens": 2048,
+   "output_tok_s": 21.3,
+   "ttft_p50_ms": 28844.9,
+   "ttft_p99_ms": 29968.8,
+   "tpot_p50_ms": 58.4,
+   "e2e_p50_s": 58.802,
+   "chunks_per_token": 0.999,
+   "errors": [
+    "got 0 output tokens, asked for 512",
+    "got 114 output tokens, asked for 512",
+    "got 118 output tokens, asked for 512",
+    "got 119 output tokens, asked for 512",
+    "got 121 output tokens, asked for 512"
+   ]
+  },
+  "worker_changed": false,
+  "metrics": {
+   "c1": {
+    "generation_tokens": 4096.0,
+    "prompt_tokens": 32768.0,
+    "num_preemptions": 0.0,
+    "request_success": 8.0
+   },
+   "c30": {
+    "generation_tokens": 60077.0,
+    "prompt_tokens": 491520.0,
+    "num_preemptions": 0.0,
+    "request_success": 91.0
+   }
+  },
+  "metrics_match": false,
+  "minutes": 6.67,
+  "est_cost_usd": 0.19
+ },
+ "finished_at": "2026-10-28T00:41:08+00:00",
+ "stats": {
+  "engine_init_s": [
+   19.89,
+   19.85,
+   19.92
+  ],
+  "engine_init_s_p50": 19.89,
+  "engine_init_s_min": 19.85,
+  "engine_init_s_max": 19.92,
+  "model_load_s_p50": 7.13,
+  "delay_s_p50": 59.4,
+  "output_tok_s_c30": 21.3,
+  "tpot_p50_ms_c1": 22.7,
+  "kv_cache_tokens": 172416,
+  "fit_checks": {
+   "no_relaunch": true,
+   "no_failed_or_preempted": false,
+   "kv_floor": true
+  },
+  "stream_buffered": false,
+  "fits": false
+ },
+ "deleted": true
+}

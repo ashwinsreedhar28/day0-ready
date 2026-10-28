@@ -1,0 +1,221 @@
+{
+ "config": "S1",
+ "env": {
+  "VLLM_ENABLE_STARTUP_PLAN": "1"
+ },
+ "n_changes": 1,
+ "runs": [
+  {
+   "kind": "warmup",
+   "index": 0,
+   "retry": false,
+   "started_at": "2026-10-28T00:41:31+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 191.5,
+   "execution_s": 0.2,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "startup_plan_saved"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793148280.1057277,
+    "launch_to_healthy_s": 124.07,
+    "launched_at": 1793148156.0370622,
+    "launches": 1,
+    "process_start": 1793148155.7692597,
+    "process_to_healthy_s": 124.34,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 55.9,
+     "graph_capture_gib": 0.62,
+     "graph_capture_s": 13,
+     "kv_cache_gib": 23.68,
+     "kv_cache_tokens": 172416,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.26,
+     "model_load_gib": 15.27,
+     "model_load_s": 32.681564,
+     "torch_compile_s": 35.39,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 29.43
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "minutes": 2.8,
+   "est_cost_usd": 0.08
+  },
+  {
+   "kind": "cold",
+   "index": 1,
+   "retry": false,
+   "started_at": "2026-10-28T00:45:26+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 234.0,
+   "execution_s": 0.3,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "startup_plan_applied",
+     "compile_cache_hit"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793148557.6072464,
+    "launch_to_healthy_s": 44.04,
+    "launched_at": 1793148513.5713377,
+    "launches": 1,
+    "process_start": 1793148513.3290396,
+    "process_to_healthy_s": 44.28,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 11.17,
+     "graph_capture_gib": 0.53,
+     "graph_capture_s": 7,
+     "kv_cache_tokens": 169648,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.18,
+     "model_load_gib": 15.27,
+     "model_load_s": 6.637033,
+     "torch_compile_s": 0.8,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 3.19
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "minutes": 1.53,
+   "est_cost_usd": 0.04
+  },
+  {
+   "kind": "cold",
+   "index": 2,
+   "retry": false,
+   "started_at": "2026-10-28T00:50:07+00:00",
+   "job_status": "COMPLETED",
+   "delay_s": 91.2,
+   "execution_s": 0.3,
+   "boot": {
+    "argv": [
+     "vllm",
+     "serve",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "8000",
+     "--max-model-len",
+     "32768",
+     "--model",
+     "Qwen/Qwen3-8B"
+    ],
+    "flags": [
+     "startup_plan_applied",
+     "compile_cache_hit"
+    ],
+    "gpu": "NVIDIA L40S",
+    "healthy_at": 1793148695.7932668,
+    "launch_to_healthy_s": 44.05,
+    "launched_at": 1793148651.7442238,
+    "launches": 1,
+    "process_start": 1793148651.4707043,
+    "process_to_healthy_s": 44.32,
+    "relaunches": [],
+    "startup_error": false,
+    "version": 1,
+    "vllm": {
+     "engine_init_s": 10.93,
+     "graph_capture_gib": 0.53,
+     "graph_capture_s": 7,
+     "kv_cache_tokens": 169648,
+     "max_concurrency_at_tokens": 32768,
+     "max_concurrency_x": 5.18,
+     "model_load_gib": 15.27,
+     "model_load_s": 6.558498,
+     "torch_compile_s": 0.68,
+     "vllm_version": "0.32.0",
+     "weights_load_s": 3.15
+    }
+   },
+   "ok": true,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "no_gpu": false,
+   "minutes": 1.79,
+   "est_cost_usd": 0.05
+  }
+ ],
+ "started_at": "2026-10-28T00:41:30+00:00",
+ "template_env": {
+  "MODEL_NAME": "Qwen/Qwen3-8B",
+  "MAX_MODEL_LEN": "32768",
+  "MAX_CONCURRENCY": "30",
+  "DAY0_BOOT_REPORT": "1",
+  "VLLM_CACHE_ROOT": "/runpod-volume/day0-sweep/day0-v0.32.0--day0-sweep-3b31d89-48gb-202610280023/S1",
+  "VLLM_ENABLE_STARTUP_PLAN": "1"
+ },
+ "endpoint_id": "ke6ll6bmtniq1m",
+ "gpu_type": "NVIDIA L40S",
+ "device": "NVIDIA L40S",
+ "finished_at": "2026-10-28T01:02:47+00:00",
+ "stats": {
+  "engine_init_s": [
+   11.17,
+   10.93
+  ],
+  "engine_init_s_p50": 11.05,
+  "engine_init_s_min": 10.93,
+  "engine_init_s_max": 11.17,
+  "model_load_s_p50": 6.6,
+  "delay_s_p50": 162.6,
+  "output_tok_s_c30": null,
+  "tpot_p50_ms_c1": null,
+  "kv_cache_tokens": 169648,
+  "fit_checks": {
+   "no_relaunch": true,
+   "no_failed_or_preempted": null,
+   "kv_floor": true
+  },
+  "stream_buffered": null,
+  "fits": false
+ },
+ "deleted": true
+}

@@ -1,0 +1,67 @@
+{
+ "sweep_id": "day0-v0.32.0--day0-sweep-8cf6da4-48gb-202610280515",
+ "model": "Qwen/Qwen3-8B",
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--day0-sweep-8cf6da4",
+ "digest": "sha256:cd9e0c27ede30fb58b9e263fc3a3893740dd47c0cc3133381744511a88a1876e",
+ "gpu_type": "NVIDIA RTX A6000",
+ "device": null,
+ "gpu_class": "48gb",
+ "volume_id": "x2vjakkykv",
+ "max_model_len": 32768,
+ "s0_env": {},
+ "kv_floor_tokens": 138240,
+ "bench": {
+  "prompt_tokens": 4096,
+  "output_tokens": 512,
+  "c1_requests": 8,
+  "c30_requests": 120,
+  "seed": 0
+ },
+ "noise_band_from": "S0",
+ "spread_s": null,
+ "noise_band_s": null,
+ "recommended": null,
+ "fast_start": null,
+ "floor_tok_s": null,
+ "verdict": "incomplete",
+ "best_so_far": null,
+ "winners": null,
+ "configs": [
+  {
+   "config": "S0",
+   "skipped": null,
+   "failed": null,
+   "deleted": true,
+   "env": {},
+   "engine_init_s": [],
+   "engine_init_s_p50": null,
+   "engine_init_s_min": null,
+   "engine_init_s_max": null,
+   "model_load_s_p50": null,
+   "delay_s_p50": null,
+   "output_tok_s_c30": null,
+   "tpot_p50_ms_c1": null,
+   "kv_cache_tokens": null,
+   "fit_checks": {
+    "no_relaunch": null,
+    "no_failed_or_preempted": null,
+    "kv_floor": null
+   },
+   "stream_buffered": null,
+   "fits": false
+  }
+ ],
+ "worker_minutes": 0.0,
+ "est_cost_usd": 0.0,
+ "cap_minutes": 200.0,
+ "stopped": {
+  "reason": "no_gpu",
+  "detail": "no worker got a GPU in two waits of 10 min (states seen: none); the volume's data center may not have the GPU type free"
+ },
+ "finished_at": "2026-10-28T05:36:36+00:00",
+ "volume": {
+  "id": "x2vjakkykv",
+  "created": true,
+  "deleted": true
+ }
+}

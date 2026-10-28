@@ -1,0 +1,15 @@
+{
+ "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+ "state": "done",
+ "tried": [],
+ "vcpu": 2,
+ "data_center": "US-NC-1",
+ "volume_id": "8cbmoaziuy",
+ "pod_id": "wpwywx7dx6zduo",
+ "cost_per_hr": 0.06,
+ "minutes": 4.4,
+ "bytes": 17032957,
+ "download_s": 247,
+ "detail": null,
+ "est_cost_usd": 0.004
+}

@@ -1,0 +1,63 @@
+== preflight
+balance: hidden in CI
+US-KS-2: NVIDIA L40 LOW, NVIDIA RTX A6000 LOW
+US-MO-1: NVIDIA L40S LOW
+US-NC-1: NVIDIA L40S LOW
+US-WA-1: NVIDIA RTX 6000 Ada Generation LOW
+== sweep
+05:47:59 balance hidden in CI (at least $10.83 needed); cap 200.0 worker-min (~$5.83)
+05:48:00 created a 35 GB volume l3blgzb02u in US-NC-1 (['NVIDIA L40S'] in stock); deleted at the end
+05:48:01 S0: {}
+05:52:23   warmup 0: COMPLETED, delay 206.9 s, engine init 67.26 s, load 27.306592 s, KV 172416 tok, gpu NVIDIA L40S, 4.24 min
+05:54:31   cold 1: COMPLETED, delay 69.2 s, engine init 23.66 s, load 8.513345 s, KV 179664 tok, gpu NVIDIA L40S, 1.78 min
+05:56:38   cold 2: COMPLETED, delay 67.0 s, engine init 22.93 s, load 7.446564 s, KV 179664 tok, gpu NVIDIA L40S, 1.78 min
+05:59:11   cold 3: COMPLETED, delay 95.3 s, engine init 22.75 s, load 33.002438 s, KV 179664 tok, gpu NVIDIA L40S, 2.2 min
+06:04:48   bench: C=1 TPOT 22.6 ms; C=30 427.0 tok/s (vLLM TPOT 60.0 ms), 0 failed, preemptions 0.0
+06:05:51 S0 done: fits True, engine init p50 22.93 s, C=30 427.0 tok/s; 16 worker-min, ~$0.48
+06:05:51 S1: {'VLLM_ENABLE_STARTUP_PLAN': '1'}
+06:14:37   warmup 0: COMPLETED, delay 477.7 s, engine init 67.04 s, load 58.479362 s, KV 172416 tok, gpu NVIDIA L40S, 4.23 min
+06:24:11   cold 1: COMPLETED, delay 514.9 s, engine init 14.98 s, load 36.154568 s, KV 169648 tok, gpu NVIDIA L40S, 8.55 min
+06:26:19   cold 2: COMPLETED, delay 57.2 s, engine init 14.19 s, load 7.91483 s, KV 169648 tok, gpu NVIDIA L40S, 1.78 min
+06:28:29   cold 3: COMPLETED, delay 61.5 s, engine init 16.1 s, load 8.196131 s, KV 169648 tok, gpu NVIDIA L40S, 1.86 min
+06:34:00   bench: C=1 TPOT 22.6 ms; C=30 428.7 tok/s (vLLM TPOT 60.8 ms), 0 failed, preemptions 0.0
+06:35:14 S1 done: fits True, engine init p50 14.98 s, C=30 428.7 tok/s; 39 worker-min, ~$1.14
+06:35:14 S2: {'VLLM_ENABLE_STARTUP_PLAN': '1', 'ENFORCE_EAGER': 'true'}
+06:39:15   warmup 0: COMPLETED, delay 186.0 s, engine init 2.79 s, load 22.222671 s, KV 182752 tok, gpu NVIDIA L40S, 2.54 min
+06:41:48   cold 1: COMPLETED, delay 93.1 s, engine init 2.62 s, load 54.002355 s, KV 181680 tok, gpu NVIDIA L40S, 2.2 min
+06:46:17   cold 2: COMPLETED, delay 201.7 s, engine init 2.61 s, load 39.507698 s, KV 181680 tok, gpu NVIDIA L40S, 1.78 min
+06:48:30   cold 3: COMPLETED, delay 71.0 s, engine init 2.63 s, load 32.484379 s, KV 181680 tok, gpu NVIDIA L40S, 1.87 min
+06:53:51   bench: C=1 TPOT 23.1 ms; C=30 420.4 tok/s (vLLM TPOT 62.5 ms), 0 failed, preemptions 0.0
+06:54:54 S2 done: fits True, engine init p50 2.62 s, C=30 420.4 tok/s; 54 worker-min, ~$1.56
+06:54:54 S3: {'VLLM_ENABLE_STARTUP_PLAN': '1', 'MAX_NUM_SEQS': '32'}
+06:58:44   warmup 0: COMPLETED, delay 155.5 s, engine init 58.02 s, load 7.906439 s, KV 175696 tok, gpu NVIDIA L40S, 3.72 min
+07:05:44   cold 1: COMPLETED, delay 363.4 s, engine init 9.28 s, load 32.488491 s, KV 174160 tok, gpu NVIDIA L40S, 2.03 min
+07:08:37   cold 2: COMPLETED, delay 110.4 s, engine init 8.65 s, load 9.178394 s, KV 174160 tok, gpu NVIDIA L40S, 2.54 min
+07:12:09   cold 3: COMPLETED, delay 145.1 s, engine init 8.46 s, load 37.429866 s, KV 174160 tok, gpu NVIDIA L40S, 2.37 min
+07:17:21   bench: C=1 TPOT 22.6 ms; C=30 428.5 tok/s (vLLM TPOT 60.8 ms), 0 failed, preemptions 0.0
+07:18:44 S3 done: fits True, engine init p50 8.65 s, C=30 428.5 tok/s; 70 worker-min, ~$2.05
+07:18:44 S4: {'VLLM_ENABLE_STARTUP_PLAN': '1', 'GPU_MEMORY_UTILIZATION': '0.95'}
+07:22:04   warmup 0: COMPLETED, delay 123.0 s, engine init 67.4 s, load 7.458473 s, KV 182112 tok, gpu NVIDIA L40S, 3.21 min
+07:27:22   cold 1: COMPLETED, delay 232.8 s, engine init 12.92 s, load 32.326415 s, KV 179360 tok, gpu NVIDIA L40S, 3.21 min
+07:33:47   cold 2: COMPLETED, delay 328.7 s, engine init 12.78 s, load 35.957905 s, KV 179360 tok, gpu NVIDIA L40S, 2.45 min
+07:42:04   cold 3: NO_GPU, delay None s, engine init None s, load None s, KV None tok, gpu None, 0.0 min
+07:42:04   cold 3: no worker state at all; retrying on a new endpoint
+07:42:27   endpoint j2opurqalcdeyp replaced by 9c9uyvihiovtna
+07:44:45   cold 3: COMPLETED, delay 83.1 s, engine init 12.41 s, load 34.330336 s, KV 179360 tok, gpu NVIDIA L40S, 2.2 min
+07:51:00   bench: C=1 TPOT 22.5 ms; C=30 432.7 tok/s (vLLM TPOT 60.8 ms), 0 failed, preemptions 0.0
+07:51:53 S4 done: fits True, engine init p50 12.78 s, C=30 432.7 tok/s; 88 worker-min, ~$2.57
+07:51:53 S5: {'VLLM_ENABLE_STARTUP_PLAN': '1', 'MAX_NUM_BATCHED_TOKENS': '8192'}
+07:54:49   warmup 0: COMPLETED, delay 128.8 s, engine init 70.78 s, load 9.072164 s, KV 171728 tok, gpu NVIDIA L40S, 2.79 min
+07:56:51   cold 1: COMPLETED, delay 61.1 s, engine init 13.08 s, load 9.018118 s, KV 168960 tok, gpu NVIDIA L40S, 1.69 min
+07:59:08   cold 2: COMPLETED, delay 58.9 s, engine init 12.85 s, load 7.540842 s, KV 168960 tok, gpu NVIDIA L40S, 1.78 min
+08:04:59   cold 3: COMPLETED, delay 291.7 s, engine init 13.61 s, load 39.124085 s, KV 168960 tok, gpu NVIDIA L40S, 2.12 min
+08:10:47   bench: C=1 TPOT 22.6 ms; C=30 420.3 tok/s (vLLM TPOT 59.2 ms), 0 failed, preemptions 0.0
+08:12:00 S5 done: fits True, engine init p50 13.08 s, C=30 420.3 tok/s; 103 worker-min, ~$3.01
+08:12:00 W: {'VLLM_ENABLE_STARTUP_PLAN': '1', 'ENFORCE_EAGER': 'true', 'MAX_NUM_SEQS': '32', 'GPU_MEMORY_UTILIZATION': '0.95'}
+08:16:01   warmup 0: COMPLETED, delay 194.6 s, engine init 3.66 s, load 41.018543 s, KV 193392 tok, gpu NVIDIA L40S, 3.89 min
+08:17:48   cold 1: COMPLETED, delay 47.2 s, engine init 2.52 s, load 7.34367 s, KV 192320 tok, gpu NVIDIA L40S, 1.44 min
+08:19:41   cold 2: COMPLETED, delay 51.3 s, engine init 2.54 s, load 9.391575 s, KV 192320 tok, gpu NVIDIA L40S, 1.53 min
+08:23:51   cold 3: COMPLETED, delay 188.5 s, engine init 2.56 s, load 7.22997 s, KV 192320 tok, gpu NVIDIA L40S, 1.44 min
+08:41:05   bench: C=1 TPOT 23.1 ms; C=30 421.0 tok/s (vLLM TPOT 63.3 ms), 0 failed, preemptions 0.0
+08:42:18 W done: fits True, engine init p50 2.54 s, C=30 421.0 tok/s; 130 worker-min, ~$3.78
+08:42:19 volume l3blgzb02u deleted
+08:42:19 verdict ok: recommended S2, fast start None; 129.7 worker-min, ~$3.78

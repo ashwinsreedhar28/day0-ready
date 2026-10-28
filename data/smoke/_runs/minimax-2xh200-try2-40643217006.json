@@ -1,0 +1,52 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4",
+ "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+ "gpu_count": 2,
+ "recipe": {
+  "source": "https://raw.githubusercontent.com/vllm-project/vllm/main/recipes/models/MiniMaxAI/MiniMax-M3.1-Flash.yaml",
+  "skipped": [
+   "--disable-hybrid-kv-cache-manager"
+  ],
+  "notes": [
+   "min vLLM 0.33.0"
+  ]
+ },
+ "passed": false,
+ "passing_env": null,
+ "passing_gpu_class": null,
+ "rungs": [
+  {
+   "env": {
+    "BLOCK_SIZE": "128",
+    "TENSOR_PARALLEL_SIZE": "2"
+   },
+   "gpu_class": "141gb",
+   "gpu_count": 2,
+   "disk_gb": 60,
+   "started": "2026-10-28T06:24:52+00:00",
+   "volume_id": "8cbmoaziuy",
+   "endpoint_id": "qs6pnqdlu2ni33",
+   "job_status": "CRASH_LOOP",
+   "output": null,
+   "minutes": 32.6,
+   "worker_states": [
+    "idle",
+    "initializing",
+    "ready",
+    "running",
+    "throttled"
+   ],
+   "est_cost_usd": 6.44,
+   "outcome": "crash_loop",
+   "logs": "https://console.runpod.io/serverless/user/endpoint/qs6pnqdlu2ni33",
+   "recipe_env": {
+    "BLOCK_SIZE": "128"
+   },
+   "gpu_types": [
+    "NVIDIA H200",
+    "NVIDIA H200 NVL"
+   ]
+  }
+ ],
+ "finished_at": "2026-10-28T06:57:26+00:00"
+}

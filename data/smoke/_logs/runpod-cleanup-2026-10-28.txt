@@ -1,0 +1,26 @@
+endpoint 1ehyz4u1gn72d4 day0-smoke-day0-v0320--fix-remote-code-st-0-1792616050: deleted
+endpoint 35vt7q06pxv71r day0-smoke-day0-flint--fix-model-code-sta-0-1792619558: deleted
+endpoint 75zvnp4t256qo0 day0-smoke-day0-flint-b779895-0-1792616739: deleted
+endpoint 9aeef3pqt56ndl day0-smoke-day0-flint-b779895-1-1792615964: deleted
+endpoint h2r6tulht52got day0-smoke-day0-minimax-m31-flash-x86_64--0-1793163029: deleted
+endpoint m9jmx3e05pbvqv day0-smoke-day0-flint--test-model-code-da-0-1792622449: deleted
+endpoint wc9g0y17vwgy7m day0-smoke-day0-flint--test-model-code-da-0-1792620234: deleted
+endpoint wuqi129fkgg9ja day0-smoke-day0-flint-b779895-0-1792614087: deleted
+endpoint z0jred7yhygbq7 day0-smoke-day0-flint--test-model-code-da-0-1792626711: deleted
+endpoint zb3ga2u9xpdd9h day0-smoke-day0-flint-b779895-0-1792613225: deleted
+template fe0wd3krxw day0-smoke-day0-flint--fix-model-code-sta-0-1792619558: deleted
+template 6ukvh1ymab day0-smoke-day0-flint--test-model-code-da-0-1792620234: deleted
+template vlhz16qpsb day0-smoke-day0-flint--test-model-code-da-0-1792620603: deleted
+template 7wqlywanud day0-smoke-day0-flint--test-model-code-da-0-1792622449: deleted
+template c5iag5f92j day0-smoke-day0-flint--test-model-code-da-0-1792624764: deleted
+template etomaw2cko day0-smoke-day0-flint--test-model-code-da-0-1792626711: deleted
+template qw0h5g6qbd day0-smoke-day0-flint-b779895-0-1792613225: deleted
+template 5ofjkmgeq0 day0-smoke-day0-flint-b779895-0-1792614087: deleted
+template zfbwc7t3rj day0-smoke-day0-flint-b779895-0-1792616739: deleted
+template n0jh6sj9oj day0-smoke-day0-flint-b779895-1-1792615964: deleted
+template e6wv1tix2d day0-smoke-day0-minimax-m31-flash-x86_64--0-1793163029: deleted
+template fb8s9zegzx day0-smoke-day0-v0320--fix-remote-code-st-0-1792616050: deleted
+== left with those prefixes
+== untouched (counts only; this log is public)
+other endpoints: 13
+other volumes: 0

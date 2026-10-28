@@ -31,9 +31,11 @@ import argparse
 import json
 import os
 import re
+import signal
 import statistics
 import sys
 import time
+import traceback
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -49,7 +51,7 @@ from smoke import GPU_CLASSES  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 PREFIX = "day0-sweep-"
 GRAPHQL = "https://api.runpod.io/graphql"
-CATALOG = "https://api.runpod.io/v2/catalog/datacenters?include=GPU_AVAILABILITY"
+CATALOG = "https://api.runpod.io/v2/catalog/datacenters?include=GPU_AVAILABILITY&networkVolumeTypes=STANDARD"
 LEVELS = {"HIGH": 3, "MEDIUM": 2, "LOW": 1}
 NO_GPU_MINUTES = 10  # a start whose worker never gets past "throttled" in this long has no GPU
 
@@ -64,6 +66,9 @@ NOISE_MIN_S = 2.0
 INCONCLUSIVE = 0.20                    # S1 spread / median
 WIN_TOK = 0.05                         # throughput margin for "wins on its own"
 EST_MIN = {"cold": 6.0, "bench": 12.0}  # step estimates until one has been measured
+# An endpoint left behind (crashed runner, failed PATCH) scales itself to 0 after this long idle.
+# Cold starts don't depend on it: the runner sets workersMax to 0 between them.
+IDLE_TIMEOUT_S = 30
 
 STARTUP_PLAN = {"VLLM_ENABLE_STARTUP_PLAN": "1"}
 CHANGES = {"S2": {"ENFORCE_EAGER": "true"}, "S3": {"MAX_NUM_SEQS": "32"},
@@ -177,8 +182,9 @@ def parse_metrics(text):
 def metric_delta(before, after):
     if before is None or after is None:
         return None
-    return {k.removeprefix("vllm:").removesuffix("_total"): round(after.get(k, 0.0) - before.get(k, 0.0), 1)
-            for k in METRICS}
+    # A counter missing from either read is unknown, not zero (a renamed metric must not pass the gate).
+    return {k.removeprefix("vllm:").removesuffix("_total"):
+            round(after[k] - before[k], 1) if k in after and k in before else None for k in METRICS}
 
 
 def median(xs):
@@ -208,6 +214,7 @@ def config_stats(rec):
         "delay_s_p50": median(r.get("delay_s") for r in cold),
         "output_tok_s_c30": c30.get("output_tok_s"), "tpot_p50_ms_c1": c1.get("tpot_p50_ms"),
         "kv_cache_tokens": min(kv) if kv else None, "fit_checks": checks,
+        "stream_buffered": bench.get("stream_buffered"),
         "fits": len(inits) == COLD_RUNS and all(v is True for v in checks.values()),
     }
 
@@ -258,15 +265,22 @@ def recommend(stats, envs, s0_env, band):
 # ---------------------------------------------------------------- Runpod calls
 
 def workers(key, eid):
+    """Non-zero worker counts by state, or None when the health call failed (unknown, not empty)."""
     st, h = rp.call("GET", f"{rp.JOBS}/{eid}/health", key)
-    return {k: v for k, v in ((h or {}).get("workers") or {}).items() if v} if rp.ok(st) and isinstance(h, dict) else {}
+    if not rp.ok(st) or not isinstance(h, dict):
+        return None
+    return {k: v for k, v in (h.get("workers") or {}).items() if v}
 
 
 def wait_cold(key, eid, timeout=600, settle=3):
     """True once health shows no workers for `settle` polls in a row (10 s apart)."""
     t, quiet = time.time(), 0
     while time.time() - t < timeout:
-        quiet = quiet + 1 if not workers(key, eid) else 0
+        w = workers(key, eid)
+        if w == {}:
+            quiet += 1
+        elif w is not None:   # a failed health call is unknown: it neither counts nor resets
+            quiet = 0
         if quiet >= settle:
             return True
         time.sleep(10)
@@ -304,7 +318,7 @@ def run_job(key, eid, job_input, timeout, poll=5, watch=None):
     while time.time() - t0 < timeout:
         time.sleep(poll)
         if watch is not None:
-            states = set(workers(key, eid))
+            states = set(workers(key, eid) or {})
             watch.setdefault("states", set()).update(states)
             if states - {"throttled"} and "worker_at" not in watch:
                 watch["worker_at"] = time.time()
@@ -392,6 +406,8 @@ class Sweep:
         self.prompts = bench_client.prompts(C1_REQUESTS + C30_REQUESTS, PROMPT_TOKENS, vocab, seed=a.seed)
         self.probe = bench_client.prompts(1, 64, vocab, seed=a.seed + 1)[0]
         self.stopped = None
+        self.route_checked = False   # the OpenAI route is probed once, on the first warm-up
+        self.last_start = {}         # endpoint -> process_start of the last boot report
 
     def spent_usd(self):
         return sizing.cost_usd(self.minutes, self.gpu_class)
@@ -401,8 +417,11 @@ class Sweep:
         if self.minutes + est > self.a.cap_minutes:
             raise Stop("budget", f"{self.minutes:.0f} worker-min spent; the next {kind} step (~{est:.0f} min) "
                                  f"would pass the {self.a.cap_minutes} min cap")
-        if time.time() + est * 60 > self.deadline:
-            raise Stop("deadline", f"--max-hours {self.a.max_hours} reached")
+        # The deadline uses the step's worst case (a start that times out, then scale-down), so the
+        # job's own timeout never cuts a step short and skips the cleanup.
+        worst = self.a.start_minutes + (10 if kind == "cold" else 25)
+        if time.time() + worst * 60 > self.deadline:
+            raise Stop("deadline", f"--max-hours {self.a.max_hours}: no time left for a {kind} step")
 
     def charge(self, kind, t0):
         m = max(0.0, (time.time() - t0) / 60)
@@ -420,7 +439,7 @@ class Sweep:
             raise Stop("api", f"template {st}: {tpl}")
         st, ep = rp.call("POST", f"{rp.REST}/endpoints", self.key, {
             "templateId": tpl["id"], "name": name, "computeType": "GPU", "gpuTypeIds": gpu_types, "gpuCount": 1,
-            "workersMin": 0, "workersMax": 0, "idleTimeout": 5, "executionTimeoutMs": 900000, "flashboot": False,
+            "workersMin": 0, "workersMax": 0, "idleTimeout": IDLE_TIMEOUT_S, "executionTimeoutMs": 900000, "flashboot": False,
             "networkVolumeId": self.a.volume_id, "minCudaVersion": self.a.min_cuda})
         if not rp.ok(st):
             rp.call("DELETE", f"{rp.REST}/templates/{tpl['id']}", self.key)
@@ -428,33 +447,57 @@ class Sweep:
         return ep["id"], tpl["id"], tpl_env
 
     def delete(self, eid, tid):
-        rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", self.key, {"workersMax": 0, "workersMin": 0})
+        """Scale to 0, wait for the worker to go, delete; False if the endpoint is still there."""
+        set_workers(self.key, eid, max_=0, min_=0)
         wait_cold(self.key, eid, timeout=300)
-        rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", self.key)
+        st, r = rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", self.key)
+        if not rp.ok(st):
+            log(f"  endpoint {eid} not deleted ({st} {str(r)[:120]}); the cleanup step retries it")
+            return False
         rp.call("DELETE", f"{rp.REST}/templates/{tid}", self.key)
+        return True
 
-    def cold_start(self, eid, kind, index):
-        """Scale 0 -> 1, wait for the boot-report job, scale back to 0 and wait until no worker is left."""
+    def cold_start(self, eid, kind, index, retry=False):
+        """Scale 0 -> 1, wait for the boot-report job, scale back to 0 and wait until no worker is left.
+
+        While the first warm-up's worker is up, one short request also checks the OpenAI route the
+        bench uses, so a route that can't take the bench's requests stops the sweep before it pays
+        for anything else.
+        """
         self.guard("cold")
         t0 = time.time()
-        rec = {"kind": kind, "index": index, "started_at": now_iso()}
+        rec = {"kind": kind, "index": index, "retry": retry, "started_at": now_iso()}
         if not set_workers(self.key, eid, max_=1):
             log("workersMax=1 did not show up in 90 s; submitting anyway")
-        watch = {"give_up_s": min(NO_GPU_MINUTES, self.a.start_minutes) * 60}
+        watch = {"give_up_s": min(NO_GPU_MINUTES, self.a.start_minutes / 2) * 60}
         status, out, s = run_job(self.key, eid, {"day0_boot_report": True}, timeout=self.a.start_minutes * 60,
                                  watch=watch)
         boot = boot_of(out) if status == "COMPLETED" else None
         rec.update(job_status=status, delay_s=round((s.get("delayTime") or 0) / 1000, 1) if s else None,
                    execution_s=round((s.get("executionTime") or 0) / 1000, 1) if s else None, boot=boot,
-                   ok=start_ok(boot), worker_states=sorted(watch.get("states", ())),
-                   no_gpu=status == "NO_GPU" or ("worker_at" not in watch and status != "COMPLETED"))
+                   ok=start_ok(boot), worker_states=sorted(watch.get("states", ())), no_gpu=status == "NO_GPU")
         if not boot:
             rec["output"] = json.dumps(out)[:400] if out is not None else None
+        elif boot.get("process_start") is not None and boot.get("process_start") == self.last_start.get(eid):
+            rec.update(ok=False, reused_worker=True)  # the last start's worker answered: not a cold start
+        if boot:
+            self.last_start[eid] = boot.get("process_start")
+        if boot and boot.get("startup_error"):
+            # Any other job gets the cause back while the failed worker is still up.
+            _, cause, _ = run_job(self.key, eid, {"route": "/v1/models"}, timeout=120, poll=2)
+            rec["startup_error_output"] = json.dumps(cause)[:800]
+        if rec["ok"] and not self.route_checked:
+            url = f"{rp.JOBS}/{eid}/openai/v1/completions"
+            rec["route_probe"] = bench_client.stream_one(url, self.key, bench_client.body(self.a.model, self.probe, 16))
+            self.route_checked = True
         set_workers(self.key, eid, max_=0)
         if not wait_cold(self.key, eid):
             log("worker still up 10 min after scale-down")
         # Billing starts with a worker; a start that only ever showed "throttled" cost nothing.
         rec["minutes"], rec["est_cost_usd"] = self.charge("cold", time.time() if rec["no_gpu"] else watch.get("worker_at", t0))
+        probe = rec.get("route_probe")
+        if probe and not probe["ok"]:
+            raise Stop("bench_route", f"the OpenAI route didn't take a bench request: {probe['error']}")
         v = (boot or {}).get("vllm", {})
         log(f"  {kind} {index}: {status}, delay {rec['delay_s']} s, engine init {v.get('engine_init_s')} s, "
             f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {(boot or {}).get('gpu')}, "
@@ -467,21 +510,21 @@ class Sweep:
         if first["ok"]:
             return [first]
         if first["no_gpu"]:
-            raise Stop("no_gpu", f"no worker got a GPU in {min(NO_GPU_MINUTES, self.a.start_minutes):.0f} min "
+            raise Stop("no_gpu", f"no worker got a GPU in {min(NO_GPU_MINUTES, self.a.start_minutes / 2):.0f} min "
                                  f"(states seen: {first['worker_states'] or 'none'}); the volume's data center may "
                                  f"not have the GPU type free")
         if first["job_status"] == "COMPLETED" and not first["boot"]:
             raise Stop("no_boot_report", "the image answered without a boot report; build it from "
                                          "worker-vllm's day0-sweep branch")
         log(f"  {kind} {index} failed; one more try")
-        return [first, self.cold_start(eid, kind, f"{index}-retry")]
+        return [first, self.cold_start(eid, kind, index, retry=True)]
 
     def bench(self, eid, model):
         self.guard("bench")
         t0 = time.time()
         rec = {"started_at": now_iso()}
         try:
-            set_workers(self.key, eid, max_=1, min_=1)
+            set_workers(self.key, eid, max_=1)  # back-to-back requests keep the worker; no workersMin to leak
             status, out, _ = run_job(self.key, eid, {"day0_boot_report": True}, timeout=self.a.start_minutes * 60)
             rec["boot"] = boot_of(out) if status == "COMPLETED" else None
             if not start_ok(rec["boot"]):
@@ -507,7 +550,7 @@ class Sweep:
             log(f"  bench: C=1 TPOT {rec['c1']['tpot_p50_ms']} ms; C=30 {rec['c30']['output_tok_s']} tok/s, "
                 f"{rec['c30']['failed']} failed, preemptions {(rec['metrics']['c30'] or {}).get('num_preemptions')}")
         finally:
-            set_workers(self.key, eid, max_=0, min_=0)
+            set_workers(self.key, eid, max_=0)
             wait_cold(self.key, eid)
             rec["minutes"], rec["est_cost_usd"] = self.charge("bench", t0)
         return rec
@@ -519,12 +562,12 @@ class Sweep:
         self.records[cid], self.envs[cid] = rec, env
         types = [self.gpu_type] if self.gpu_type else self.a.gpu_types
         eid, tid, rec["template_env"] = self.create(cid, env, types)
-        rec["endpoint_id"], keep = eid, False
+        rec["endpoint_id"] = eid
         try:
             runs = self.start_with_retry(eid, "warmup", 0)
             rec["runs"] += runs
             if not runs[-1]["ok"]:
-                rec["failed"], keep = "warm-up start failed twice", True
+                rec["failed"] = "warm-up start failed twice"
                 return rec
             if not self.gpu_type:
                 got = runs[-1]["boot"].get("gpu")
@@ -533,9 +576,7 @@ class Sweep:
                 self.gpu_type, self.gpu_class = got, VRAM_CLASS.get(got, self.a.gpu_class)
                 log(f"  pinned to {got}")
                 if len(types) > 1:  # same template; a new endpoint limited to that one type
-                    rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", self.key, {"workersMax": 0})
-                    rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", self.key)
-                    rp.call("DELETE", f"{rp.REST}/templates/{tid}", self.key)
+                    self.delete(eid, tid)
                     eid, tid, _ = self.create(cid, env, [got])
                     rec["endpoint_id"] = eid
             rec["gpu_type"] = self.gpu_type
@@ -544,20 +585,20 @@ class Sweep:
                 rec["runs"] += runs
                 self.save(cid)
                 if not runs[-1]["ok"]:
-                    rec["failed"], keep = f"cold start {i} failed twice", True
+                    rec["failed"] = f"cold start {i} failed twice"
                     return rec
             rec["bench"] = self.bench(eid, self.a.model)
-            if rec["bench"].get("error"):
-                keep = True
             return rec
         finally:
             rec["finished_at"] = now_iso()
             rec["stats"] = config_stats(rec)
-            if keep or self.a.keep:
-                rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", self.key, {"workersMax": 0, "workersMin": 0})
+            # Failed configs are deleted too: what they said is in the record (boot report, startup
+            # error text), and a kept endpoint would hold the volume.
+            if self.a.keep:
+                set_workers(self.key, eid, max_=0, min_=0)
                 rec["logs"] = f"https://console.runpod.io/serverless/user/endpoint/{eid}"
             else:
-                self.delete(eid, tid)
+                rec["deleted"] = self.delete(eid, tid)
             self.save(cid)
             log(f"{cid} done: fits {rec['stats']['fits']}, engine init p50 {rec['stats']['engine_init_s_p50']} s, "
                 f"C=30 {rec['stats']['output_tok_s_c30']} tok/s; {self.minutes:.0f} worker-min, ~${self.spent_usd()}")
@@ -597,7 +638,12 @@ class Sweep:
                         raise Stop("inconclusive", f"S1's engine-init times spread {spread} s, over 20% of the median")
         except Stop as e:
             self.stopped = {"reason": e.reason, "detail": e.detail}
-            log(f"stopped: {e.reason}: {e.detail}")
+        except (Exception, KeyboardInterrupt) as e:  # noqa: BLE001  (keep what was measured; endpoints are already cleaned up)
+            traceback.print_exc()
+            self.stopped = {"reason": "interrupted" if isinstance(e, KeyboardInterrupt) else "error",
+                            "detail": f"{type(e).__name__}: {e}"[:300]}
+        if self.stopped:
+            log(f"stopped: {self.stopped['reason']}: {self.stopped['detail']}")
         return self.summary()
 
     def stats(self):
@@ -619,7 +665,7 @@ class Sweep:
                       "c30_requests": C30_REQUESTS, "seed": self.a.seed},
             "noise_band_from": band_from, "spread_s": spread, "noise_band_s": band, **rec,
             "winners": self.records.get("W", {}).get("winners"),
-            "configs": [{"config": c, "skipped": r.get("skipped"), "failed": r.get("failed"),
+            "configs": [{"config": c, "skipped": r.get("skipped"), "failed": r.get("failed"), "deleted": r.get("deleted"),
                          "env": r.get("env"), **(r.get("stats") or {})} for c, r in self.records.items()],
             "worker_minutes": round(self.minutes, 1), "est_cost_usd": self.spent_usd(),
             "cap_minutes": self.a.cap_minutes, "stopped": self.stopped, "finished_at": now_iso(),
@@ -709,9 +755,48 @@ def list_volumes(key):
     return rp.items(vols, "networkVolumes") if rp.ok(st) else []
 
 
+def show_usd(x):
+    """Dollar amounts of the account stay out of CI logs (public for a public repo)."""
+    return "hidden in CI" if os.environ.get("CI") else f"${x:.2f}"
+
+
+def cleanup(key):
+    """Scale every day0-sweep endpoint to 0 and delete it, then its templates and volumes.
+
+    The workflow runs this after every sweep, whatever happened to the runner, so a crashed or
+    cancelled run can't leave a worker billing. Only names with the sweep's prefix are touched.
+    Returns the number of things it couldn't delete.
+    """
+    left = 0
+    st, eps = rp.call("GET", f"{rp.REST}/endpoints", key)
+    if not rp.ok(st):
+        print(f"cleanup: endpoints list failed ({st} {str(eps)[:120]})")
+        return 1
+    for e in rp.items(eps, "endpoints"):
+        if not str(e.get("name", "")).startswith(PREFIX):
+            continue
+        eid = e["id"]
+        set_workers(key, eid, max_=0, min_=0)
+        wait_cold(key, eid, timeout=300)
+        st, r = rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", key)
+        print(f"cleanup: endpoint {eid} ({e.get('name')}) " + ("deleted" if rp.ok(st) else f"NOT deleted: {st} {str(r)[:120]}"))
+        left += not rp.ok(st)
+    st, tpls = rp.call("GET", f"{rp.REST}/templates", key)
+    for t in rp.items(tpls, "templates") if rp.ok(st) else []:
+        if str(t.get("name", "")).startswith(PREFIX):
+            st2, _ = rp.call("DELETE", f"{rp.REST}/templates/{t['id']}", key)
+            print(f"cleanup: template {t['id']} " + ("deleted" if rp.ok(st2) else f"NOT deleted ({st2})"))
+    for v in list_volumes(key):
+        if str(v.get("name", "")).startswith(PREFIX):
+            st, r = rp.call("DELETE", f"{rp.REST}/networkvolumes/{v['id']}", key)
+            print(f"cleanup: volume {v['id']} " + ("deleted" if rp.ok(st) else f"NOT deleted: {st} {str(r)[:120]}"))
+            left += not rp.ok(st)
+    return left
+
+
 def preflight(key, gpu_class):
     bal = balance(key)
-    print(f"balance: {'unknown' if bal is None else f'${bal:.2f}'}")
+    print(f"balance: {'unknown' if bal is None else show_usd(bal)}")
     avail = availability(key)
     for v in list_volumes(key):
         have = types_in((avail or {}).get(v.get("dataCenterId")), GPU_CLASSES[gpu_class])
@@ -740,6 +825,7 @@ def plan(a, max_len):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preflight", action="store_true", help="print balance and network volumes, then exit")
+    ap.add_argument("--cleanup", action="store_true", help="delete every day0-sweep endpoint, template and volume")
     ap.add_argument("--plan", action="store_true", help="print configs and budget without calling Runpod")
     ap.add_argument("--image")
     ap.add_argument("--model")
@@ -747,7 +833,8 @@ def main():
     ap.add_argument("--gpu-type", help="pin this Runpod GPU type id; default: the first type in the class that "
                                        "starts the S0 warm-up")
     ap.add_argument("--volume-id", default="auto",
-                    help="network volume id; auto: an existing one in a data center with the class in stock")
+                    help="network volume id; auto: an existing one in a data center with the class in stock; "
+                         "new: always create one (deleted at the end)")
     ap.add_argument("--create-volume", action="store_true",
                     help="with --volume-id auto and no fitting volume: create one, delete it at the end")
     ap.add_argument("--volume-gb", type=int, help="size for a new volume (default: from the weight size)")
@@ -771,6 +858,8 @@ def main():
     if a.preflight:
         preflight(rp.load_key(a.env_file), a.gpu_class)
         return
+    if a.cleanup:
+        sys.exit(1 if cleanup(rp.load_key(a.env_file)) else 0)
     if not (a.image and a.model):
         sys.exit("--image and --model are required")
     if a.from_smoke:
@@ -797,19 +886,20 @@ def main():
     need = a.min_balance if a.min_balance is not None else sizing.cost_usd(a.cap_minutes, cls) + 5
     bal = balance(key)
     if bal is None or bal < need:
-        sys.exit(f"balance {'unknown' if bal is None else f'${bal:.2f}'}; this sweep needs at least ${need:.2f}")
-    log(f"balance ${bal:.2f}; cap {a.cap_minutes} worker-min (~${sizing.cost_usd(a.cap_minutes, cls)})")
+        sys.exit(f"balance {'unknown' if bal is None else show_usd(bal)}; this sweep needs at least ${need:.2f}")
+    log(f"balance {show_usd(bal)} (at least ${need:.2f} needed); cap {a.cap_minutes} worker-min "
+        f"(~${sizing.cost_usd(a.cap_minutes, cls)})")
 
     a.gpu_types = [a.gpu_type] if a.gpu_type else list(GPU_CLASSES[a.gpu_class])
     created = None
-    if a.volume_id in (None, "auto"):
+    if a.volume_id in (None, "auto", "new"):
         need = a.volume_gb or volume_gb(a.model)
         avail = availability(key)
-        vol, have = pick_volume(list_volumes(key), avail, a.gpu_types, need)
+        vol, have = pick_volume(list_volumes(key), avail, a.gpu_types, need) if a.volume_id != "new" else (None, None)
         if vol:
             a.volume_id, a.gpu_types = vol["id"], have
             log(f"volume {vol['id']} in {vol['dataCenterId']}, which has {have} in stock")
-        elif a.create_volume:
+        elif a.create_volume or a.volume_id == "new":
             dc, have = pick_data_center(avail, a.gpu_types)
             if not dc:
                 sys.exit(f"no data center lists {a.gpu_types} in stock")
@@ -824,15 +914,27 @@ def main():
                      "pass --create-volume or --volume-id")
 
     out_dir = ROOT / "data" / "sweep" / a.image.rsplit(":", 1)[-1]
+
+    def on_term(signum, frame):  # Actions cancels with SIGINT, then SIGTERM: both unwind through the cleanup
+        raise KeyboardInterrupt(f"signal {signum}")
+    signal.signal(signal.SIGTERM, on_term)
+
+    s, volume_left = None, False
     try:
         s = Sweep(key, a, max_len, vocab, out_dir).run()
     finally:
         if created and not a.keep:
             st, r = rp.call("DELETE", f"{rp.REST}/networkvolumes/{created}", key)
-            log(f"volume {created} deleted" if rp.ok(st) else
-                f"volume {created} NOT deleted ({st} {str(r)[:120]}): delete it in the console (billed monthly)")
+            volume_left = not rp.ok(st)
+            log(f"volume {created} deleted" if not volume_left else
+                f"volume {created} NOT deleted ({st} {str(r)[:120]}); the cleanup step retries it")
+            if s:
+                s["volume"] = {"id": created, "created": True, "deleted": not volume_left}
+                (out_dir / "summary.json").write_text(json.dumps(s, indent=1) + "\n")
     log(f"verdict {s['verdict']}: recommended {s['recommended']}, fast start {s['fast_start']}; "
         f"{s['worker_minutes']} worker-min, ~${s['est_cost_usd']}" + (f"; stopped: {s['stopped']['reason']}" if s["stopped"] else ""))
+    if volume_left or any(r.get("deleted") is False for r in s["configs"]):
+        sys.exit(1)
 
 
 if __name__ == "__main__":

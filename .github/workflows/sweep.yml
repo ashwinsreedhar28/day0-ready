@@ -10,8 +10,10 @@ name: Optimal-config sweep
 # - The runner refuses to start below the cap's cost + $5 of account balance.
 # - 80 GB and larger classes run in the gpu-large environment, which can
 #   require an approval before the job starts.
-# - Endpoints are scaled to 0 on every exit path; a volume the runner created
-#   is deleted at the end.
+# - Endpoints idle out after 30 s on their own and are scaled to 0 and deleted
+#   on every exit path; a cleanup step that always runs then deletes anything
+#   left with the day0-sweep- prefix (endpoints, templates, volumes), even if
+#   the runner was cancelled or crashed.
 #
 # Needs the repo secret RUNPOD_API_KEY. Not triggered by pull requests, so a
 # fork can't spend it.
@@ -54,7 +56,7 @@ permissions:
   contents: write  # records data/sweep/, data/board.md, data/ready.json
 
 concurrency:
-  group: sweep-${{ inputs.image }}
+  group: sweep  # one sweep at a time: they share one balance and the cleanup step's prefix
   cancel-in-progress: false
 
 jobs:
@@ -84,25 +86,42 @@ jobs:
 
       - name: Run sweep
         id: sweep
+        timeout-minutes: 300  # under the job's 330, so cleanup and record still run
         env:
           RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           if [ -z "$RUNPOD_API_KEY" ]; then echo "::error::repo secret RUNPOD_API_KEY is not set"; exit 1; fi
+          echo "dir=data/sweep/${IMAGE##*:}" >> "$GITHUB_OUTPUT"
           python3 pipeline/sweep.py --preflight --gpu-class "$GPU_CLASS" | tee preflight.log
           args=(--image "$IMAGE" --model "$MODEL" --gpu-class "$GPU_CLASS" --volume-id "$VOLUME_ID"
-                --configs "$CONFIGS" --cap-minutes "$CAP_MINUTES" --max-hours 5)
+                --configs "$CONFIGS" --cap-minutes "$CAP_MINUTES" --max-hours 4.5)
           [ -n "$GPU_TYPE" ] && args+=(--gpu-type "$GPU_TYPE")
           [ "$CREATE_VOLUME" = "true" ] && args+=(--create-volume)
           if [ -n "$S0_ENV" ]; then args+=(--s0-env "$S0_ENV"); else args+=(--from-smoke "data/smoke/${IMAGE##*:}.json"); fi
-          python3 pipeline/sweep.py "${args[@]}" | tee sweep.log || true
-          echo "dir=data/sweep/${IMAGE##*:}" >> "$GITHUB_OUTPUT"
+          set -o pipefail
+          python3 pipeline/sweep.py "${args[@]}" 2>&1 | tee sweep.log
+
+      - name: Clean up Runpod resources
+        if: always()
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: python3 pipeline/sweep.py --cleanup
+
+      - name: Keep the raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweep-results
+          path: data/sweep/
+          if-no-files-found: ignore
 
       - name: Record result
         if: always() && steps.sweep.outputs.dir != ''
         run: |
           dir="${{ steps.sweep.outputs.dir }}"
-          [ -f "$dir/summary.json" ] || { echo "::error::no summary.json"; exit 1; }
+          [ -d "$dir" ] || { echo "no results to record"; exit 0; }
+          [ -f "$dir/summary.json" ] || echo "::warning::no summary.json; recording the per-config files only"
           rm -rf /tmp/sweep && cp -r "$dir" /tmp/sweep
           git config user.name "day0-ready bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -112,7 +131,7 @@ jobs:
             rm -rf "$dir" && mkdir -p "$(dirname "$dir")" && cp -r /tmp/sweep "$dir"
             python3 detect/board.py > /dev/null
             git add "$dir" data/board.md data/ready.json
-            git commit -q -m "sweep: ${IMAGE##*:} ($(jq -r '.verdict + (if .recommended then ": " + .recommended else "" end)' "$dir/summary.json"))"
+            git commit -q -m "sweep: ${IMAGE##*:} ($(jq -r '.verdict + (if .recommended then ": " + .recommended else "" end)' "$dir/summary.json" 2>/dev/null || echo partial))"
             git push -q origin "HEAD:$branch" && exit 0
             sleep $((i * 5))
           done

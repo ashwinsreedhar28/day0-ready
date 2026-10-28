@@ -39,7 +39,7 @@ Not swept, and why:
 - The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both.
 - A network volume in a data center that has that GPU. Weights live under a shared `HF_HOME` on the volume. Each config gets its own `VLLM_CACHE_ROOT` on the volume, so one config's compile cache or startup plan can't leak into another's (vLLM's startup-plan key ignores `gpu_memory_utilization`, vllm#60143).
 - `MAX_MODEL_LEN` = the model's recipe `context_length`, capped at 32,768. Without a recipe, the config's `max_position_embeddings`, same cap.
-- Endpoint: `workersMax` 1, `idleTimeout` 5 s, FlashBoot off, `MAX_CONCURRENCY` 30.
+- Endpoint: `workersMax` toggled between 0 and 1 by the runner, `idleTimeout` 30 s, FlashBoot off, `MAX_CONCURRENCY` 30. Cold starts don't depend on the idle timeout (the runner sets `workersMax` to 0 between them); it's there so an endpoint left behind scales itself down.
 - `DAY0_BOOT_REPORT=1` (see [Boot report](#boot-report)).
 
 ## Configurations
@@ -84,10 +84,10 @@ Per config: one warm-up start, discarded (it downloads nothing new but fills the
 
 ### Throughput
 
-Per config, once, on a warm worker (`workersMin` 1 for the duration):
+Per config, once, on a warm worker. Back-to-back requests keep it up; there's no `workersMin`, so nothing stays on if the runner dies.
 
 - Requests go through the endpoint's OpenAI-compatible route (`/openai/v1/completions`), the way users call it. The prompts are 128 distinct sequences of fixed token ids (random, seeded, the same set for every config), so every request is exactly 4,096 input tokens without a tokenizer, and no prompt repeats on a worker, so prefix caching never hits. Each asks for 512 output tokens with `ignore_eos`, streamed.
-- One short streamed request first checks that the route streams token by token.
+- The first warm-up's worker gets one short streamed request that checks the route takes token-id prompts and streams token by token. If it doesn't, the sweep stops before paying for anything else.
 - **C=1**, 8 requests (prompts 1–8): TPOT p50 (time per output token).
 - **C=30**, 120 requests (prompts 9–128), at most 30 in flight: **output tokens/s** (ranked), TTFT p50/p99, TPOT p50, failed requests.
 - After each level, the runner reads vLLM's `/metrics` through the worker's route passthrough (`{"route": "/metrics"}`) and cross-checks generated tokens and preemptions against the client's count.
@@ -115,7 +115,11 @@ Throughput is one run per config, and the result says so.
 
 ## Stop rules and budget
 
-- Per config: 1 warm-up + 3 cold starts + 1 throughput run. A config that fails to start gets one more cold start; if that fails too, it's recorded as failed and the sweep moves on.
+- Per config: 1 warm-up + 3 cold starts + 1 throughput run. A config that fails to start gets one more cold start; if that fails too, it's recorded as failed and the sweep moves on. Failed configs' endpoints are deleted like the rest; the record keeps their boot report and the worker's startup-error text.
+- If S1 fails to start, the sweep stops: S2–S5 and W all build on it.
+- If no worker gets past `throttled` within 10 minutes, the sweep stops (no GPU of that type free in the volume's data center); a start that never got a worker costs nothing.
+- A step starts only if its worst case (a start that times out, then scale-down) fits before `--max-hours`.
+- A workflow step that always runs, after the sweep, deletes anything left with the `day0-sweep-` prefix (endpoints, templates, volumes), even after a cancelled or crashed run.
 - The runner estimates spend as worker-alive minutes × the class's highest listed Serverless rate (`pipeline/sizing.py`) and stops when the next step would pass the cap.
 
 | GPU | rough cost per config | cap per model |
@@ -168,6 +172,7 @@ MiniMax-M3.1-Flash is the live example: 224 GB of weights, more than one 180 GB 
 
 - vllm#60143: the startup-plan key ignores `gpu_memory_utilization`. Per-config cache roots work around it.
 - worker-vllm's out-of-memory relaunch sets `MAX_NUM_BATCHED_TOKENS=8192`, which **raises** the budget on GPUs under 70 GB (vLLM's default there is 2,048). Worth a worker-vllm issue on its own; the fit gate excludes any config that relaunched.
+- If `VLLM_CACHE_ROOT` on the volume isn't writable, worker-vllm compiles into the container disk instead and logs a warning. The boot report doesn't flag that yet, so such a start would show a slower engine init with no other sign.
 - worker-vllm's README lists `GPU_MEMORY_UTILIZATION` 0.9 and the Hub template 0.95; vLLM's own default, which the day-0 builds use, is 0.92.
 
 ## Pilot

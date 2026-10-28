@@ -98,3 +98,24 @@ def test_percentiles():
     assert bench_client.pct([1, 2, 3, 4], 50) == 2
     assert bench_client.pct(list(range(1, 121)), 99) == 119
     assert bench_client.pct([None], 50) is None
+
+
+def test_a_cut_stream_is_a_failed_request_not_a_crash():
+    """A chunked stream that stops mid-chunk raises http.client.IncompleteRead inside urllib."""
+    import socket
+
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(1)
+
+    def serve():
+        conn, _ = srv.accept()
+        conn.recv(65536)
+        conn.sendall(b"HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\n\r\n"
+                     b"40\r\ndata: {\"choices\": [{\"text\": \" a\"}]}\n\n")  # promises 0x40 bytes, sends fewer
+        conn.close()
+
+    threading.Thread(target=serve, daemon=True).start()
+    url = f"http://127.0.0.1:{srv.getsockname()[1]}/v1/completions"
+    r = bench_client.stream_one(url, "k", bench_client.body("m", [5] * 16, 32), timeout=10)
+    assert not r["ok"] and r["error"]

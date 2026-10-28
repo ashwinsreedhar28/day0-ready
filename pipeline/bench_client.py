@@ -67,7 +67,7 @@ def stream_one(url, key, payload, timeout=900):
                     text_times.append(time.monotonic())
     except urllib.error.HTTPError as e:
         error = f"HTTP {e.code}: {e.read().decode(errors='replace')[:300]}"
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as e:
+    except Exception as e:  # noqa: BLE001  (a cut stream raises http.client.IncompleteRead; one request must not end the run)
         error = f"{type(e).__name__}: {e}"[:300]
     end = time.monotonic()
     out_tokens = (usage or {}).get("completion_tokens")
@@ -98,8 +98,13 @@ def run_level(url, key, model, prompt_list, concurrency, max_tokens, timeout=900
     send = send or stream_one
     payloads = [body(model, p, max_tokens) for p in prompt_list]
     t0 = time.monotonic()
-    with ThreadPoolExecutor(max_workers=concurrency) as ex:
+    ex = ThreadPoolExecutor(max_workers=concurrency)
+    try:
         recs = list(ex.map(lambda pl: send(url, key, pl, timeout), payloads))
+    finally:
+        # On an interrupt, drop the queued requests instead of sending them all first, so the
+        # caller's scale-down runs now (requests already in flight finish on their own).
+        ex.shutdown(wait=False, cancel_futures=True)
     wall = time.monotonic() - t0
     good = [r for r in recs if r["ok"]]
     out = sum(r["out_tokens"] for r in good)

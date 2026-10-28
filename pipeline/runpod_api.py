@@ -4,6 +4,7 @@ Shapes checked against docs.runpod.io: creates return 201, deletes 204, and
 Cloudflare in front of the API rejects urllib's default User-Agent (error 1010).
 """
 
+import http.client
 import json
 import os
 import sys
@@ -39,8 +40,9 @@ def call(method, url, key, body=None):
             return r.status, (json.loads(raw) if raw else None)
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode(errors="replace")[:500]
-    except (urllib.error.URLError, TimeoutError) as e:
-        return 0, str(e)
+    except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException, ValueError) as e:
+        # Dropped connections and non-JSON bodies come back as status 0 too: callers check ok().
+        return 0, f"{type(e).__name__}: {e}"[:500]
 
 
 def ok(status):

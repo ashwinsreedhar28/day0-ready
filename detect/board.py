@@ -1,8 +1,9 @@
 """Render data/board.md from data/state.json and data/results/*.json.
 
 One row per launch: when vLLM pushed its day-0 image, the Hugging Face model
-it maps to, whether the worker built from it, the CPU-check verdict, and the
-hours from vLLM's tag to a pushed worker image.
+it maps to, whether the worker built from it, the CPU-check verdict, the smoke
+test, the optimal-config sweep's recommendation (data/sweep/*/summary.json),
+and the hours from vLLM's tag to a pushed worker image.
 """
 
 import json
@@ -49,11 +50,36 @@ def smoke_text(sm):
     return f"fail: {model}, {last.get('outcome')}{stopped}"
 
 
-def ready_entries(smoke, builds_by_image):
+def sweep_text(sw):
+    """One board cell for a sweep summary."""
+    rows = {c["config"]: c for c in sw.get("configs") or []}
+    if sw.get("recommended"):
+        r = rows[sw["recommended"]]
+        cell = f"{sw['recommended']}: {r['engine_init_s_p50']} s engine init, {r['output_tok_s_c30']:.0f} tok/s at C=30"
+        if sw.get("fast_start"):
+            f = rows[sw["fast_start"]]
+            cell += f"; fast start {sw['fast_start']}: {f['engine_init_s_p50']} s, {f['output_tok_s_c30']:.0f} tok/s"
+        return f"{cell} ({sw['gpu_type']})"
+    stopped = f" (stopped: {sw['stopped']['reason']})" if sw.get("stopped") else ""
+    return f"{sw.get('verdict')}{stopped}"
+
+
+def load_sweeps(data=None):
+    """Latest sweep summary per image."""
+    out = {}
+    for f in sorted(((data or DATA) / "sweep").glob("*/summary.json")):
+        sw = json.loads(f.read_text())
+        if sw["image"] not in out or sw["finished_at"] > out[sw["image"]]["finished_at"]:
+            out[sw["image"]] = sw
+    return out
+
+
+def ready_entries(smoke, builds_by_image, sweeps=None):
     """Known-good deploys: one per launch whose own model passed on its board image.
 
     Left out: branch test builds ("--" in the name) and stand-in models (step-5-preview's
-    Qwen3-8B run proved the image serves, not that Step-5-Preview does).
+    Qwen3-8B run proved the image serves, not that Step-5-Preview does). A sweep on
+    the same image and model adds its `recommended` block.
     """
     out = []
     for name, sm in sorted(smoke.items()):
@@ -64,10 +90,14 @@ def ready_entries(smoke, builds_by_image):
         deploy = sm.get("deploy") or {
             "template": smoke_mod.template_body(sm["image"], sm["model"], last["env"], last.get("disk_gb", 60)),
             "endpoint": smoke_mod.endpoint_body(last["gpu_class"], "13.0")}
-        out.append({"model": sm["model"], "vllm_tag": build.get("vllm_tag"), "image": sm["image"],
-                    "digest": build.get("digest") or (sm.get("image_build") or {}).get("digest"),
-                    "gpu_class": last["gpu_class"], "env": last["env"], "verified_at": sm["finished_at"],
-                    "result": f"data/smoke/{sm['image'].rsplit(':', 1)[-1]}.json", "deploy": deploy})
+        entry = {"model": sm["model"], "vllm_tag": build.get("vllm_tag"), "image": sm["image"],
+                 "digest": build.get("digest") or (sm.get("image_build") or {}).get("digest"),
+                 "gpu_class": last["gpu_class"], "env": last["env"], "verified_at": sm["finished_at"],
+                 "result": f"data/smoke/{sm['image'].rsplit(':', 1)[-1]}.json", "deploy": deploy}
+        sw = (sweeps or {}).get(sm["image"])
+        if sw and sw.get("model") == sm["model"] and sw.get("recommended_block"):
+            entry["recommended"] = sw["recommended_block"]
+        out.append(entry)
     return out
 
 
@@ -85,6 +115,13 @@ def main():
         name = re.sub(r"-[0-9a-f]{7,}$", "", name) if name.count("-") > 1 else name
         if name not in smoke or sm["finished_at"] > smoke[name]["finished_at"]:
             smoke[name] = sm
+
+    sweeps = load_sweeps()
+
+    def sweep_cell(r):
+        sm = r and smoke.get(r["image"].rsplit(":", 1)[-1])
+        sw = sm and sweeps.get(sm["image"])
+        return sweep_text(sw) if sw and sw.get("model") == sm["model"] else ""
 
     def smoke_cell(r):
         sm = r and smoke.get(r["image"].rsplit(":", 1)[-1])
@@ -107,8 +144,8 @@ def main():
 
     lines = ["# Day-0 board", "",
              f"Last poll: {state.get('last_poll', 'never')}. Rows: launches vLLM published a model-named image for.", "",
-             "| vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | tag → worker image |",
-             "|---|---|---|---|---|---|---|"]
+             "| vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |",
+             "|---|---|---|---|---|---|---|---|"]
     for pushed, fam, tag, model, r, first_seen in sorted(rows, key=lambda row: row[0], reverse=True):
         if r is None:
             build, verdict, lag = "pending", "", ""
@@ -120,7 +157,7 @@ def main():
                 lag = "backfill"  # detected long after vLLM pushed the tag; not a live measurement
             elif pushed and r.get("pushed") == "success":
                 lag = f"{(ts(r['finished_at']) - ts(pushed)).total_seconds() / 3600:.1f} h"
-        lines.append(f"| `{tag}` | {pushed[:16].replace('T', ' ')} | {model or 'no match'} | {build} | {verdict} | {smoke_cell(r)} | {lag} |")
+        lines.append(f"| `{tag}` | {pushed[:16].replace('T', ' ')} | {model or 'no match'} | {build} | {verdict} | {smoke_cell(r)} | {sweep_cell(r) if r else ''} | {lag} |")
     (DATA / "board.md").write_text("\n".join(lines) + "\n")
     builds = {}
     for f in (DATA / "results").rglob("*.json") if (DATA / "results").exists() else []:
@@ -128,7 +165,7 @@ def main():
         for k in ("image", "image_pinned"):
             if r.get(k):
                 builds[r[k]] = r
-    (DATA / "ready.json").write_text(json.dumps(ready_entries(smoke, builds), indent=1) + "\n")
+    (DATA / "ready.json").write_text(json.dumps(ready_entries(smoke, builds, sweeps), indent=1) + "\n")
     print("\n".join(lines))
 
 

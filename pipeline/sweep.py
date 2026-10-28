@@ -85,6 +85,12 @@ METRICS = ("vllm:generation_tokens_total", "vllm:prompt_tokens_total", "vllm:num
 # GPU type -> the class of its own VRAM. Classes are "at least" lists (24gb also names 48 GB
 # cards), so a type takes the largest class that lists it.
 VRAM_CLASS = {t: cls for cls in ("24gb", "48gb", "80gb", "141gb", "180gb") for t in GPU_CLASSES[cls]}
+# MIG slices have their own type ids in the catalog, priced with the class of the same memory
+# ("MIG 48GB" sits with L40S at $1.75/h). device_name() returns these for a slice; POST /endpoints
+# doesn't take them (pilot run 6), so they're known here but can't be pinned.
+MIG_TYPES = {"NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 1g.24gb": "24gb",
+             "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb": "48gb"}
+VRAM_CLASS.update(MIG_TYPES)
 
 
 class Stop(Exception):
@@ -187,6 +193,20 @@ def boot_of(output):
         if isinstance(item, dict) and "day0_boot_report" in item:
             return item["day0_boot_report"]
     return None
+
+
+def device_name(boot):
+    """The device a worker got: nvidia-smi's name, plus the MIG profile when it's a slice.
+
+    A whole RTX PRO 6000 and a 2g.48gb slice of one report the same name; the profile tells them
+    apart and gives the slice's catalog type id ("... MIG 2g.48gb").
+    """
+    gpu = (boot or {}).get("gpu")
+    for d in (boot or {}).get("gpu_devices") or []:
+        m = re.match(r"\s*MIG (\S+)", d)
+        if gpu and m:
+            return f"{gpu} MIG {m.group(1)}"
+    return gpu
 
 
 def start_ok(boot):
@@ -479,8 +499,16 @@ def pick_volume(volumes, avail, gpu_types, need_gb):
     return (best[1], best[2]) if best else (None, None)
 
 
-def pick_data_center(avail, gpu_types):
-    """(data center, types) with the most of the class in stock, for a new volume."""
+def pick_data_center(avail, gpu_types, only=None):
+    """(data center, types) with the most of the class in stock, for a new volume.
+
+    `only` pins one data center (--data-center), e.g. one that lists no MIG slices of the class:
+    an endpoint pinned to an L40S type id was served on an RTX PRO 6000 Blackwell MIG slice
+    (pilot run 4, Oct 28). (None, None) when it doesn't list the class in stock.
+    """
+    if only:
+        have = types_in((avail or {}).get(only), gpu_types)
+        return (only, have) if have else (None, None)
     ranked = sorted(((LEVELS[(a or {})[types_in(a, gpu_types)[0]]], dc) for dc, a in (avail or {}).items()
                      if types_in(a, gpu_types)), reverse=True)
     return (ranked[0][1], types_in(avail[ranked[0][1]], gpu_types)) if ranked else (None, None)
@@ -593,10 +621,10 @@ class Sweep:
             # Compiled into the container disk instead of the config's cache root: a slower start
             # for a reason that isn't the config (boot report v2 flags it).
             rec.update(ok=False, cache_fallback=boot["compile_cache_fallback"])
-        if boot and self.device and boot.get("gpu") != self.device:
+        if boot and self.device and device_name(boot) != self.device:
             # Runpod can serve a GPU type id on a different device; a start on another device than the
             # warm-up misses the compile cache and the startup plan, so it isn't a comparable cold start.
-            rec.update(ok=False, wrong_device=boot.get("gpu"))
+            rec.update(ok=False, wrong_device=device_name(boot))
         if boot:
             self.last_start[eid] = boot.get("process_start")
         if boot and boot.get("startup_error"):
@@ -615,7 +643,7 @@ class Sweep:
         rec["minutes"], rec["est_cost_usd"] = self.charge("cold", time.time() if rec["no_gpu"] else watch.get("worker_at", t0))
         v = (boot or {}).get("vllm", {})
         log(f"  {kind} {index}: {status}, delay {rec['delay_s']} s, engine init {v.get('engine_init_s')} s, "
-            f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {(boot or {}).get('gpu')}, "
+            f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {device_name(boot)}, "
             f"{rec['minutes']} min")
         return rec
 
@@ -681,8 +709,8 @@ class Sweep:
             if not start_ok(rec["boot"]):
                 rec["error"] = f"bench worker did not start ({status})"
                 return rec
-            if self.device and rec["boot"].get("gpu") != self.device:
-                rec["error"] = f"bench worker is on {rec['boot'].get('gpu')}, not {self.device}"
+            if self.device and device_name(rec["boot"]) != self.device:
+                rec["error"] = f"bench worker is on {device_name(rec['boot'])}, not {self.device}"
                 return rec
             url = f"{rp.JOBS}/{eid}/openai/v1/completions"
             probe = bench_client.stream_one(url, self.key, bench_client.body(model, self.probe, 16), timeout=180)
@@ -732,7 +760,7 @@ class Sweep:
             if not last["ok"]:
                 rec["failed"] = "warm-up start failed twice"
                 return rec
-            got = last["boot"].get("gpu")
+            got = device_name(last["boot"])
             if not self.gpu_type:
                 if got in types:
                     self.gpu_type = got
@@ -750,6 +778,8 @@ class Sweep:
                     self.recreate(rec)
             if not self.device:
                 self.device = got
+                if got != self.gpu_type:   # held anyway: later starts have to match what the warm-up got
+                    log(f"  pinned {self.gpu_type}; the warm-up got {got}, which later starts must match")
             rec["gpu_type"], rec["device"] = self.gpu_type, self.device
             for i in range(1, COLD_RUNS + 1):
                 last = self.start_with_retry(rec, "cold", i)
@@ -1013,6 +1043,8 @@ def main():
                          "new: always create one (deleted at the end)")
     ap.add_argument("--create-volume", action="store_true",
                     help="with --volume-id auto and no fitting volume: create one, delete it at the end")
+    ap.add_argument("--data-center", help="for a new volume: this data center (it must list the type in stock) "
+                    "instead of the one with the most; e.g. one with no MIG slices of the class listed")
     ap.add_argument("--volume-gb", type=int, help="size for a new volume (default: from the weight size)")
     ap.add_argument("--s0-env", type=json.loads, help='the smoke test\'s passing env as JSON, e.g. \'{}\'')
     ap.add_argument("--from-smoke", help="data/smoke/<image tag>.json to take S0's env from")
@@ -1050,6 +1082,10 @@ def main():
     a.configs = [c.strip() for c in a.configs.split(",") if c.strip()]
     if a.gpu_type and a.gpu_type not in VRAM_CLASS:
         sys.exit(f"unknown GPU type {a.gpu_type!r}; known: {sorted(VRAM_CLASS)}")
+    if a.gpu_type in MIG_TYPES:
+        # Pilot run 6: POST /endpoints answered 400, gpuTypeIds' enum has no RTX PRO 6000 MIG ids.
+        sys.exit(f"Runpod's REST API doesn't take {a.gpu_type!r} for an endpoint; a slice can only be "
+                 "detected (the boot report's MIG line), not requested")
 
     cfg = hf_config(a.model) if not (a.max_model_len and a.vocab_size) else {}
     max_len = a.max_model_len or max_model_len(recipes.fetch(a.model)[0], cfg)
@@ -1078,9 +1114,10 @@ def main():
             a.volume_id, a.gpu_types = vol["id"], have
             log(f"volume {vol['id']} in {vol['dataCenterId']}, which has {have} in stock")
         elif a.create_volume or a.volume_id == "new":
-            dc, have = pick_data_center(avail, a.gpu_types)
+            dc, have = pick_data_center(avail, a.gpu_types, a.data_center)
             if not dc:
-                sys.exit(f"no data center lists {a.gpu_types} in stock")
+                sys.exit(f"{a.data_center} doesn't list {a.gpu_types} in stock" if a.data_center
+                         else f"no data center lists {a.gpu_types} in stock")
             st, v = rp.call("POST", f"{rp.REST}/networkvolumes", key,
                             {"name": f"{PREFIX}{int(time.time())}", "size": need, "dataCenterId": dc})
             if not rp.ok(st):

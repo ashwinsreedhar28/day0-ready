@@ -478,6 +478,9 @@ def test_pick_volume_prefers_stock_and_needs_room():
 def test_pick_data_center_for_a_new_volume():
     assert sweep.pick_data_center(AVAIL, ["NVIDIA L40S"]) == ("EU-RO-1", ["NVIDIA L40S"])
     assert sweep.pick_data_center({"X": {"NVIDIA L40S": "NONE"}}, ["NVIDIA L40S"]) == (None, None)
+    # pinned: US-TX-3 even though EU-RO-1 has more A6000s in stock
+    assert sweep.pick_data_center(AVAIL, ["NVIDIA RTX A6000"], "US-TX-3") == ("US-TX-3", ["NVIDIA RTX A6000"])
+    assert sweep.pick_data_center(AVAIL, ["NVIDIA L40S"], "US-KS-2") == (None, None)
 
 
 # ---------------------------------------------------------------- failure paths (audit, Oct 27)
@@ -629,6 +632,38 @@ def test_a_type_served_on_another_device_is_recorded_and_held(fake, tmp_path):
     cold = [r for r in s0["runs"] if r["kind"] == "cold"]
     assert cold[1].get("wrong_device") == "NVIDIA RTX 6000 Ada Generation" and cold[2]["retry"] is True
     assert s["configs"][0]["fits"] is True  # three good cold starts on the one device
+
+
+def test_device_name_tells_a_mig_slice_from_the_whole_card():
+    whole = {"gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition", "gpu_devices": [
+        "GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition"]}
+    sliced = {**whole, "gpu_devices": whole["gpu_devices"] + ["MIG 2g.48gb     Device  0:"]}   # run 4's lines
+    assert sweep.device_name(whole) == "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+    assert sweep.device_name(sliced) == "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb"
+    assert sweep.device_name(sliced) in sweep.VRAM_CLASS and sweep.VRAM_CLASS[sweep.device_name(sliced)] == "48gb"
+    assert sweep.device_name({"gpu": "NVIDIA L40S"}) == "NVIDIA L40S" and sweep.device_name(None) is None
+
+
+def test_a_pinned_mig_slice_rejects_the_whole_card(fake, tmp_path):
+    """A slice and the whole card share nvidia-smi's name; only the MIG line tells them apart."""
+    api = fake()
+    orig = api.boot
+    mig = "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb"
+    lines = iter([True, True, False] + [True] * 50)   # warm-up, cold 1 on slices; cold 2 on a whole card
+
+    def served(eid):
+        b = orig(eid)
+        b["gpu"] = "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+        b["gpu_devices"] = ["GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition"] + (
+            ["MIG 2g.48gb     Device  0:"] if next(lines) else [])
+        return b
+
+    api.boot = served
+    s = sweep.Sweep("k", args(configs=["S0"], gpu_type=mig, gpu_types=[mig]), 32768, 151936, tmp_path).run()
+    assert s["device"] == mig and s["gpu_class"] == "48gb"
+    cold = [r for r in json.loads((tmp_path / "S0.json").read_text())["runs"] if r["kind"] == "cold"]
+    assert cold[1].get("wrong_device") == "NVIDIA RTX PRO 6000 Blackwell Server Edition" and cold[2]["retry"] is True
+    assert s["configs"][0]["fits"] is True
 
 
 def test_several_types_and_an_unknown_device_stop(fake, tmp_path):

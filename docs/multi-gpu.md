@@ -25,6 +25,12 @@ Qwen3-14B (29.5 GB of weights, so it doesn't fit one 24 GB card) on 2 GPUs of th
 
 Under tensor parallel vLLM prints memory per GPU: 13.88 GiB of weights and 6.67 GiB of KV per card, 87,408 tokens for the pair. Scaled by 2 that's 27.8 GiB and 163,872 B/token, which matches the config's 2 × 40 × 8 × 128 × 2 = 163,840. `predict.py` expected 69,720 tokens (20% under: it charges 3 GiB of overhead per GPU, the PoC needed ~1.5); `from_numbers(..., gpus=N)` scales a TP boot.
 
+## MiniMax-M3.1-Flash on 2× H200
+
+The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4`, recipe setting `BLOCK_SIZE=128`, `TENSOR_PARALLEL_SIZE=2` on the 141gb class, capped at 45 minutes.
+
+**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started at 05:18 with TP=2, NCCL initialized, and Hopper kernels were picked for the MoE and sparse attention, then the worker restarted until the cap. The container log we have ends during weight loading, so the cause isn't known yet. 28 of the 36.7 minutes passed before vLLM started (scheduling, the image pull and possibly the weights; the log doesn't separate them).
+
 ## Not built yet
 
 - Picking N automatically from the weight size (`--gpu auto` stays single-GPU).

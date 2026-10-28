@@ -115,6 +115,10 @@ A configuration that doesn't fit is recorded as such and can't be recommended.
 
 Throughput is one run per config, and the result says so.
 
+## Picking the GPU class before a sweep
+
+`pipeline/predict.py` picks the class from two numbers vLLM prints at every boot, so one smoke test anywhere predicts every class: the weights ("Model loading took X GiB") and KV bytes per token (available KV GiB ÷ KV tokens). KV tokens on a class = (device memory × 0.92 − weights − 3 GiB) ÷ KV bytes per token; the sweep goes on the cheapest class where that reaches 138,240. Checked against the recorded boots: Qwen3-8B predicts 168,333 tokens on an L40S (measured 172,416) and doesn't fit the bench on 24 GB; flint predicts 484,828 on an H200 (measured 486,702) and doesn't fit on 80 GB. KV bytes per token didn't depend on the device (147,470 on the L40S, 147,480 on the Blackwell slice). A `config.json` estimate is offered only for plain full attention; MLA, hybrid and sliding-window configs need a boot. Two models with the same weights and KV bytes per token (within 2%) count as the same shape, so a fine-tune can start from its base model's sweep.
+
 ## Stop rules and budget
 
 - Per config: 1 warm-up + 3 cold starts + 1 throughput run. A config that fails to start gets one more cold start; if that fails too, it's recorded as failed and the sweep moves on. Failed configs' endpoints are deleted like the rest; the record keeps their boot report and the worker's startup-error text.

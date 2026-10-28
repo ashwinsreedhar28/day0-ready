@@ -29,7 +29,17 @@ Under tensor parallel vLLM prints memory per GPU: 13.88 GiB of weights and 6.67 
 
 The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4`, recipe setting `BLOCK_SIZE=128`, `TENSOR_PARALLEL_SIZE=2` on the 141gb class, capped at 45 minutes.
 
-**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started at 05:18 with TP=2, NCCL initialized, and Hopper kernels were picked for the MoE and sparse attention, then the worker restarted until the cap. The container log we have ends during weight loading, so the cause isn't known yet. 28 of the 36.7 minutes passed before vLLM started (scheduling, the image pull and possibly the weights; the log doesn't separate them).
+**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started at 05:18 with TP=2, NCCL initialized, and Hopper kernels were picked for the MoE and sparse attention, then the worker restarted until the cap. It wasn't a crash: the worker log has no traceback, and both boots end with worker-vllm's "Received signal 15, shutting down vLLM", a stop from outside.
+
+| | vLLM start | weights downloaded | stopped | after start |
+|---|---|---|---|---|
+| boot 1 | 05:09:07 | 442.6 s (232.94 GiB) | 05:17:34, shard 3 of 48 | 8 min 28 s |
+| boot 2 | 05:18:19 | 426.6 s, all of it again | 05:26:40, shard 7 of 48 | 8 min 22 s |
+
+- Each boot downloads the checkpoint onto the container disk at ~0.53 GiB/s, and a restart starts over, so no boot gets further than the first.
+- The stop lands ~8.4 min after vLLM starts. Loading the remaining shards (2–4 s each) plus engine init needs a few more minutes. Runpod's docs only describe the 10-minute execution timeout, which would have marked the job timed out; this looks like an undocumented startup limit of about 8 minutes.
+- The smoke test called it `crash_loop` because it counts a worker leaving "running" as a crash; here those were two external stops during startup.
+- Next try: the weights on a network volume, downloaded once beforehand (a CPU pod can do it), so a boot only loads them. Open question: how fast 233 GiB loads from a network volume; below ~1 GiB/s the load alone gets close to the same limit.
 
 ## Not built yet
 

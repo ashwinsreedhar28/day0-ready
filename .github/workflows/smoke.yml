@@ -49,6 +49,7 @@ on:
 
 permissions:
   contents: write  # records data/smoke/, data/board.md, data/ready.json
+  actions: write   # starts sweep.yml after a pass, when vars.SWEEP_AFTER_SMOKE is 'true'
 
 concurrency:
   group: smoke-${{ inputs.image }}
@@ -111,6 +112,26 @@ jobs:
             sleep $((i * 5))
           done
           exit 1
+
+      - name: Start optimal-config sweep
+        # Off until vars.SWEEP_AFTER_SMOKE is 'true': the sweep needs the worker's boot
+        # report in the image (worker-vllm day0-sweep, not yet on day0-integration), and
+        # each sweep spends ~$5 on 48 GB up to ~$35 on a B200. Classes of 80 GB and up
+        # run sweep.yml in the gpu-large environment, so they wait for an approval.
+        if: >-
+          success() && vars.SWEEP_AFTER_SMOKE == 'true' && steps.smoke.outputs.file != ''
+          && hashFiles(steps.smoke.outputs.file) != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FILE: ${{ steps.smoke.outputs.file }}
+        run: |
+          passed=$(jq -r '.passed' "$FILE")
+          cls=$(jq -r '.passing_gpu_class // empty' "$FILE")
+          if [ "$passed" != "true" ] || [ -z "$cls" ]; then echo "smoke didn't pass; no sweep"; exit 0; fi
+          cap=180; [ "$cls" = "180gb" ] && cap=240
+          gh workflow run sweep.yml -R "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME" \
+            -f image="$IMAGE" -f model="$MODEL" -f gpu_class="$cls" -f volume_id=new -f cap_minutes="$cap"
+          echo "started sweep.yml for $IMAGE on $cls (cap $cap worker-min)"
 
       - name: Summary
         if: always()

@@ -30,6 +30,7 @@ config_runs.jsonl / config_summary.jsonl for serverless-lakehouse.
 import argparse
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor
 import re
 import signal
 import statistics
@@ -76,7 +77,10 @@ CHANGES = {"S2": {"ENFORCE_EAGER": "true"}, "S3": {"MAX_NUM_SEQS": "32"},
 ORDER = ["S0", "S1", "S2", "S3", "S4", "S5", "W"]
 SWEEP_ONLY = {"DAY0_BOOT_REPORT", "VLLM_CACHE_ROOT", "MAX_CONCURRENCY"}
 METRICS = ("vllm:generation_tokens_total", "vllm:prompt_tokens_total", "vllm:num_preemptions_total",
-           "vllm:request_success_total")
+           "vllm:request_success_total",
+           # histograms: sum and count give vLLM's own mean TTFT and TPOT, free of Runpod's gateway
+           "vllm:time_to_first_token_seconds_sum", "vllm:time_to_first_token_seconds_count",
+           "vllm:request_time_per_output_token_seconds_sum", "vllm:request_time_per_output_token_seconds_count")
 # GPU type -> the class of its own VRAM. Classes are "at least" lists (24gb also names 48 GB
 # cards), so a type takes the largest class that lists it.
 VRAM_CLASS = {t: cls for cls in ("24gb", "48gb", "80gb", "141gb", "180gb") for t in GPU_CLASSES[cls]}
@@ -124,15 +128,40 @@ def fixed_env(model, max_model_len, sweep_id, cid):
             "DAY0_BOOT_REPORT": "1", "VLLM_CACHE_ROOT": f"/runpod-volume/day0-sweep/{sweep_id}/{cid}"}
 
 
-def s5_applies(s0_env, boots):
-    """(runs?, why): S5 only where the launch log shows a default budget under 8,192."""
+def default_batch_budget(boot, gpu_type):
+    """vLLM's server default for max_num_batched_tokens on this GPU (arg_utils, v0.32.0).
+
+    Used when the launch log has no "Chunked prefill is enabled with ..." line, which
+    v0.32.0 didn't print in the pilot. 16,384 at 160 GiB and up, 8,192 at 70 GiB and up
+    except A100, else 2,048. The memory is the boot report's when it has one and the GPU
+    isn't split into MIG slices; otherwise the GPU type's class.
+    """
+    name = f"{(boot or {}).get('gpu') or ''} {gpu_type or ''}"
+    mem = (boot or {}).get("gpu_memory_mib") or []
+    mig = any("MIG" in d for d in (boot or {}).get("gpu_devices") or [])
+    if mem and not mig:
+        gib = min(mem) / 1024
+    else:
+        gib = {"24gb": 24, "48gb": 48, "80gb": 80, "141gb": 141, "180gb": 180}.get(VRAM_CLASS.get(gpu_type), 0)
+    if gib >= 160:
+        return 16384
+    if gib >= 70 and "A100" not in name:
+        return 8192
+    return 2048
+
+
+def s5_applies(s0_env, boots, gpu_type=None):
+    """(runs?, why): S5 only where vLLM's default budget is under 8,192 tokens."""
     if "MAX_NUM_BATCHED_TOKENS" in s0_env:
         return False, "S0 already sets MAX_NUM_BATCHED_TOKENS"
     seen = [b["vllm"].get("max_num_batched_tokens") for b in boots if b and b.get("vllm")]
     seen = [v for v in seen if v]
-    if not seen:
-        return False, "no max_num_batched_tokens line in S1's boot reports"
-    return (min(seen) < 8192), f"vLLM's default here is {min(seen)}"
+    if seen:
+        return (min(seen) < 8192), f"vLLM's default here is {min(seen)} (launch log)"
+    if not boots and not gpu_type:
+        return False, "no boot report to tell vLLM's default from"
+    d = default_batch_budget(boots[0] if boots else None, gpu_type)
+    return d < 8192, f"vLLM's default here is {d} (from its per-GPU defaults; the log line was missing)"
 
 
 def max_model_len(recipe, hf_config):
@@ -322,6 +351,11 @@ def run_job(key, eid, job_input, timeout, poll=5, watch=None):
             watch.setdefault("states", set()).update(states)
             if states - {"throttled"} and "worker_at" not in watch:
                 watch["worker_at"] = time.time()
+            if not watch["states"] and time.time() - t0 > 180 and not watch.get("repatched"):
+                # Nothing at all for 3 min (not even "throttled"): the workersMax change may not have
+                # reached the scheduler. Setting it again is harmless.
+                rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", key, {"workersMax": 1})
+                watch["repatched"] = True
             if "worker_at" not in watch and time.time() - t0 > watch.get("give_up_s", float("inf")):
                 rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
                 return "NO_GPU", None, {}
@@ -330,6 +364,79 @@ def run_job(key, eid, job_input, timeout, poll=5, watch=None):
             return s["status"], s.get("output") if s["status"] == "COMPLETED" else s.get("error") or s.get("output"), s
     rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
     return "DEADLINE", None, {}
+
+
+def jobs_level(key, eid, model, prompt_list, max_tokens, timeout=1800, poll=2):
+    """Every prompt as a queued job, not streamed; the worker runs MAX_CONCURRENCY of them at once.
+
+    Pilot, Oct 28: 30 concurrent streams through the endpoint's OpenAI route ended after about
+    118 of 512 tokens while vLLM generated nearly all of them. Queued jobs hold no connection
+    open, so nothing between vLLM and the client can cut them. The window runs from the first
+    submit to the last job's end (submit time + delayTime + executionTime, to the millisecond).
+    """
+    def submit(p):
+        body = {k: v for k, v in bench_client.body(model, p, max_tokens).items() if k != "stream_options"}
+        body["stream"] = False  # vLLM rejects stream_options without stream
+        t = time.time()
+        st, j = rp.call("POST", f"{rp.JOBS}/{eid}/run", key,
+                        {"input": {"openai_route": "/v1/completions", "openai_input": body}})
+        return t, (j.get("id") if rp.ok(st) and isinstance(j, dict) else None), (None if rp.ok(st) else f"submit {st}")
+
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        subs = list(ex.map(submit, prompt_list))
+    pending = {jid: t for t, jid, _ in subs if jid}
+    recs = [{"ok": False, "error": err, "out_tokens": 0} for _, jid, err in subs if not jid]
+    t_start = min(t for t, _, _ in subs)
+
+    def status(jid):
+        st, r = rp.call("GET", f"{rp.JOBS}/{eid}/status/{jid}", key)
+        return jid, (r if rp.ok(st) and isinstance(r, dict) else {})
+
+    deadline = time.time() + timeout
+    while pending and time.time() < deadline:
+        time.sleep(poll)
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            for jid, r in ex.map(status, list(pending)[:40]):  # oldest first; they finish about in order
+                if r.get("status") not in ("COMPLETED", "FAILED", "CANCELLED", "TIMED_OUT"):
+                    continue
+                t = pending.pop(jid)
+                out = r.get("output")
+                item = (out[0] if isinstance(out, list) and out else out) if r["status"] == "COMPLETED" else None
+                usage = (item or {}).get("usage") if isinstance(item, dict) else None
+                n = (usage or {}).get("completion_tokens") or 0
+                delay, execu = (r.get("delayTime") or 0) / 1000, (r.get("executionTime") or 0) / 1000
+                recs.append({"ok": r["status"] == "COMPLETED" and n == max_tokens, "out_tokens": n,
+                             "delay_s": round(delay, 3), "exec_s": round(execu, 3), "end": t + delay + execu,
+                             "error": None if n == max_tokens else (str(r.get("error") or item)[:200])})
+    for jid in pending:  # still running at the deadline
+        rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
+        recs.append({"ok": False, "out_tokens": 0, "error": "not finished by the deadline"})
+    good = [r for r in recs if r["ok"]]
+    ends = [r["end"] for r in recs if r.get("end")]
+    wall = (max(ends) - t_start) if ends else None
+    out = sum(r["out_tokens"] for r in good)
+    for r in recs:
+        r.pop("end", None)
+    summary = {
+        "concurrency": CONCURRENCY, "requests": len(prompt_list), "failed": len(prompt_list) - len(good),
+        "wall_s": round(wall, 2) if wall else None, "output_tokens": out,
+        "output_tok_s": round(out / wall, 1) if wall else None,
+        "e2e_p50_s": bench_client.pct([r.get("delay_s", 0) + r.get("exec_s", 0) for r in good], 50),
+        "queue_p50_s": bench_client.pct([r.get("delay_s") for r in good], 50),
+        "ttft_p50_ms": None, "ttft_p99_ms": None, "tpot_p50_ms": None,  # from vLLM's histograms instead
+        "errors": sorted({r["error"] for r in recs if r.get("error")})[:5],
+        "via": "jobs API, not streamed",
+    }
+    return summary, recs
+
+
+def histogram_means(delta):
+    """vLLM's own mean TTFT and TPOT (ms) over a metrics window."""
+    def mean(name):
+        s, c = (delta or {}).get(f"{name}_sum"), (delta or {}).get(f"{name}_count")
+        return round(1000 * s / c, 1) if s is not None and c else None
+    return {"ttft_mean_ms": mean("time_to_first_token_seconds"),
+            "tpot_mean_ms": mean("request_time_per_output_token_seconds")}
 
 
 def read_metrics(key, eid):
@@ -481,6 +588,10 @@ class Sweep:
             rec["output"] = json.dumps(out)[:400] if out is not None else None
         elif boot.get("process_start") is not None and boot.get("process_start") == self.last_start.get(eid):
             rec.update(ok=False, reused_worker=True)  # the last start's worker answered: not a cold start
+        if boot and boot.get("compile_cache_fallback"):
+            # Compiled into the container disk instead of the config's cache root: a slower start
+            # for a reason that isn't the config (boot report v2 flags it).
+            rec.update(ok=False, cache_fallback=boot["compile_cache_fallback"])
         if boot and self.device and boot.get("gpu") != self.device:
             # Runpod can serve a GPU type id on a different device; a start on another device than the
             # warm-up misses the compile cache and the startup plan, so it isn't a comparable cold start.
@@ -501,20 +612,22 @@ class Sweep:
             log("worker still up 10 min after scale-down")
         # Billing starts with a worker; a start that only ever showed "throttled" cost nothing.
         rec["minutes"], rec["est_cost_usd"] = self.charge("cold", time.time() if rec["no_gpu"] else watch.get("worker_at", t0))
-        probe = rec.get("route_probe")
-        if probe and not probe["ok"]:
-            raise Stop("bench_route", f"the OpenAI route didn't take a bench request: {probe['error']}")
         v = (boot or {}).get("vllm", {})
         log(f"  {kind} {index}: {status}, delay {rec['delay_s']} s, engine init {v.get('engine_init_s')} s, "
             f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {(boot or {}).get('gpu')}, "
             f"{rec['minutes']} min")
         return rec
 
-    def start_with_retry(self, eid, kind, index):
-        """A start that fails gets one more try (stop rule); returns the runs made."""
+    def start_with_retry(self, eid, kind, index, rec):
+        """A start that fails gets one more try (stop rule). Runs land in rec["runs"] before any
+        Stop, so a stopped sweep still shows the start that stopped it. Returns the last run."""
         first = self.cold_start(eid, kind, index)
+        rec["runs"].append(first)
+        probe = first.get("route_probe")
+        if probe and not probe["ok"]:
+            raise Stop("bench_route", f"the OpenAI route didn't take a bench request: {probe['error']}")
         if first["ok"]:
-            return [first]
+            return first
         if first["no_gpu"]:
             raise Stop("no_gpu", f"no worker got a GPU in {min(NO_GPU_MINUTES, self.a.start_minutes / 2):.0f} min "
                                  f"(states seen: {first['worker_states'] or 'none'}); the volume's data center may "
@@ -523,7 +636,9 @@ class Sweep:
             raise Stop("no_boot_report", "the image answered without a boot report; build it from "
                                          "worker-vllm's day0-sweep branch")
         log(f"  {kind} {index} failed; one more try")
-        return [first, self.cold_start(eid, kind, index, retry=True)]
+        second = self.cold_start(eid, kind, index, retry=True)
+        rec["runs"].append(second)
+        return second
 
     def bench(self, eid, model):
         self.guard("bench")
@@ -549,8 +664,7 @@ class Sweep:
             m0 = read_metrics(self.key, eid)
             rec["c1"], _ = bench_client.run_level(url, self.key, model, self.prompts[:C1_REQUESTS], 1, OUTPUT_TOKENS)
             m1 = read_metrics(self.key, eid)
-            rec["c30"], _ = bench_client.run_level(url, self.key, model, self.prompts[C1_REQUESTS:], CONCURRENCY,
-                                                   OUTPUT_TOKENS)
+            rec["c30"], rec["c30_requests"] = jobs_level(self.key, eid, model, self.prompts[C1_REQUESTS:], OUTPUT_TOKENS)
             m2 = read_metrics(self.key, eid)
             # A worker that idled out and restarted mid-bench resets vLLM's counters: check it's the same one.
             _, after, _ = run_job(self.key, eid, {"day0_boot_report": True}, timeout=120, poll=2)
@@ -559,11 +673,16 @@ class Sweep:
             rec["metrics"] = {"c1": metric_delta(m0, m1), "c30": metric_delta(m1, m2)}
             if rec["worker_changed"]:
                 rec["metrics"] = {"c1": None, "c30": None}  # counters from two processes don't subtract
+            rec["c30"].update(histogram_means(rec["metrics"]["c30"]))
+            gen30 = (rec["metrics"]["c30"] or {}).get("generation_tokens")
+            if gen30 is not None and rec["c30"]["wall_s"]:
+                rec["c30"]["server_tok_s"] = round(gen30 / rec["c30"]["wall_s"], 1)
             gen = (rec["metrics"]["c30"] or {}).get("generation_tokens")
             rec["metrics_match"] = None if gen is None else abs(gen - rec["c30"]["output_tokens"]) <= max(
                 1.0, 0.01 * rec["c30"]["output_tokens"])
-            log(f"  bench: C=1 TPOT {rec['c1']['tpot_p50_ms']} ms; C=30 {rec['c30']['output_tok_s']} tok/s, "
-                f"{rec['c30']['failed']} failed, preemptions {(rec['metrics']['c30'] or {}).get('num_preemptions')}")
+            log(f"  bench: C=1 TPOT {rec['c1']['tpot_p50_ms']} ms; C=30 {rec['c30']['output_tok_s']} tok/s "
+                f"(vLLM TPOT {rec['c30'].get('tpot_mean_ms')} ms), {rec['c30']['failed']} failed, "
+                f"preemptions {(rec['metrics']['c30'] or {}).get('num_preemptions')}")
         finally:
             set_workers(self.key, eid, max_=0)
             wait_cold(self.key, eid)
@@ -579,12 +698,11 @@ class Sweep:
         eid, tid, rec["template_env"] = self.create(cid, env, types)
         rec["endpoint_id"] = eid
         try:
-            runs = self.start_with_retry(eid, "warmup", 0)
-            rec["runs"] += runs
-            if not runs[-1]["ok"]:
+            last = self.start_with_retry(eid, "warmup", 0, rec)
+            if not last["ok"]:
                 rec["failed"] = "warm-up start failed twice"
                 return rec
-            got = runs[-1]["boot"].get("gpu")
+            got = last["boot"].get("gpu")
             if not self.gpu_type:
                 if got in types:
                     self.gpu_type = got
@@ -605,10 +723,9 @@ class Sweep:
                 self.device = got
             rec["gpu_type"], rec["device"] = self.gpu_type, self.device
             for i in range(1, COLD_RUNS + 1):
-                runs = self.start_with_retry(eid, "cold", i)
-                rec["runs"] += runs
+                last = self.start_with_retry(eid, "cold", i, rec)
                 self.save(cid)
-                if not runs[-1]["ok"]:
+                if not last["ok"]:
                     rec["failed"] = f"cold start {i} failed twice"
                     return rec
             rec["bench"] = self.bench(eid, self.a.model)
@@ -637,7 +754,7 @@ class Sweep:
             for cid in order:
                 if cid == "S5":
                     s1_boots = [r["boot"] for r in self.records.get("S1", {}).get("runs", []) if r.get("boot")]
-                    runs, why = s5_applies(self.a.s0_env, s1_boots)
+                    runs, why = s5_applies(self.a.s0_env, s1_boots, self.gpu_type)
                     if not runs:
                         log(f"S5 skipped: {why}")
                         self.records["S5"] = {"config": "S5", "skipped": why}

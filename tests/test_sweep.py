@@ -55,8 +55,20 @@ def test_s5_only_where_the_default_budget_is_small():
     assert sweep.s5_applies({}, [boot(25, mnbt=2048)])[0] is True
     assert sweep.s5_applies({}, [boot(25, mnbt=8192)])[0] is False
     assert sweep.s5_applies({"MAX_NUM_BATCHED_TOKENS": "4096"}, [boot(25)])[0] is False
-    runs, why = sweep.s5_applies({}, [{"vllm": {}}])
-    assert runs is False and "no max_num_batched_tokens" in why
+    # v0.32.0 didn't print the line in the pilot: fall back to vLLM's per-GPU defaults.
+    runs, why = sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA L40S")
+    assert runs is True and "2048" in why and "log line was missing" in why
+    assert sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA H100 80GB HBM3")[0] is False
+    assert sweep.s5_applies({}, [{"vllm": {}}], "NVIDIA A100 80GB PCIe")[0] is True   # A100 keeps 2,048
+    assert sweep.s5_applies({}, [], None)[0] is False
+
+
+def test_default_batch_budget_uses_the_device_the_worker_saw():
+    whole = {"gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition", "gpu_memory_mib": [97887], "gpu_devices": []}
+    assert sweep.default_batch_budget(whole, "NVIDIA RTX 6000 Ada Generation") == 8192
+    sliced = {**whole, "gpu_devices": ["GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition", "MIG 2g.48gb Device 0:"]}
+    assert sweep.default_batch_budget(sliced, "NVIDIA RTX 6000 Ada Generation") == 2048  # MIG: the type's class
+    assert sweep.default_batch_budget({"gpu_memory_mib": [183359]}, "NVIDIA B200") == 16384
 
 
 def test_target_context():
@@ -190,6 +202,7 @@ class FakeRunpod:
         self.flaky_health, self.health_calls = flaky_health, 0
         self.alive = {}       # endpoint -> health polls left before its worker is gone after max -> 0
         self.volumes = {}
+        self.openai_jobs, self.job_index = {}, {}
 
     def env(self, eid):
         return self.templates[self.endpoints[eid]["templateId"]]["env"]
@@ -269,6 +282,11 @@ class FakeRunpod:
         if m:
             jid = f"j{len(self.jobs)}"
             self.jobs[jid] = (m.group(1), body["input"])
+            if body["input"].get("openai_route"):
+                assert body["input"]["openai_input"]["stream"] is False
+                assert "stream_options" not in body["input"]["openai_input"]
+                n = self.openai_jobs[m.group(1)] = self.openai_jobs.get(m.group(1), 0) + 1
+                self.job_index[jid] = n - 1
             return 200, {"id": jid}
         m = re.fullmatch(r"/(\w+)/status/(\w+)", path)
         if m:
@@ -278,8 +296,22 @@ class FakeRunpod:
             if job_input.get("route") == "/metrics":
                 n = self.metric_reads[eid] = self.metric_reads.get(eid, 0) + 1
                 gen = {1: 16, 2: 16 + 8 * 512, 3: 16 + 128 * 512}[n]
-                text = f'vllm:generation_tokens_total{{engine="0"}} {gen}.0\nvllm:num_preemptions_total{{engine="0"}} 0.0\n'
+                done = {1: 1, 2: 9, 3: 129}[n]
+                text = (f'vllm:generation_tokens_total{{engine="0"}} {gen}.0\n'
+                        f'vllm:num_preemptions_total{{engine="0"}} 0.0\n'
+                        f'vllm:request_time_per_output_token_seconds_sum{{engine="0"}} {done * 0.03}\n'
+                        f'vllm:request_time_per_output_token_seconds_count{{engine="0"}} {done}\n'
+                        f'vllm:time_to_first_token_seconds_sum{{engine="0"}} {done * 0.5}\n'
+                        f'vllm:time_to_first_token_seconds_count{{engine="0"}} {done}\n')
                 return 200, {"status": "COMPLETED", "output": [text]}
+            if job_input.get("openai_route"):
+                # 30 at a time on the worker: batch b ends at (b + 1) x the time one batch of 512-token
+                # answers takes at this config's throughput.
+                i = self.job_index[m.group(2)]
+                batch = 30 * job_input["openai_input"]["max_tokens"] / self.tok_s(eid)
+                return 200, {"status": "COMPLETED", "delayTime": (i // 30) * batch * 1000,
+                             "executionTime": batch * 1000,
+                             "output": [{"usage": {"completion_tokens": job_input["openai_input"]["max_tokens"]}}]}
             if self.boot_missing:
                 return 200, {"status": "COMPLETED", "output": [{"error": {"message": "unknown input"}}]}
             return 200, {"status": "COMPLETED", "delayTime": 61000, "executionTime": 40,
@@ -593,3 +625,27 @@ def test_several_types_and_an_unknown_device_stop(fake, tmp_path):
     api.boot = lambda eid: {**orig(eid), "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition"}
     s = sweep.Sweep("k", args(configs=["S0"]), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "gpu" and "--gpu-type" in s["stopped"]["detail"]
+
+
+def test_jobs_level_counts_short_and_failed_jobs(fake, monkeypatch):
+    api = fake()
+    api.endpoints["e9"] = {"id": "e9", "templateId": "t9", "workersMax": 1, "workersMin": 0}
+    api.templates["t9"] = {"id": "t9", "env": {}}
+    real = api.call
+
+    def call(method, url, key, body=None):
+        st, r = real(method, url, key, body)
+        m = re.search(r"/status/(j\d+)$", url)
+        if m and api.job_index.get(m.group(1)) == 3:
+            return 200, {"status": "FAILED", "error": "worker restarted"}
+        if m and api.job_index.get(m.group(1)) == 4:
+            return 200, {**r, "output": [{"usage": {"completion_tokens": 118}}]}
+        return st, r
+
+    monkeypatch.setattr(rp, "call", call)
+    summary, recs = sweep.jobs_level("k", "e9", "m", bench_client.prompts(60, 8, 32000), 512)
+    assert summary["requests"] == 60 and summary["failed"] == 2 and summary["output_tokens"] == 58 * 512
+    # two batches of 30 at the fake S0 rate of 700 tok/s; the two bad jobs count as no tokens
+    assert summary["output_tok_s"] == pytest.approx(58 * 512 / (2 * 30 * 512 / 700), rel=0.01)
+    assert summary["via"] == "jobs API, not streamed"
+    assert any("worker restarted" in (r["error"] or "") for r in recs)

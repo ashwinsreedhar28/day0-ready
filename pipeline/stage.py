@@ -1,7 +1,7 @@
 """Put a Hugging Face model's weights on a new network volume with a CPU pod, before any GPU boots.
 
-    python3 pipeline/stage.py --model MiniMaxAI/MiniMax-M3.1-Flash --data-centers US-NC-1,CA-MTL-4 \
-        --volume-gb 300 --out stage.json
+    python3 pipeline/stage.py --model MiniMaxAI/MiniMax-M3.1-Flash --gpu-types "NVIDIA H200,NVIDIA H200 NVL" \
+        --volume-gb 300 --out stage.json        # data centers with H200 stock that take CPU pods
     python3 pipeline/stage.py --cleanup          # every day0-stage- pod, smoke endpoint on such a volume, volume
 
 Why: a Serverless worker that downloads 233 GiB onto its container disk was stopped ~8.4 min after

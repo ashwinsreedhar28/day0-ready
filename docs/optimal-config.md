@@ -111,13 +111,15 @@ A configuration that doesn't fit is recorded as such and can't be recommended.
 4. If the fastest-starting candidate overall is below the throughput floor (usually S2, eager), record it next to the recommendation as a **fast-start profile**, with both numbers. Scale-from-zero-heavy endpoints may prefer it.
 5. If S1's three engine-init times spread by more than 20% of their median, the model is marked **inconclusive** and nothing is recommended. That points to a host or volume problem, and more runs would just spend money on noise.
 
+6. A sweep that stopped early (budget, no GPU, an error) compared fewer configs than planned: its verdict is **incomplete**, and it reports its best config so far instead of a recommendation.
+
 Throughput is one run per config, and the result says so.
 
 ## Stop rules and budget
 
 - Per config: 1 warm-up + 3 cold starts + 1 throughput run. A config that fails to start gets one more cold start; if that fails too, it's recorded as failed and the sweep moves on. Failed configs' endpoints are deleted like the rest; the record keeps their boot report and the worker's startup-error text.
 - If S1 fails to start, the sweep stops: S2–S5 and W all build on it.
-- If no worker gets past `throttled` within 10 minutes, the sweep stops (no GPU of that type free in the volume's data center); a start that never got a worker costs nothing.
+- If no worker gets past `throttled` within 10 minutes, the start waits 2 minutes and tries once more, then the sweep stops (no GPU of that type free in the volume's data center). If health showed no worker at all, not even `throttled`, the retry goes to a new endpoint with the same env and cache root (pilot runs 2 and 3 both stalled that way on S1's fourth start). A start that never got a worker costs nothing.
 - A step starts only if its worst case (a start that times out, then scale-down) fits before `--max-hours`.
 - A workflow step that always runs, after the sweep, deletes anything left with the `day0-sweep-` prefix (endpoints, templates, volumes), even after a cancelled or crashed run.
 - The runner estimates spend as worker-alive minutes × the class's highest listed Serverless rate (`pipeline/sizing.py`) and stops when the next step would pass the cap.
@@ -156,7 +158,7 @@ Throughput is one run per config, and the result says so.
 - `data/board.md`: a "recommended" column with the config id and its two headline numbers.
 - For [serverless-lakehouse](https://github.com/ashwinsreedhar28/serverless-lakehouse):
   - silver `config_runs`, one row per cold start or throughput run: `sweep_id, model, image_digest, gpu_type, config_id, run_kind (warmup|cold|bench), run_index, started_at, delay_s, execution_s, process_to_healthy_s, launch_to_healthy_s, engine_init_s, model_load_s, kv_cache_tokens, relaunched, concurrency, requests, failed, output_tok_s, ttft_p50_ms, tpot_p50_ms, est_cost_usd`
-  - gold `config_summary`, one row per model × config: `sweep_id, model, gpu_type, config_id, env_json, fits, engine_init_s_p50, engine_init_s_min, engine_init_s_max, model_load_s_p50, output_tok_s_c30, tpot_p50_ms_c1, recommended, profile (recommended|fast_start|none), verdict (ok|inconclusive|failed)`
+  - gold `config_summary`, one row per model × config: `sweep_id, model, gpu_type, config_id, env_json, fits, engine_init_s_p50, engine_init_s_min, engine_init_s_max, model_load_s_p50, output_tok_s_c30, tpot_p50_ms_c1, recommended, profile (recommended|fast_start|none), verdict (ok|inconclusive|incomplete|failed)`
 
 ## Multi-GPU (January, after multi-GPU smoke tests exist)
 
@@ -201,7 +203,23 @@ Image `day0-v0.32.0--day0-sweep-3b31d89` (vLLM v0.32.0), `MAX_MODEL_LEN` 32,768,
 - vLLM v0.32.0 didn't print the `max_num_batched_tokens=` line, so S5 would have been skipped. It now falls back to vLLM's per-GPU defaults (2,048 on an L40S).
 - S1's third cold start saw no worker at all for 10 minutes (not even "throttled") and the sweep stopped as `no_gpu`. The runner now sets `workersMax` again after 3 minutes with no worker state, and a start that stops the sweep is kept in the record.
 
-Spend so far: ~$0.79 of the $8.
+**Run 3** (Oct 28, 01:22 UTC; 21.2 worker-min, ~$0.62), image `day0-v0.32.0--day0-sweep-8cf6da4` (boot report v2), pinned to "NVIDIA L40S" (46,068 MiB, one device, no MIG), C=30 through the jobs API:
+
+| | S0 (defaults) | S1 (+ startup plan) |
+|---|---|---|
+| engine init, 3 cold starts | 19.89 / 18.22 / 18.23 s | 12.29 / 12.07 s (fourth start never scheduled) |
+| C=1 (streamed) | 41.9 tok/s, TPOT p50 22.6 ms, TTFT p50 648 ms | |
+| C=30 (jobs API) | **429.9 tok/s**, 0 of 120 failed, 0 preemptions | |
+| C=30, vLLM's own means | TTFT 4.06 s, TPOT 59.2 ms | |
+| C=30 per request | e2e p50 74.4 s, of which 41.6 s queued | |
+| fit | yes (KV 172,416 tokens) | |
+
+- The jobs-API bench works: vLLM's counter (61,440 tokens, 120 successful requests) matches the jobs' usage exactly.
+- S1 again saved ~6 s of engine init (18.2 → 12.2 s).
+- S1's fourth start saw no worker at all for two 10-minute waits, exactly as in run 2, while S0's endpoint did five starts (one waited 8.5 min "throttled"). The cause is unknown; the runner now retries such a start on a new endpoint.
+- The summary said "recommended: S0" because S0 was the only config that finished. A stopped sweep is now marked incomplete instead.
+
+Spend so far: ~$1.41 of the $8.
 
 ## Decisions
 

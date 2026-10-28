@@ -620,19 +620,34 @@ class Sweep:
             f"{rec['minutes']} min")
         return rec
 
-    def start_with_retry(self, eid, kind, index, rec):
+    def recreate(self, rec):
+        """Replace the config's endpoint with a fresh one (same env, same cache root on the volume)."""
+        old = rec["endpoint_id"]
+        self.delete(old, rec["template_id"])
+        rec["endpoint_id"], rec["template_id"], _ = self.create(rec["config"], rec["env"], rec["gpu_types_used"])
+        rec.setdefault("recreated_from", []).append(old)
+        log(f"  endpoint {old} replaced by {rec['endpoint_id']}")
+
+    def start_with_retry(self, rec, kind, index):
         """A start that fails gets one more try (stop rule). Runs land in rec["runs"] before any
         Stop, so a stopped sweep still shows the start that stopped it. Returns the last run."""
-        first = self.cold_start(eid, kind, index)
+        first = self.cold_start(rec["endpoint_id"], kind, index)
         rec["runs"].append(first)
         self.check_probe(first)
         if first["ok"]:
             return first
         if first["no_gpu"]:
-            # A wait that never got a worker cost nothing; try once more after a pause (run 2 stopped here).
-            log(f"  {kind} {index}: no GPU yet; waiting {NO_GPU_BACKOFF_S // 60} min, then one more try")
-            time.sleep(NO_GPU_BACKOFF_S)
-            second = self.cold_start(eid, kind, index, retry=True)
+            if not first["worker_states"]:
+                # Pilot runs 2 and 3: S1's fourth start saw no worker at all, not even "throttled",
+                # twice in a row on the same endpoint, while other endpoints scaled fine. Retry on a
+                # new endpoint; the config's cache root is on the volume, so the cache still hits.
+                log(f"  {kind} {index}: no worker state at all; retrying on a new endpoint")
+                self.recreate(rec)
+            else:
+                # A wait that only saw "throttled" cost nothing; try once more after a pause.
+                log(f"  {kind} {index}: no GPU yet; waiting {NO_GPU_BACKOFF_S // 60} min, then one more try")
+                time.sleep(NO_GPU_BACKOFF_S)
+            second = self.cold_start(rec["endpoint_id"], kind, index, retry=True)
             rec["runs"].append(second)
             self.check_probe(second)
             if second["no_gpu"]:
@@ -644,7 +659,7 @@ class Sweep:
             raise Stop("no_boot_report", "the image answered without a boot report; build it from "
                                          "worker-vllm's day0-sweep branch")
         log(f"  {kind} {index} failed; one more try")
-        second = self.cold_start(eid, kind, index, retry=True)
+        second = self.cold_start(rec["endpoint_id"], kind, index, retry=True)
         rec["runs"].append(second)
         self.check_probe(second)
         return second
@@ -711,10 +726,10 @@ class Sweep:
                "started_at": now_iso()}
         self.records[cid], self.envs[cid] = rec, env
         types = [self.gpu_type] if self.gpu_type else self.a.gpu_types
-        eid, tid, rec["template_env"] = self.create(cid, env, types)
-        rec["endpoint_id"] = eid
+        rec["endpoint_id"], rec["template_id"], rec["template_env"] = self.create(cid, env, types)
+        rec["gpu_types_used"] = types
         try:
-            last = self.start_with_retry(eid, "warmup", 0, rec)
+            last = self.start_with_retry(rec, "warmup", 0)
             if not last["ok"]:
                 rec["failed"] = "warm-up start failed twice"
                 return rec
@@ -731,20 +746,19 @@ class Sweep:
                     raise Stop("gpu", f"worker reported GPU {got!r}, not one of {types}; pass --gpu-type to pin one")
                 self.gpu_class = VRAM_CLASS.get(self.gpu_type, self.a.gpu_class)
                 log(f"  pinned to {self.gpu_type} (device {got})")
-                if len(types) > 1:  # same template; a new endpoint limited to that one type
-                    self.delete(eid, tid)
-                    eid, tid, _ = self.create(cid, env, [self.gpu_type])
-                    rec["endpoint_id"] = eid
+                if len(types) > 1:  # same env; a new endpoint limited to that one type
+                    rec["gpu_types_used"] = [self.gpu_type]
+                    self.recreate(rec)
             if not self.device:
                 self.device = got
             rec["gpu_type"], rec["device"] = self.gpu_type, self.device
             for i in range(1, COLD_RUNS + 1):
-                last = self.start_with_retry(eid, "cold", i, rec)
+                last = self.start_with_retry(rec, "cold", i)
                 self.save(cid)
                 if not last["ok"]:
                     rec["failed"] = f"cold start {i} failed twice"
                     return rec
-            rec["bench"] = self.bench(eid, self.a.model)
+            rec["bench"] = self.bench(rec["endpoint_id"], self.a.model)
             return rec
         finally:
             rec["finished_at"] = now_iso()
@@ -752,10 +766,10 @@ class Sweep:
             # Failed configs are deleted too: what they said is in the record (boot report, startup
             # error text), and a kept endpoint would hold the volume.
             if self.a.keep:
-                set_workers(self.key, eid, max_=0, min_=0)
-                rec["logs"] = f"https://console.runpod.io/serverless/user/endpoint/{eid}"
+                set_workers(self.key, rec["endpoint_id"], max_=0, min_=0)
+                rec["logs"] = f"https://console.runpod.io/serverless/user/endpoint/{rec['endpoint_id']}"
             else:
-                rec["deleted"] = self.delete(eid, tid)
+                rec["deleted"] = self.delete(rec["endpoint_id"], rec["template_id"])
             self.save(cid)
             log(f"{cid} done: fits {rec['stats']['fits']}, engine init p50 {rec['stats']['engine_init_s_p50']} s, "
                 f"C=30 {rec['stats']['output_tok_s_c30']} tok/s; {self.minutes:.0f} worker-min, ~${self.spent_usd()}")
@@ -814,6 +828,11 @@ class Sweep:
         rec = recommend(stats, self.envs, self.a.s0_env, band)
         if inconclusive:
             rec = {**rec, "recommended": None, "fast_start": None, "verdict": "inconclusive"}
+        elif self.stopped:
+            # Run 3 "recommended" S0 because S0 was the only config that finished. A stopped sweep
+            # compared fewer configs than planned, so it reports its best so far, not a recommendation.
+            rec = {**rec, "best_so_far": rec["recommended"], "recommended": None, "fast_start": None,
+                   "verdict": "incomplete"}
         out = {
             "sweep_id": self.sweep_id, "model": self.a.model, "image": self.a.image, "digest": image_digest(self.a.image),
             "gpu_type": self.gpu_type, "device": self.device, "gpu_class": self.gpu_class, "volume_id": self.a.volume_id,

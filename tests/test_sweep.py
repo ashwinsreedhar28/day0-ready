@@ -196,18 +196,23 @@ def test_nothing_fits():
 class FakeRunpod:
     """Templates, endpoints, health and jobs, with timings that depend on the config's env."""
 
-    def __init__(self, boot_missing=False, no_gpu=False, flaky_health=False):
+    def __init__(self, boot_missing=False, no_gpu=False, flaky_health=False, ghost=None):
         self.templates, self.endpoints, self.jobs, self.deleted = {}, {}, {}, []
         self.metric_reads, self.boot_missing, self.no_gpu, self.n = {}, boot_missing, no_gpu, 0
         self.flaky_health, self.health_calls = flaky_health, 0
         self.alive = {}       # endpoint -> health polls left before its worker is gone after max -> 0
         self.volumes = {}
         self.openai_jobs, self.job_index = {}, {}
+        self.ghost, self.boots_by_ep = ghost or {}, {}   # endpoint -> starts after which it never schedules
 
     def env(self, eid):
         return self.templates[self.endpoints[eid]["templateId"]]["env"]
 
+    def is_ghost(self, eid):
+        return eid in self.ghost and self.boots_by_ep.get(eid, 0) >= self.ghost[eid]
+
     def boot(self, eid):
+        self.boots_by_ep[eid] = self.boots_by_ep.get(eid, 0) + 1
         env = self.env(eid)
         init = 30.0
         if env.get("VLLM_ENABLE_STARTUP_PLAN"):
@@ -250,7 +255,7 @@ class FakeRunpod:
         m = re.fullmatch(r"/endpoints/(\w+)", path)
         if m and method == "PATCH":
             ep = self.endpoints[m.group(1)]
-            if body.get("workersMax") == 0 and ep.get("workersMax", 0) > 0:
+            if body.get("workersMax") == 0 and ep.get("workersMax", 0) > 0 and not self.is_ghost(ep["id"]):
                 self.alive[ep["id"]] = 1   # the worker shows up in one more health poll
             ep.update(body)
             return 200, ep
@@ -272,6 +277,8 @@ class FakeRunpod:
             if self.flaky_health and self.health_calls % 2:
                 return 0, "ConnectionResetError"
             eid = m.group(1)
+            if self.is_ghost(eid):
+                return 200, {"workers": {}}
             if self.alive.get(eid):
                 self.alive[eid] -= 1
                 return 200, {"workers": {"running": 1}}
@@ -312,6 +319,8 @@ class FakeRunpod:
                 return 200, {"status": "COMPLETED", "delayTime": (i // 30) * batch * 1000,
                              "executionTime": batch * 1000,
                              "output": [{"usage": {"completion_tokens": job_input["openai_input"]["max_tokens"]}}]}
+            if self.is_ghost(eid):
+                return 200, {"status": "IN_QUEUE"}
             if self.boot_missing:
                 return 200, {"status": "COMPLETED", "output": [{"error": {"message": "unknown input"}}]}
             return 200, {"status": "COMPLETED", "delayTime": 61000, "executionTime": 40,
@@ -402,6 +411,7 @@ def test_stops_without_a_boot_report(fake, tmp_path):
     api = fake(boot_missing=True)
     s = sweep.Sweep("k", args(), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "no_boot_report" and s["recommended"] is None
+    assert s["verdict"] == "incomplete"
     assert len(api.jobs) == 1  # no retry: the image can't answer, a second start would say the same
 
 
@@ -670,3 +680,27 @@ def test_route_probe_is_checked_on_a_retried_warm_up(fake, tmp_path, monkeypatch
         "ok": False, "error": "HTTP 400", "out_tokens": 0, "chunks": 0})
     s = sweep.Sweep("k", args(), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "bench_route"
+
+
+def test_an_endpoint_that_never_schedules_is_replaced(fake, tmp_path):
+    """Pilot runs 2-3: S1's fourth start saw no worker at all; a new endpoint takes over."""
+    api = fake(ghost={"e1": 3})   # e1 is S1's endpoint (type pinned, so no pin re-create)
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
+    s1 = json.loads((tmp_path / "S1.json").read_text())
+    assert s1["recreated_from"] == ["e1"] and s1["endpoint_id"] != "e1"
+    assert [(r["kind"], r["index"], r["retry"], r["ok"]) for r in s1["runs"]] == [
+        ("warmup", 0, False, True), ("cold", 1, False, True), ("cold", 2, False, True),
+        ("cold", 3, False, False), ("cold", 3, True, True)]
+    assert s["stopped"] is None and s["verdict"] == "ok" and s["recommended"]
+    assert sum(p.startswith("/endpoints/") for p in api.deleted) == len(api.endpoints)
+
+
+def test_a_stopped_sweep_reports_best_so_far_not_a_recommendation(fake, tmp_path):
+    api = fake(ghost={"e1": 3})
+    real = api.is_ghost
+    api.is_ghost = lambda eid: real(eid) or (eid == "e2")   # the replacement never schedules either
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
+    assert s["stopped"]["reason"] == "no_gpu" and s["verdict"] == "incomplete"
+    assert s["recommended"] is None and s["best_so_far"] == "S0" and "recommended_block" not in s

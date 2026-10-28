@@ -58,7 +58,22 @@ GPU_CLASSES = {
 NEXT_GPU = {"24gb": "48gb", "48gb": "80gb", "80gb": "141gb", "141gb": "180gb"}
 JOB_INPUT = {"input": {"messages": [{"role": "user", "content": "Reply with the single word: ok"}],
                        "sampling_params": {"max_tokens": 8, "temperature": 0}}}
-CRASH_SIGNALS = 2  # unhealthy states or running->not-running drops before a rung is a crash loop
+CRASH_SIGNALS = 2  # restarts (see restarted()) before a rung is a crash loop
+
+
+def restarted(prev, now, job_status):
+    """Whether a change in the endpoint's worker counts looks like the worker died and came back.
+
+    Unhealthy always counts. A worker leaving "running" counts only while our job is still queued:
+    that's how a dying worker looked on worker-vllm v2.28.0 (study/K2-Horizon never went unhealthy).
+    Current worker-vllm takes jobs only once vLLM is healthy, so with the job IN_PROGRESS the worker is
+    serving it, and running -> idle/ready isn't a restart. MiniMax try 2 (Oct 28) was stopped as a crash
+    loop on two such changes without anyone knowing whether the job had been picked up.
+    """
+    if now.get("unhealthy"):
+        return True
+    return bool((prev or {}).get("running")) and not now.get("running") and job_status == "IN_QUEUE"
+
 
 
 def log(msg):
@@ -107,11 +122,18 @@ def template_body(image, model, env, disk_gb):
             "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}}
 
 
-def endpoint_body(gpu_class, min_cuda, gpu_types=None, gpu_count=1):
-    """POST /v1/endpoints body (minus name and templateId), with the smoke test's cost limits."""
-    return {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": gpu_count, "workersMin": 0,
+def endpoint_body(gpu_class, min_cuda, gpu_types=None, gpu_count=1, volume_id=None):
+    """POST /v1/endpoints body (minus name and templateId), with the smoke test's cost limits.
+
+    With volume_id the worker mounts that network volume (and runs in its data center); worker-vllm
+    keeps its Hugging Face cache there, so weights staged by pipeline/stage.py aren't downloaded again.
+    """
+    body = {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": gpu_count, "workersMin": 0,
             "workersMax": 1, "idleTimeout": 5, "executionTimeoutMs": 600000, "flashboot": False,
             "minCudaVersion": min_cuda}
+    if volume_id:
+        body["networkVolumeId"] = volume_id
+    return body
 
 
 def boot_summary(output, gpu_count=1):
@@ -133,9 +155,12 @@ def boot_summary(output, gpu_count=1):
     return out
 
 
-def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None, gpu_count=1):
+def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None, gpu_count=1,
+             volume_id=None):
     rung = {"env": env, "gpu_class": gpu_class, "gpu_count": gpu_count, "disk_gb": disk_gb,
             "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    if volume_id:
+        rung["volume_id"] = volume_id
     name = f"{PREFIX}{label}-{int(time.time())}"[:60]
     body = template_body(image, model, env, disk_gb)
     # The boot report says which device the worker really got (a 48 GB type id can be a MIG slice of a
@@ -145,13 +170,15 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
     if not rp.ok(st):
         return {**rung, "outcome": "error", "detail": f"template {st}: {tpl}"}
     st, ep = rp.call("POST", f"{rp.REST}/endpoints", key, {
-        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types, gpu_count)})
+        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types, gpu_count, volume_id)})
     if not rp.ok(st):
         rp.call("DELETE", f"{rp.REST}/templates/{tpl['id']}", key)
         return {**rung, "outcome": "error", "detail": f"endpoint {st}: {ep}"}
     eid = ep["id"]
     rung["endpoint_id"] = eid
     t0, status, output, crash_signals, last_workers, seen = time.time(), None, None, 0, None, set()
+    job_status, timeline = None, []
+    rung["worker_timeline"] = timeline   # [minutes, worker counts] at every change, for the postmortem
     try:
         st, job = rp.call("POST", f"{rp.JOBS}/{eid}/run", key, JOB_INPUT)
         if not rp.ok(st):
@@ -163,28 +190,33 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
         log(f"[{label}] endpoint {eid}, env {env or '{}'}, {gpu_class}")
         while time.time() < deadline:
             time.sleep(15)
+            st, s = rp.call("GET", f"{rp.JOBS}/{eid}/status/{jid}", key)
+            if rp.ok(st) and isinstance(s, dict):
+                job_status = s.get("status")
+                if job_status in ("COMPLETED", "FAILED", "CANCELLED", "TIMED_OUT"):
+                    status, output = job_status, (s.get("output") if job_status == "COMPLETED" else s.get("error") or s.get("output"))
+                    rung.update(delay_s=round((s.get("delayTime") or 0) / 1000), exec_s=round((s.get("executionTime") or 0) / 1000))
+                    break
+                if job_status == "IN_PROGRESS" and "job_in_progress_min" not in rung:
+                    # A worker took the job, so vLLM was healthy (the worker starts taking jobs only then).
+                    rung["job_in_progress_min"] = round((time.time() - t0) / 60, 1)
+                    log(f"[{label}] job picked up at {rung['job_in_progress_min']} min")
             hst, h = rp.call("GET", f"{rp.JOBS}/{eid}/health", key)
             if rp.ok(hst) and isinstance(h, dict):
                 workers = {k: v for k, v in (h.get("workers") or {}).items() if v}
                 if workers != last_workers:
-                    # A worker that dies and restarts shows up either as unhealthy
-                    # or as running -> ready/idle with the job still queued (study/
-                    # K2-Horizon on v2.28.0 never went unhealthy).
-                    if workers.get("unhealthy") or ((last_workers or {}).get("running") and not workers.get("running")):
+                    if restarted(last_workers, workers, job_status):
                         crash_signals += 1
                     seen |= set(workers)
                     last_workers = workers
+                    timeline.append([round((time.time() - t0) / 60, 1), workers])
                     log(f"[{label}] workers {workers or '{}'} at {(time.time() - t0) / 60:.1f} min")
             if crash_signals >= CRASH_SIGNALS:
                 status = "CRASH_LOOP"
                 break
-            st, s = rp.call("GET", f"{rp.JOBS}/{eid}/status/{jid}", key)
-            if rp.ok(st) and s.get("status") in ("COMPLETED", "FAILED", "CANCELLED", "TIMED_OUT"):
-                status, output = s["status"], (s.get("output") if s["status"] == "COMPLETED" else s.get("error") or s.get("output"))
-                rung.update(delay_s=round((s.get("delayTime") or 0) / 1000), exec_s=round((s.get("executionTime") or 0) / 1000))
-                break
         if status is None:
             status = "DEADLINE"
+        rung["job_status_at_stop"] = job_status   # IN_PROGRESS here means vLLM had come up
         if status not in ("COMPLETED", "FAILED"):
             rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
         if boot_jid:
@@ -276,8 +308,9 @@ def spent_last_24h(now=None, smoke_dir=None):
     """Estimated spend of recorded smoke rungs that started in the last 24 h."""
     now = now or datetime.now(timezone.utc)
     total = 0.0
-    for f in (smoke_dir or ROOT / "data" / "smoke").glob("*.json"):
-        for r in json.loads(f.read_text()).get("rungs") or []:
+    for f in (smoke_dir or ROOT / "data" / "smoke").rglob("*.json"):   # archived runs (_runs/) count too
+        rec = json.loads(f.read_text())
+        for r in (rec.get("rungs") if isinstance(rec, dict) else None) or []:
             started = datetime.fromisoformat(r["started"]) if r.get("started") else None
             if started and (now - started).total_seconds() < 86400 and r.get("gpu_class") in sizing.PRICE_PER_HR:
                 total += r.get("est_cost_usd", sizing.cost_usd(r.get("minutes") or 0, r["gpu_class"]))
@@ -318,6 +351,8 @@ def main():
                     help="refuse to start when the account balance is below this (or can't be read)")
     ap.add_argument("--recipe", choices=["auto", "off"], default="auto",
                     help="auto: start from the model's vLLM recipe settings when one exists (recipes.py)")
+    ap.add_argument("--volume-id", help="network volume with the weights already on it (pipeline/stage.py); "
+                    "the endpoint runs in its data center")
     ap.add_argument("--env-file")
     a = ap.parse_args()
     if any("=" not in s for s in a.set):
@@ -402,7 +437,7 @@ def main():
             base["recipe"].update(skipped=rs["skipped"], notes=rs["notes"])
         rung_env = {**recipe_env, **env}  # --set and ladder changes beat the recipe
         r = run_rung(key, a.image, a.model, rung_env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk,
-                     gpu_types, a.gpu_count)
+                     gpu_types, a.gpu_count, a.volume_id)
         if recipe_env:
             r["recipe_env"] = recipe_env
         if gpu_types:

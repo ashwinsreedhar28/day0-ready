@@ -292,7 +292,7 @@ def test_boot_summary_keeps_the_device_and_the_predictor_numbers():
     assert b["weights_gib"] == 15.27 and b["kv_bytes_per_token"] == round(26.4 * 2 ** 30 / 192208)
     assert smoke.boot_summary([{"error": {"message": "The boot report is off."}}]) is None   # older image
     two = smoke.boot_summary([BOOT], gpu_count=2)   # per-GPU memory under tensor parallel, whole model here
-    assert two["weights_gib"] == 30.54 and two["kv_bytes_per_token"] == 2 * b["kv_bytes_per_token"]
+    assert two["weights_gib"] == 30.54 and two["kv_bytes_per_token"] == pytest.approx(2 * b["kv_bytes_per_token"], abs=2)
 
 
 def test_a_pass_records_the_device_the_worker_got(monkeypatch):

@@ -36,7 +36,7 @@ Not swept, and why:
 
 ## Fixed conditions (every config)
 
-- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both. Runpod can serve a type id on another device (the pilot asked for an RTX 6000 Ada and got a worker reporting "NVIDIA RTX PRO 6000 Blackwell Server Edition"), so the runner records the device the first warm-up reports and rejects any later start on a different one.
+- The same image, by digest. The same single GPU type id on the endpoint (not a class list): vLLM's compile cache and startup plan are keyed by device, so a run on a different GPU than the warm-up misses both. Runpod can serve a type id on another device (the pilot asked for an RTX 6000 Ada and got a worker reporting "NVIDIA RTX PRO 6000 Blackwell Server Edition"), so the runner records the device the first warm-up reports and rejects any later start on a different one. The device is nvidia-smi's name plus the MIG profile when the worker got a slice (pilot runs 1 and 4: 2g.48gb slices on L40S and RTX 6000 Ada type ids). MIG type ids from the catalog can be pinned too.
 - A network volume in a data center that has that GPU. Weights live under a shared `HF_HOME` on the volume. Each config gets its own `VLLM_CACHE_ROOT` on the volume, so one config's compile cache or startup plan can't leak into another's (vLLM's startup-plan key ignores `gpu_memory_utilization`, vllm#60143).
 - `MAX_MODEL_LEN` = the model's recipe `context_length`, capped at 32,768. Without a recipe, the config's `max_position_embeddings`, same cap.
 - Endpoint: `workersMax` toggled between 0 and 1 by the runner, `idleTimeout` 30 s, FlashBoot off, `MAX_CONCURRENCY` 30. Cold starts don't depend on the idle timeout (the runner sets `workersMax` to 0 between them); it's there so an endpoint left behind scales itself down.
@@ -225,7 +225,15 @@ Image `day0-v0.32.0--day0-sweep-3b31d89` (vLLM v0.32.0), `MAX_MODEL_LEN` 32,768,
 - S1's fourth start saw no worker at all for two 10-minute waits, exactly as in run 2, while S0's endpoint did five starts (one waited 8.5 min "throttled"). The cause is unknown; the runner now retries such a start on a new endpoint.
 - The summary said "recommended: S0" because S0 was the only config that finished. A stopped sweep is now marked incomplete instead.
 
-Spend so far: ~$1.41 of the $8.
+**Run 4** (Oct 28, 02:41 UTC; 67.6 worker-min, ~$1.97), pinned to "NVIDIA L40S". Both warm-ups ran on a real L40S (engine init 69.8 s with an empty compile cache), but both of S0's first cold starts went to a 2g.48gb MIG slice of an RTX PRO 6000 Blackwell (engine init 181.6 and 143.3 s, KV 192,208–199,296 tokens). The device check rejected them, so S0 failed its first cold start twice. S1's cold starts never answered and ran into the 25-minute start limit twice. Changes: cold starts get 15 minutes (`--cold-minutes`); warm-ups keep 25 for the download.
+
+**Runs 5 and 5b** (Oct 28, 05:12 and 05:15 UTC; $0), pinned to "NVIDIA RTX A6000" to avoid slices. Run 5: no data center with network volumes listed the A6000 in stock. Run 5b: one did (US-KS-2), but no worker appeared in two 10-minute waits, and the sweep stopped as `no_gpu`.
+
+What the four runs say about the 48 GB tier: Runpod's pricing lists "L40, L40S, 6000 Ada, MIG 48GB" as one $1.75/h tier, so an L40S or RTX 6000 Ada type id can be served on a MIG slice by design. The tier without slices (A6000, A40, $1.22/h) had no stock that night. On a slice, engine init was 7–10× an L40S's. Changes: the device check compares nvidia-smi's name plus the MIG profile (a whole RTX PRO 6000 and a slice report the same name), and the catalog's MIG type ids ("NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb") can be pinned with `--gpu-type`. `--data-center` pins a new volume's data center.
+
+**Run 6**: pinned to the 2g.48gb slice itself, the device this tier hands out most often in these runs.
+
+Spend so far: ~$3.38 of the $8.
 
 ## Decisions
 

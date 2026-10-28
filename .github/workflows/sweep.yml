@@ -35,6 +35,9 @@ on:
       gpu_type:
         description: "pin one Runpod GPU type id instead (e.g. NVIDIA L40S)"
         default: ""
+      data_center:
+        description: "for a new volume: pin this data center (e.g. US-TX-3) instead of the one with the most stock"
+        default: ""
       volume_id:
         description: "network volume id, or auto (one in a data center with the class in stock)"
         default: auto
@@ -69,6 +72,7 @@ jobs:
       MODEL: ${{ inputs.model }}
       GPU_CLASS: ${{ inputs.gpu_class || '48gb' }}
       GPU_TYPE: ${{ inputs.gpu_type }}
+      DATA_CENTER: ${{ inputs.data_center }}
       VOLUME_ID: ${{ inputs.volume_id || 'auto' }}
       CREATE_VOLUME: ${{ inputs.create_volume }}
       S0_ENV: ${{ inputs.s0_env }}
@@ -97,6 +101,7 @@ jobs:
           args=(--image "$IMAGE" --model "$MODEL" --gpu-class "$GPU_CLASS" --volume-id "$VOLUME_ID"
                 --configs "$CONFIGS" --cap-minutes "$CAP_MINUTES" --max-hours 4.5)
           [ -n "$GPU_TYPE" ] && args+=(--gpu-type "$GPU_TYPE")
+          [ -n "$DATA_CENTER" ] && args+=(--data-center "$DATA_CENTER")
           [ "$CREATE_VOLUME" = "true" ] && args+=(--create-volume)
           if [ -n "$S0_ENV" ]; then args+=(--s0-env "$S0_ENV"); else args+=(--from-smoke "data/smoke/${IMAGE##*:}.json"); fi
           set -o pipefail
@@ -131,6 +136,7 @@ jobs:
             rm -rf "$dir" && mkdir -p "$(dirname "$dir")" && cp -r /tmp/sweep "$dir"
             python3 detect/board.py > /dev/null
             git add "$dir" data/board.md data/ready.json
+            git diff --cached --quiet && { echo "nothing new to record"; exit 0; }
             git commit -q -m "sweep: ${IMAGE##*:} ($(jq -r '.verdict + (if .recommended then ": " + .recommended else "" end)' "$dir/summary.json" 2>/dev/null || echo partial))"
             git push -q origin "HEAD:$branch" && exit 0
             sleep $((i * 5))

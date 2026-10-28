@@ -56,10 +56,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           EVENTS: ${{ steps.poll.outputs.new_events }}
+          AUTO_SMOKE: ${{ vars.AUTO_SMOKE }}
         run: |
           echo "${EVENTS:-[]}" | jq -c '.[] | select(.model != null)' | while read -r ev; do
             tag=$(jq -r .vllm_tag <<<"$ev"); model=$(jq -r .model <<<"$ev")
             echo "dispatch build: $tag -> $model"
-            gh workflow run build-day0.yml -f vllm_tag="$tag" -f model="$model"
+            # GPU smoke tests after a build only with the repo variable AUTO_SMOKE=true
+            # (off while the pipeline is parked, Oct 28 2026 - Jan 2027).
+            gh workflow run build-day0.yml -f vllm_tag="$tag" -f model="$model" -f smoke="${AUTO_SMOKE:-false}"
           done
           echo "${EVENTS:-[]}" | jq -r '.[] | select(.model == null) | "no Hugging Face match for \(.family) (\(.vllm_tag))"'

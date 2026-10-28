@@ -333,7 +333,7 @@ class FakeRunpod:
 def args(**kw):
     a = dict(image="ghcr.io/a/worker-vllm:day0-v0.32.0--day0-sweep-3b31d89", model="Qwen/Qwen3-8B",
              gpu_class="48gb", gpu_type=None, volume_id="vol1", s0_env={}, configs=list(sweep.ORDER),
-             cap_minutes=270, max_hours=4.5, start_minutes=25, disk_gb=40, min_cuda="13.0", seed=0, keep=False,
+             cap_minutes=270, max_hours=4.5, start_minutes=25, cold_minutes=15, disk_gb=40, min_cuda="13.0", seed=0, keep=False,
              gpu_types=list(sweep.GPU_CLASSES["48gb"]))
     a.update(kw)
     return types.SimpleNamespace(**a)
@@ -417,7 +417,7 @@ def test_stops_without_a_boot_report(fake, tmp_path):
 
 def test_stops_when_no_gpu_is_free(fake, tmp_path):
     fake(no_gpu=True)
-    s = sweep.Sweep("k", args(start_minutes=0.001), 32768, 151936, tmp_path).run()
+    s = sweep.Sweep("k", args(start_minutes=0.001, cold_minutes=0.001), 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "no_gpu" and "two waits" in s["stopped"]["detail"]
     s0 = json.loads((tmp_path / "S0.json").read_text())
     assert [r["retry"] for r in s0["runs"]] == [False, True]  # one more wait before giving up
@@ -685,7 +685,7 @@ def test_route_probe_is_checked_on_a_retried_warm_up(fake, tmp_path, monkeypatch
 def test_an_endpoint_that_never_schedules_is_replaced(fake, tmp_path):
     """Pilot runs 2-3: S1's fourth start saw no worker at all; a new endpoint takes over."""
     api = fake(ghost={"e1": 3})   # e1 is S1's endpoint (type pinned, so no pin re-create)
-    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01, cold_minutes=0.01)
     s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
     s1 = json.loads((tmp_path / "S1.json").read_text())
     assert s1["recreated_from"] == ["e1"] and s1["endpoint_id"] != "e1"
@@ -700,7 +700,14 @@ def test_a_stopped_sweep_reports_best_so_far_not_a_recommendation(fake, tmp_path
     api = fake(ghost={"e1": 3})
     real = api.is_ghost
     api.is_ghost = lambda eid: real(eid) or (eid == "e2")   # the replacement never schedules either
-    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01)
+    pinned = args(gpu_type="NVIDIA L40S", gpu_types=["NVIDIA L40S"], start_minutes=0.01, cold_minutes=0.01)
     s = sweep.Sweep("k", pinned, 32768, 151936, tmp_path).run()
     assert s["stopped"]["reason"] == "no_gpu" and s["verdict"] == "incomplete"
     assert s["recommended"] is None and s["best_so_far"] == "S0" and "recommended_block" not in s
+
+
+def test_cold_starts_get_the_shorter_limit(fake, tmp_path):
+    fake()
+    sweep.Sweep("k", args(configs=["S0"], start_minutes=25, cold_minutes=15), 32768, 151936, tmp_path).run()
+    s0 = json.loads((tmp_path / "S0.json").read_text())
+    assert [r["limit_min"] for r in s0["runs"]] == [25, 15, 15, 15]

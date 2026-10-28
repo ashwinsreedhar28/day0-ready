@@ -1,0 +1,92 @@
+{
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--day0-sweep-8cf6da4",
+ "model": "Qwen/Qwen3-14B",
+ "weights_gb": 29.5,
+ "gpu_count": 2,
+ "recipe": {
+  "source": "https://raw.githubusercontent.com/vllm-project/recipes/main/models/Qwen/Qwen3-14B.yaml",
+  "skipped": [],
+  "notes": [
+   "min vLLM 0.8.5"
+  ]
+ },
+ "passed": true,
+ "passing_env": {
+  "TENSOR_PARALLEL_SIZE": "2"
+ },
+ "passing_gpu_class": "24gb",
+ "rungs": [
+  {
+   "env": {
+    "TENSOR_PARALLEL_SIZE": "2"
+   },
+   "gpu_class": "24gb",
+   "gpu_count": 2,
+   "disk_gb": 60,
+   "started": "2026-10-28T04:44:18+00:00",
+   "endpoint_id": "jgw36jsrg3t69n",
+   "delay_s": 256,
+   "exec_s": 0,
+   "boot": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_devices": [
+     "GPU 0: NVIDIA GeForce RTX 4090",
+     "GPU 1: NVIDIA GeForce RTX 4090"
+    ],
+    "gpu_memory_mib": [
+     24564,
+     24564
+    ],
+    "weights_gib": 13.88,
+    "kv_cache_gib": 6.67,
+    "kv_cache_tokens": 87408,
+    "engine_init_s": 80.86,
+    "launch_to_healthy_s": 170.07,
+    "relaunches": [],
+    "kv_bytes_per_token": 81936
+   },
+   "job_status": "COMPLETED",
+   "output": "[{\"choices\": [{\"finish_reason\": \"length\", \"index\": 0, \"logprobs\": null, \"message\": {\"annotations\": null, \"audio\": null, \"content\": \"<think>\\nOkay, the user wants me\", \"function_call\": null, \"reasoning\": null, \"refusal\": null, \"role\": \"assistant\"}, \"routed_experts\": null, \"stop_reason\": null, \"token_ids\": null}], \"created\": 1793162916, \"ec_transfer_params\": null, \"id\": \"chatcmpl-9dadb055bdb862ba\", \"kv_transfer_params\": null, \"metrics\": null, \"model\": \"Qwen/Qwen3-14B\", \"object\": \"chat.completion\", \"prompt_logprobs\": null, \"prompt_text\": null, \"prompt_token_ids\": null, \"service_tier\": null, \"syst",
+   "minutes": 4.3,
+   "worker_states": [
+    "idle",
+    "ready",
+    "running"
+   ],
+   "est_cost_usd": 0.16,
+   "outcome": "pass",
+   "gpu_types": [
+    "NVIDIA GeForce RTX 4090",
+    "NVIDIA GeForce RTX 3090"
+   ]
+  }
+ ],
+ "finished_at": "2026-10-28T04:48:39+00:00",
+ "deploy": {
+  "template": {
+   "imageName": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--day0-sweep-8cf6da4",
+   "isServerless": true,
+   "containerDiskInGb": 60,
+   "env": {
+    "MODEL_NAME": "Qwen/Qwen3-14B",
+    "MAX_MODEL_LEN": "4096",
+    "TENSOR_PARALLEL_SIZE": "2"
+   }
+  },
+  "endpoint": {
+   "computeType": "GPU",
+   "gpuTypeIds": [
+    "NVIDIA GeForce RTX 4090",
+    "NVIDIA GeForce RTX 3090"
+   ],
+   "gpuCount": 2,
+   "workersMin": 0,
+   "workersMax": 1,
+   "idleTimeout": 5,
+   "executionTimeoutMs": 600000,
+   "flashboot": false,
+   "minCudaVersion": "13.0"
+  }
+ },
+ "device": "NVIDIA GeForce RTX 4090"
+}

@@ -114,16 +114,18 @@ def endpoint_body(gpu_class, min_cuda, gpu_types=None, gpu_count=1):
             "minCudaVersion": min_cuda}
 
 
-def boot_summary(output):
+def boot_summary(output, gpu_count=1):
     """The worker's boot report, cut to what a smoke result keeps: which device(s) it ran on and
-    the two numbers predict.py needs. None when the image has no boot report (older builds)."""
+    the two numbers predict.py needs, for the whole model (vLLM prints memory per GPU under tensor
+    parallel). None when the image has no boot report (older builds)."""
     items = output if isinstance(output, list) else [output]
     rep = next((i["day0_boot_report"] for i in items if isinstance(i, dict) and "day0_boot_report" in i), None)
     if not rep:
         return None
     v = rep.get("vllm") or {}
     out = {"gpu": rep.get("gpu"), "gpu_devices": rep.get("gpu_devices"), "gpu_memory_mib": rep.get("gpu_memory_mib"),
-           "weights_gib": v.get("model_load_gib"), "kv_cache_gib": v.get("kv_cache_gib"),
+           "weights_gib": round(v["model_load_gib"] * gpu_count, 2) if v.get("model_load_gib") else None,
+           "kv_cache_gib": round(v["kv_cache_gib"] * gpu_count, 2) if v.get("kv_cache_gib") else None,
            "kv_cache_tokens": v.get("kv_cache_tokens"), "engine_init_s": v.get("engine_init_s"),
            "launch_to_healthy_s": rep.get("launch_to_healthy_s"), "relaunches": rep.get("relaunches")}
     if out["kv_cache_gib"] and out["kv_cache_tokens"]:
@@ -189,7 +191,7 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
             for _ in range(6):  # usually done already: it ran right after the worker came up
                 bst, b = rp.call("GET", f"{rp.JOBS}/{eid}/status/{boot_jid}", key)
                 if rp.ok(bst) and isinstance(b, dict) and b.get("status") in ("COMPLETED", "FAILED", "CANCELLED"):
-                    rung["boot"] = boot_summary(b.get("output")) if b["status"] == "COMPLETED" else None
+                    rung["boot"] = boot_summary(b.get("output"), gpu_count) if b["status"] == "COMPLETED" else None
                     break
                 if status != "COMPLETED":
                     break

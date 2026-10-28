@@ -29,7 +29,7 @@ Under tensor parallel vLLM prints memory per GPU: 13.88 GiB of weights and 6.67 
 
 The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4`, recipe setting `BLOCK_SIZE=128`, `TENSOR_PARALLEL_SIZE=2` on the 141gb class, capped at 45 minutes.
 
-**Result (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started twice (05:09 and 05:18) with TP=2; both times NCCL initialized and Hopper kernels were picked for the MoE and sparse attention. It wasn't a crash: the worker log has no traceback, and both boots end with worker-vllm's "Received signal 15, shutting down vLLM", a stop from outside.
+**Try 1 (Oct 28, 04:50–05:27 UTC): no pass; `crash_loop` after 36.7 min, ~$7.26.** The worker got 2 GPUs and reached "running". vLLM started twice (05:09 and 05:18) with TP=2; both times NCCL initialized and Hopper kernels were picked for the MoE and sparse attention. It wasn't a crash: the worker log has no traceback, and both boots end with worker-vllm's "Received signal 15, shutting down vLLM", a stop from outside.
 
 | | vLLM start | weights downloaded | stopped | after start |
 |---|---|---|---|---|
@@ -37,9 +37,14 @@ The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-
 | boot 2 | 05:18:19 | 426.6 s, all of it again | 05:26:40, shard 7 of 48 | 8 min 22 s |
 
 - Each boot downloads the checkpoint onto the container disk at ~0.53 GiB/s, and a restart starts over, so no boot gets further than the first.
-- The stop lands ~8.4 min after vLLM starts. Loading the remaining shards (2–4 s each) plus engine init needs a few more minutes. Runpod's docs only describe the 10-minute execution timeout, which would have marked the job timed out; this looks like an undocumented startup limit of about 8 minutes.
+- Both stops landed ~8.4 min after vLLM started. Runpod's docs only describe the 10-minute execution timeout, and worker-vllm takes no job before vLLM is healthy, so that isn't it. A fixed ~8-minute startup limit looked likely, but in try 2 a boot ran 17 min, so the cause is still open.
 - The smoke test called it `crash_loop` because it counts a worker leaving "running" as a crash; here those were two external stops during startup.
-- Next try: the weights on a network volume, downloaded once beforehand (a CPU pod can do it), so a boot only loads them. Open question: how fast 233 GiB loads from a network volume; below ~1 GiB/s the load alone gets close to the same limit.
+
+**Try 2 (Oct 28, 06:20–06:57 UTC): no pass; `crash_loop` after 32.6 min, ~$6.45.** The plan was to put the weights on a 300 GB network volume first with a CPU pod (`pipeline/stage.py`, on the test branch for now), so the worker only loads them. In US-NC-1 the 8- and 4-vCPU pods had no capacity; a 2-vCPU pod ($0.06/h) got one.
+
+- Staging reported done after 247 s with 17 MB on the volume. The model's cache directory had grown to 29 GiB and then shrank, so the weights never landed and the worker downloaded them again, as in try 1. The likely cause is the download path (huggingface_hub 2.x goes through hf_xet), not verified. Staging has to check the bytes on the volume against the repo's size before it says done.
+- The worker showed "running" for 8.6 min (06:31:30–06:40:08), then again for 17 min (06:40:23–06:57:25). The smoke test counts a change from running to idle/ready as a crash and stopped at the second one. "ready" may have been the worker coming up; the cleanup deleted the endpoint, so its log is gone.
+- Before a third try: verified staging; a crash rule that doesn't count running → ready; a failed endpoint kept (scaled to 0, no cost) until its log is read.
 
 ## Not built yet
 

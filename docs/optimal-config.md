@@ -1,6 +1,6 @@
 # Optimal-config sweep (spec)
 
-Status: spec v1, 2026-10-27. The runner (`pipeline/sweep.py`) covers S0–S5 and W; Q and L come later. A pilot on one small model and one 48 GB GPU validates the runner first; sweeps of real day-0 launches, B200 and multi-GPU start in January 2027.
+Status: spec v1, 2026-10-27; pilot complete 2026-10-28. The runner (`pipeline/sweep.py`) covers S0–S5 and W; Q and L come later. The pilot (Qwen3-8B on one L40S, run 7) finished all seven configs and recommends S2, the startup plan plus eager mode: engine init 22.9 → 2.6 s at 98% of S1's throughput. Sweeps of real day-0 launches, B200 and multi-GPU start in January 2027.
 
 ## Why
 
@@ -233,9 +233,28 @@ What the four runs say about the 48 GB tier: Runpod's pricing lists "L40, L40S, 
 
 **Run 6** (Oct 28, 05:43 UTC; $0): pinned to "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb", which the catalog lists in stock. `POST /endpoints` answered 400: `gpuTypeIds` only takes the REST API's own enum, which has no RTX PRO 6000 MIG ids. So a slice can be detected (the boot report's MIG line) but not requested, and the runner now refuses a MIG `--gpu-type` before creating anything.
 
-**Run 7**: pinned to "NVIDIA L40S" with the volume in US-NC-1.
+**Run 7** (Oct 28, 05:48–08:42 UTC; 129.7 worker-min, ~$3.78), pinned to "NVIDIA L40S" with the volume in US-NC-1. Every start that got a worker ran on an L40S (46,068 MiB, no MIG); one of S4's cold starts saw no worker and was retried on a new endpoint. Verdict **ok, recommended S2**.
 
-Spend so far: ~$3.38 of the $8.
+| config | change from S0 | engine init, 3 cold starts (s) | p50 | C=30 tok/s | C=1 TPOT p50 | KV tokens |
+|---|---|---|---|---|---|---|
+| S0 | none | 23.66 / 22.93 / 22.75 | 22.93 | 427.0 | 22.6 ms | 179,664 |
+| S1 | startup plan | 14.98 / 14.19 / 16.10 | 14.98 | 428.7 | 22.6 ms | 169,648 |
+| **S2** | S1 + `ENFORCE_EAGER=true` | 2.62 / 2.61 / 2.63 | **2.62** | 420.4 | 23.1 ms | 181,680 |
+| S3 | S1 + `MAX_NUM_SEQS=32` | 9.28 / 8.65 / 8.46 | 8.65 | 428.5 | 22.6 ms | 174,160 |
+| S4 | S1 + `GPU_MEMORY_UTILIZATION=0.95` | 12.92 / 12.78 / 12.41 | 12.78 | 432.7 | 22.5 ms | 179,360 |
+| S5 | S1 + `MAX_NUM_BATCHED_TOKENS=8192` | 13.08 / 12.85 / 13.61 | 13.08 | 420.3 | 22.6 ms | 168,960 |
+| W | S2 + S3 + S4 | 2.52 / 2.54 / 2.56 | 2.54 | 421.0 | 23.1 ms | 192,320 |
+
+All seven fit: 0 failed requests and 0 preemptions at C=30, KV cache above the 138,240-token floor.
+
+- Selection: the noise band is 2.0 s (S1's spread was 1.91 s, under the 2 s floor) and the throughput floor is 411.1 tok/s (95% of S4's 432.7). S2, S3 and S4 beat S1 by more than the band above the floor; S5 (1.9 s faster) didn't. W combines the three and comes in at 2.54 s, inside the band of S2's 2.62 s, so the tie goes to S2, the config with fewer changes.
+- Eager mode skips CUDA-graph capture: engine init 22.9 → 2.6 s. It costs 1.9% of S1's throughput at C=30 (420.4 vs 428.7 tok/s) and 0.5 ms of TPOT for a single stream.
+- `MAX_NUM_SEQS=32` captures graphs for fewer batch sizes: 8.65 s with no throughput loss. It's the pick when decode speed matters more than the last 6 s.
+- The startup plan saved 7.95 s (22.93 → 14.98 s), against ~6 s in runs 2 and 3.
+- Engine init is the part of a cold start a config controls. On the same runs `delayTime` went from 47 to 515 s and model loading from the volume from 7 to 54 s on cold starts, so one cold start varies far more than any config changes it.
+- Run 4's MIG slices didn't come back. Nothing in run 7 prevented them; the device check would have rejected them.
+
+Pilot total: ~$7.16 of the $8 (runs 1–7). Records: run 7 in `data/sweep/day0-v0.32.0--day0-sweep-8cf6da4/`, runs 2–6 under `data/sweep/_runs/`, run 7's log in `data/sweep/_logs/`.
 
 ## Decisions
 

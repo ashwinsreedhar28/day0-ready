@@ -1,0 +1,92 @@
+{
+ "sweep_id": "day0-v0.32.0--day0-sweep-8cf6da4-48gb-202610280240",
+ "model": "Qwen/Qwen3-8B",
+ "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-v0.32.0--day0-sweep-8cf6da4",
+ "digest": "sha256:cd9e0c27ede30fb58b9e263fc3a3893740dd47c0cc3133381744511a88a1876e",
+ "gpu_type": "NVIDIA L40S",
+ "device": "NVIDIA L40S",
+ "gpu_class": "48gb",
+ "volume_id": "sid24e53r9",
+ "max_model_len": 32768,
+ "s0_env": {},
+ "kv_floor_tokens": 138240,
+ "bench": {
+  "prompt_tokens": 4096,
+  "output_tokens": 512,
+  "c1_requests": 8,
+  "c30_requests": 120,
+  "seed": 0
+ },
+ "noise_band_from": "S0",
+ "spread_s": null,
+ "noise_band_s": null,
+ "recommended": null,
+ "fast_start": null,
+ "floor_tok_s": null,
+ "verdict": "incomplete",
+ "best_so_far": null,
+ "winners": null,
+ "configs": [
+  {
+   "config": "S0",
+   "skipped": null,
+   "failed": "cold start 1 failed twice",
+   "deleted": true,
+   "env": {},
+   "engine_init_s": [],
+   "engine_init_s_p50": null,
+   "engine_init_s_min": null,
+   "engine_init_s_max": null,
+   "model_load_s_p50": null,
+   "delay_s_p50": null,
+   "output_tok_s_c30": null,
+   "tpot_p50_ms_c1": null,
+   "kv_cache_tokens": 172416,
+   "fit_checks": {
+    "no_relaunch": true,
+    "no_failed_or_preempted": null,
+    "kv_floor": true
+   },
+   "stream_buffered": null,
+   "fits": false
+  },
+  {
+   "config": "S1",
+   "skipped": null,
+   "failed": "cold start 1 failed twice",
+   "deleted": true,
+   "env": {
+    "VLLM_ENABLE_STARTUP_PLAN": "1"
+   },
+   "engine_init_s": [],
+   "engine_init_s_p50": null,
+   "engine_init_s_min": null,
+   "engine_init_s_max": null,
+   "model_load_s_p50": null,
+   "delay_s_p50": null,
+   "output_tok_s_c30": null,
+   "tpot_p50_ms_c1": null,
+   "kv_cache_tokens": 172416,
+   "fit_checks": {
+    "no_relaunch": true,
+    "no_failed_or_preempted": null,
+    "kv_floor": true
+   },
+   "stream_buffered": null,
+   "fits": false
+  }
+ ],
+ "worker_minutes": 67.6,
+ "est_cost_usd": 1.97,
+ "cap_minutes": 210.0,
+ "stopped": {
+  "reason": "s1_failed",
+  "detail": "S1 did not start; S2-S5 and W all build on it"
+ },
+ "finished_at": "2026-10-28T03:51:16+00:00",
+ "volume": {
+  "id": "sid24e53r9",
+  "created": true,
+  "deleted": true
+ }
+}

@@ -24,7 +24,7 @@ Goal: when an open-weight model drops, a tested Runpod Serverless vLLM worker fo
 | pre-warm | torch.compile cache on a network volume per (model, GPU) | yes | planned |
 | board | per launch: tag push time, model, build, CPU verdict, smoke test, tag → worker image | no | [`data/board.md`](data/board.md), regenerated on every poll and every recorded build |
 | deploy recipe | per launch whose own model passed: the exact template and endpoint request bodies, image digest, GPU class, env | no | [`data/ready.json`](data/ready.json) |
-| optimal config | after a pass: a bounded sweep (startup plan, eager, `max_num_seqs`, memory utilization, batch budget) ranked on engine init time and output tokens/s at the worker's full load, giving a recommended env block per model by day 1–2 | yes, capped | spec: [`docs/optimal-config.md`](docs/optimal-config.md); runner: `pipeline/sweep.py`, `sweep.yml`; pilot pending |
+| optimal config | after a pass: a bounded sweep (startup plan, eager, `max_num_seqs`, memory utilization, batch budget) ranked on engine init time and output tokens/s at the worker's full load, giving a recommended env block per model by day 1–2 | yes, capped | spec: [`docs/optimal-config.md`](docs/optimal-config.md); runner: `pipeline/sweep.py`, `sweep.yml`; pilot done (Qwen3-8B on L40S: S2) |
 
 ## Optimal config
 
@@ -35,7 +35,7 @@ The smoke test records the first configuration that answers a request, not the b
 - Only configurations that fit count: no out-of-memory relaunch, no failed or preempted requests, and enough KV cache for 30 requests.
 - Each sweep has a worker-minute cap, and the runner checks the account balance before it starts.
 
-Actions → **Optimal-config sweep** → Run workflow, with the pinned image and the model. Results land in `data/sweep/<image tag>/` (one file per config, `summary.json`, and two JSONL tables for a lakehouse), and a recommendation becomes a `recommended` env block in `data/ready.json` and a column on the board. `python3 pipeline/sweep.py --plan ...` prints the configs and the budget without calling Runpod, and `python3 pipeline/predict.py --log <worker log>` picks the GPU class from one boot's weights and KV bytes per token. The first run is a pilot on Qwen3-8B on one 48 GB GPU, to check the runner before any real launch.
+Actions → **Optimal-config sweep** → Run workflow, with the pinned image and the model. Results land in `data/sweep/<image tag>/` (one file per config, `summary.json`, and two JSONL tables for a lakehouse), and a recommendation becomes a `recommended` env block in `data/ready.json` and a column on the board. `python3 pipeline/sweep.py --plan ...` prints the configs and the budget without calling Runpod, and `python3 pipeline/predict.py --log <worker log>` picks the GPU class from one boot's weights and KV bytes per token. The pilot (Oct 28) ran Qwen3-8B on one L40S through all seven configs and recommends S2, the startup plan plus eager mode: vLLM engine init 22.9 → 2.6 s at 420 output tok/s with 30 concurrent requests, 98% of the startup plan alone (results in the spec's Pilot section).
 
 ## Run a build
 

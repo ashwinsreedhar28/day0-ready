@@ -1,0 +1,77 @@
+{
+ "config": "S0",
+ "env": {},
+ "n_changes": 0,
+ "runs": [
+  {
+   "kind": "warmup",
+   "index": 0,
+   "retry": false,
+   "started_at": "2026-10-28T05:15:02+00:00",
+   "limit_min": 25,
+   "job_status": "NO_GPU",
+   "delay_s": null,
+   "execution_s": null,
+   "boot": null,
+   "ok": false,
+   "worker_states": [],
+   "no_gpu": true,
+   "output": null,
+   "minutes": 0.0,
+   "est_cost_usd": 0.0
+  },
+  {
+   "kind": "warmup",
+   "index": 0,
+   "retry": true,
+   "started_at": "2026-10-28T05:25:50+00:00",
+   "limit_min": 25,
+   "job_status": "NO_GPU",
+   "delay_s": null,
+   "execution_s": null,
+   "boot": null,
+   "ok": false,
+   "worker_states": [],
+   "no_gpu": true,
+   "output": null,
+   "minutes": 0.0,
+   "est_cost_usd": 0.0
+  }
+ ],
+ "started_at": "2026-10-28T05:15:00+00:00",
+ "endpoint_id": "0e93s9oytfimoh",
+ "template_id": "fgvky1pn42",
+ "template_env": {
+  "MODEL_NAME": "Qwen/Qwen3-8B",
+  "MAX_MODEL_LEN": "32768",
+  "MAX_CONCURRENCY": "30",
+  "DAY0_BOOT_REPORT": "1",
+  "VLLM_CACHE_ROOT": "/runpod-volume/day0-sweep/day0-v0.32.0--day0-sweep-8cf6da4-48gb-202610280515/S0"
+ },
+ "gpu_types_used": [
+  "NVIDIA RTX A6000"
+ ],
+ "recreated_from": [
+  "0l4g521hw0778m"
+ ],
+ "finished_at": "2026-10-28T05:36:14+00:00",
+ "stats": {
+  "engine_init_s": [],
+  "engine_init_s_p50": null,
+  "engine_init_s_min": null,
+  "engine_init_s_max": null,
+  "model_load_s_p50": null,
+  "delay_s_p50": null,
+  "output_tok_s_c30": null,
+  "tpot_p50_ms_c1": null,
+  "kv_cache_tokens": null,
+  "fit_checks": {
+   "no_relaunch": null,
+   "no_failed_or_preempted": null,
+   "kv_floor": null
+  },
+  "stream_buffered": null,
+  "fits": false
+ },
+ "deleted": true
+}

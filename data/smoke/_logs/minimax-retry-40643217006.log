@@ -1,0 +1,26 @@
+== stage
+06:20:20 data centers with NVIDIA H200,NVIDIA H200 NVL in stock: ['US-NC-1']
+06:20:23 US-NC-1: 8-vCPU pod 500 {"error":"create pod: There are no longer any instances available with the requested specifications. Please refresh and 
+06:20:25 US-NC-1: 4-vCPU pod 500 {"error":"create pod: There are no longer any instances available with the requested specifications. Please refresh and 
+06:20:26 US-NC-1: volume 8cbmoaziuy (300 GB), CPU pod wpwywx7dx6zduo ($0.06/h)
+06:20:46 pod: downloading, 12.0 GiB on the volume
+06:22:28 pod: downloading, 29.0 GiB on the volume
+06:24:30 pod: downloading, 21.6 GiB on the volume
+06:24:50 pod: done, 0.0 GiB on the volume
+06:24:51 pod wpwywx7dx6zduo deleted
+06:24:51 result: {"model": "MiniMaxAI/MiniMax-M3.1-Flash", "state": "done", "tried": [], "vcpu": 2, "data_center": "US-NC-1", "volume_id": "8cbmoaziuy", "pod_id": "wpwywx7dx6zduo", "cost_per_hr": 0.06, "minutes": 4.4, "bytes": 17032957, "download_s": 247, "detail": null, "est_cost_usd": 0.004}
+== smoke
+06:24:51 CPU check verdict for this image: native
+06:24:52 recipe: https://raw.githubusercontent.com/vllm-project/vllm/main/recipes/models/MiniMaxAI/MiniMax-M3.1-Flash.yaml
+06:24:53 [day0-minimax-m31-flash-x86_64--0] endpoint qs6pnqdlu2ni33, env {'BLOCK_SIZE': '128', 'TENSOR_PARALLEL_SIZE': '2'}, 141gb
+06:25:09 [day0-minimax-m31-flash-x86_64--0] workers {} at 0.3 min
+06:26:10 [day0-minimax-m31-flash-x86_64--0] workers {'throttled': 1} at 1.3 min
+06:29:43 [day0-minimax-m31-flash-x86_64--0] workers {'initializing': 1} at 4.8 min
+06:29:58 [day0-minimax-m31-flash-x86_64--0] workers {'throttled': 1} at 5.1 min
+06:30:13 [day0-minimax-m31-flash-x86_64--0] workers {'initializing': 1} at 5.3 min
+06:31:30 [day0-minimax-m31-flash-x86_64--0] workers {'running': 1} at 6.6 min
+06:40:08 [day0-minimax-m31-flash-x86_64--0] workers {'idle': 1, 'ready': 1} at 15.3 min
+06:40:23 [day0-minimax-m31-flash-x86_64--0] workers {'running': 1} at 15.5 min
+06:57:25 [day0-minimax-m31-flash-x86_64--0] workers {'idle': 1, 'ready': 1} at 32.5 min
+06:57:26 [day0-minimax-m31-flash-x86_64--0] crash_loop (CRASH_LOOP) in 32.6 min
+06:57:26 FAIL after 1 rung(s) -> data/smoke/day0-minimax-m31-flash-x86_64-cu134--day0-sweep-8cf6da4.json

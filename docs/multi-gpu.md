@@ -40,11 +40,15 @@ The launch this was for: 224 GB of mxfp8 weights, image `day0-minimax-m31-flash-
 - Both stops landed ~8.4 min after vLLM started. Runpod's docs only describe the 10-minute execution timeout, and worker-vllm takes no job before vLLM is healthy, so that isn't it. A fixed ~8-minute startup limit looked likely, but in try 2 a boot ran 17 min, so the cause is still open.
 - The smoke test called it `crash_loop` because it counts a worker leaving "running" as a crash; here those were two external stops during startup.
 
-**Try 2 (Oct 28, 06:20–06:57 UTC): no pass; `crash_loop` after 32.6 min, ~$6.45.** The plan was to put the weights on a 300 GB network volume first with a CPU pod (`pipeline/stage.py`, on the test branch for now), so the worker only loads them. In US-NC-1 the 8- and 4-vCPU pods had no capacity; a 2-vCPU pod ($0.06/h) got one.
+**Try 2 (Oct 28, 06:20–06:57 UTC): no pass; `crash_loop` after 32.6 min, ~$6.45.** The plan was to put the weights on a 300 GB network volume first with a CPU pod (`pipeline/stage.py`), so the worker only loads them. In US-NC-1 the 8- and 4-vCPU pods had no capacity; a 2-vCPU pod ($0.06/h) got one.
 
 - Staging reported done after 247 s with 17 MB on the volume. The model's cache directory had grown to 29 GiB and then shrank, so the weights never landed and the worker downloaded them again, as in try 1. The likely cause is the download path (huggingface_hub 2.x goes through hf_xet), not verified. Staging has to check the bytes on the volume against the repo's size before it says done.
 - The worker showed "running" for 8.6 min (06:31:30–06:40:08), then again for 17 min (06:40:23–06:57:25). The smoke test counts a change from running to idle/ready as a crash and stopped at the second one. "ready" may have been the worker coming up; the cleanup deleted the endpoint, so its log is gone.
-- Before a third try: verified staging; a crash rule that doesn't count running → ready; a failed endpoint kept (scaled to 0, no cost) until its log is read.
+- Fixed since (no GPU spent):
+  - `pipeline/stage.py` now counts only finished files in the cache's `blobs/` against the sizes the Hub lists for the files it asked for, and says done only when they match. The pod downloads over plain HTTP (`HF_HUB_DISABLE_XET=1`), and the runner checks the pod's numbers again.
+  - The smoke test's crash rule now reads the job's status first. A worker leaving "running" counts as a restart only while the job is still queued; with the job `IN_PROGRESS` the worker is serving it, since worker-vllm takes jobs only once vLLM is healthy. Each rung records a worker-state timeline, the minute the job was picked up, and the job's status when the rung stopped.
+  - `stage.py --cleanup --keep-endpoints` detaches the volume from a failed smoke endpoint and keeps the endpoint at 0 workers, so its log stays readable; if Runpod won't let the volume go, the endpoint is deleted so no volume keeps billing.
+- A third try needs approval (~$8 at the 40-minute cap).
 
 ## Not built yet
 

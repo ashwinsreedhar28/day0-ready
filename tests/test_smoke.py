@@ -365,3 +365,43 @@ def test_balance_floor_refuses_to_start(monkeypatch, tmp_path):
     monkeypatch.setattr(smoke.rp, "call", lambda *a, **k: pytest.fail("no Runpod call below the floor"))
     monkeypatch.setattr(sys, "argv", ["smoke", "--image", "i", "--model", "m", "--gpu", "24gb", "--min-balance", "10"])
     assert smoke.main() == 1
+
+
+def test_restarted_needs_unhealthy_or_a_queued_job():
+    assert smoke.restarted({"running": 1}, {"unhealthy": 1}, "IN_PROGRESS")
+    assert smoke.restarted({"running": 1}, {"ready": 1}, "IN_QUEUE")          # v2.28.0 crash shape
+    assert not smoke.restarted({"running": 1}, {"idle": 1, "ready": 1}, "IN_PROGRESS")
+    assert not smoke.restarted(None, {"ready": 1}, "IN_QUEUE")
+    assert not smoke.restarted({"initializing": 1}, {"running": 1}, "IN_QUEUE")
+
+
+def test_a_worker_serving_a_slow_first_request_is_not_a_crash_loop(monkeypatch):
+    # MiniMax try 2's shape (Oct 28): running -> idle/ready -> running -> idle/ready. With the job
+    # picked up in between, that's a worker serving it, not a restart.
+    states = [{"throttled": 1}, {"initializing": 1}, {"running": 1}, {"idle": 1, "ready": 1},
+              {"running": 1}, {"running": 1}, {"idle": 1, "ready": 1}, {"idle": 1, "ready": 1}]
+    polls = {"n": 0}
+
+    def call(method, url, key, body=None):
+        if url.endswith("/templates") and method == "POST":
+            return 201, {"id": "t0"}
+        if url.endswith("/endpoints") and method == "POST":
+            return 201, {"id": "e0"}
+        if url.endswith("/run"):
+            return 200, {"id": "j"}
+        if "/status/" in url:
+            if polls["n"] >= len(states):
+                return 200, {"status": "COMPLETED", "output": ["ok"], "delayTime": 900_000, "executionTime": 1_000_000}
+            return 200, {"status": "IN_PROGRESS" if polls["n"] >= 3 else "IN_QUEUE"}
+        if url.endswith("/health"):
+            polls["n"] += 1
+            return 200, {"workers": states[min(polls["n"] - 1, len(states) - 1)]}
+        return 204, None
+
+    monkeypatch.setattr(rp, "call", call)
+    monkeypatch.setattr(smoke.time, "sleep", lambda s: None)
+    clock = itertools.count(1_000_000, 30)
+    monkeypatch.setattr(smoke.time, "time", lambda: next(clock))
+    r = smoke.run_rung("k", "img", "m", {}, "141gb", "13.0", smoke.time.time() + 3600, "t0")
+    assert r["outcome"] == "pass"
+    assert r["job_in_progress_min"] is not None and len(r["worker_timeline"]) >= 5

@@ -62,7 +62,7 @@ python3 pipeline/smoke.py --env-file ~/.runpod.env \
   --gpu 24gb --max-gpu 48gb [--set KEY=VALUE ...]
 ```
 
-The result goes to `data/smoke/<image tag>.json` and shows up on the board, with the device the worker actually got when the image has the boot report (worker-vllm `day0-integration` from Oct 28): a 48 GB type id can be served by a MIG slice of an RTX PRO 6000 Blackwell. `--gpu-count 2` (with an explicit `--gpu`) runs one worker on 2 GPUs with `TENSOR_PARALLEL_SIZE=2`; see [`docs/multi-gpu.md`](docs/multi-gpu.md). `--min-balance` refuses to start below an account balance.
+The result goes to `data/smoke/<image tag>.json` and shows up on the board, with the device the worker actually got when the image has the boot report (worker-vllm `day0-integration` from Oct 28): a 48 GB type id can be served by a MIG slice of an RTX PRO 6000 Blackwell. `--gpu-count 2` (with an explicit `--gpu`) runs one worker on 2 GPUs with `TENSOR_PARALLEL_SIZE=2`; see [`docs/multi-gpu.md`](docs/multi-gpu.md). `--min-balance` refuses to start below an account balance. For a model in the hundreds of gigabytes, `pipeline/stage.py` first downloads the weights onto a network volume with a CPU pod (and checks the bytes against the Hub's file sizes), and `--volume-id` boots the smoke test from that volume.
 
 ### Recipe settings
 

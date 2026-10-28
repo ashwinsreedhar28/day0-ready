@@ -642,7 +642,7 @@ class Sweep:
         rec["minutes"], rec["est_cost_usd"] = self.charge("cold", time.time() if rec["no_gpu"] else watch.get("worker_at", t0))
         v = (boot or {}).get("vllm", {})
         log(f"  {kind} {index}: {status}, delay {rec['delay_s']} s, engine init {v.get('engine_init_s')} s, "
-            f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {(boot or {}).get('gpu')}, "
+            f"load {v.get('model_load_s')} s, KV {v.get('kv_cache_tokens')} tok, gpu {device_name(boot)}, "
             f"{rec['minutes']} min")
         return rec
 
@@ -777,6 +777,8 @@ class Sweep:
                     self.recreate(rec)
             if not self.device:
                 self.device = got
+                if got != self.gpu_type:   # held anyway: later starts have to match what the warm-up got
+                    log(f"  pinned {self.gpu_type}; the warm-up got {got}, which later starts must match")
             rec["gpu_type"], rec["device"] = self.gpu_type, self.device
             for i in range(1, COLD_RUNS + 1):
                 last = self.start_with_retry(rec, "cold", i)

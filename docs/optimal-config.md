@@ -166,6 +166,8 @@ Throughput is one run per config, and the result says so.
 
 ## Multi-GPU (January, after multi-GPU smoke tests exist)
 
+Multi-GPU smoke tests now exist as `smoke.py --gpu-count N`, with one proof of concept; see [`docs/multi-gpu.md`](multi-gpu.md).
+
 MiniMax-M3.1-Flash is the live example: 224 GB of weights, more than one 180 GB B200 holds. The detector, which polls every 30 minutes, caught it 19 s after vLLM pushed its image (a poll happened to be running) and built a worker in 15 minutes, but there is no smoke test, let alone a sweep, for it yet.
 
 - **GPU count:** the smallest tensor-parallel size in {2, 4, 8} where the weights are at most 80% of total GPU memory **and** the KV floor above still fits. The 80% rule alone would pick 2× H200 for MiniMax (224 ≤ 225.6) and leave ~35 GB for everything else.

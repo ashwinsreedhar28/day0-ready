@@ -107,22 +107,43 @@ def template_body(image, model, env, disk_gb):
             "env": {"MODEL_NAME": model, "MAX_MODEL_LEN": "4096", **env}}
 
 
-def endpoint_body(gpu_class, min_cuda, gpu_types=None):
+def endpoint_body(gpu_class, min_cuda, gpu_types=None, gpu_count=1):
     """POST /v1/endpoints body (minus name and templateId), with the smoke test's cost limits."""
-    return {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": 1, "workersMin": 0,
+    return {"computeType": "GPU", "gpuTypeIds": gpu_types or GPU_CLASSES[gpu_class], "gpuCount": gpu_count, "workersMin": 0,
             "workersMax": 1, "idleTimeout": 5, "executionTimeoutMs": 600000, "flashboot": False,
             "minCudaVersion": min_cuda}
 
 
-def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None):
-    rung = {"env": env, "gpu_class": gpu_class, "disk_gb": disk_gb,
+def boot_summary(output):
+    """The worker's boot report, cut to what a smoke result keeps: which device(s) it ran on and
+    the two numbers predict.py needs. None when the image has no boot report (older builds)."""
+    items = output if isinstance(output, list) else [output]
+    rep = next((i["day0_boot_report"] for i in items if isinstance(i, dict) and "day0_boot_report" in i), None)
+    if not rep:
+        return None
+    v = rep.get("vllm") or {}
+    out = {"gpu": rep.get("gpu"), "gpu_devices": rep.get("gpu_devices"), "gpu_memory_mib": rep.get("gpu_memory_mib"),
+           "weights_gib": v.get("model_load_gib"), "kv_cache_gib": v.get("kv_cache_gib"),
+           "kv_cache_tokens": v.get("kv_cache_tokens"), "engine_init_s": v.get("engine_init_s"),
+           "launch_to_healthy_s": rep.get("launch_to_healthy_s"), "relaunches": rep.get("relaunches")}
+    if out["kv_cache_gib"] and out["kv_cache_tokens"]:
+        out["kv_bytes_per_token"] = round(out["kv_cache_gib"] * 2 ** 30 / out["kv_cache_tokens"])
+    return out
+
+
+def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_gb=60, gpu_types=None, gpu_count=1):
+    rung = {"env": env, "gpu_class": gpu_class, "gpu_count": gpu_count, "disk_gb": disk_gb,
             "started": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     name = f"{PREFIX}{label}-{int(time.time())}"[:60]
-    st, tpl = rp.call("POST", f"{rp.REST}/templates", key, {"name": name, **template_body(image, model, env, disk_gb)})
+    body = template_body(image, model, env, disk_gb)
+    # The boot report says which device the worker really got (a 48 GB type id can be a MIG slice of a
+    # Blackwell card). Sweep-only setting, so it stays out of the recorded deploy body.
+    body["env"]["DAY0_BOOT_REPORT"] = "1"
+    st, tpl = rp.call("POST", f"{rp.REST}/templates", key, {"name": name, **body})
     if not rp.ok(st):
         return {**rung, "outcome": "error", "detail": f"template {st}: {tpl}"}
     st, ep = rp.call("POST", f"{rp.REST}/endpoints", key, {
-        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types)})
+        "templateId": tpl["id"], "name": name, **endpoint_body(gpu_class, min_cuda, gpu_types, gpu_count)})
     if not rp.ok(st):
         rp.call("DELETE", f"{rp.REST}/templates/{tpl['id']}", key)
         return {**rung, "outcome": "error", "detail": f"endpoint {st}: {ep}"}
@@ -134,6 +155,9 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
         if not rp.ok(st):
             return {**rung, "outcome": "error", "detail": f"run {st}: {job}"}
         jid = job["id"]
+        # Queued with the request, so the same worker answers it as soon as it is up.
+        bst, bjob = rp.call("POST", f"{rp.JOBS}/{eid}/run", key, {"input": {"day0_boot_report": True}})
+        boot_jid = bjob.get("id") if rp.ok(bst) and isinstance(bjob, dict) else None
         log(f"[{label}] endpoint {eid}, env {env or '{}'}, {gpu_class}")
         while time.time() < deadline:
             time.sleep(15)
@@ -161,13 +185,26 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
             status = "DEADLINE"
         if status not in ("COMPLETED", "FAILED"):
             rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{jid}", key)
+        if boot_jid:
+            for _ in range(6):  # usually done already: it ran right after the worker came up
+                bst, b = rp.call("GET", f"{rp.JOBS}/{eid}/status/{boot_jid}", key)
+                if rp.ok(bst) and isinstance(b, dict) and b.get("status") in ("COMPLETED", "FAILED", "CANCELLED"):
+                    rung["boot"] = boot_summary(b.get("output")) if b["status"] == "COMPLETED" else None
+                    break
+                if status != "COMPLETED":
+                    break
+                time.sleep(5)
+            else:
+                rung["boot"] = None
+            if "boot" not in rung or rung["boot"] is None:
+                rp.call("POST", f"{rp.JOBS}/{eid}/cancel/{boot_jid}", key)
     finally:
         rp.call("PATCH", f"{rp.REST}/endpoints/{eid}", key, {"workersMax": 0, "workersMin": 0})
     minutes = round((time.time() - t0) / 60, 1)
     rung.update(job_status=status, output=json.dumps(output)[:600] if output is not None else None,
                 minutes=minutes, worker_states=sorted(seen),
-                # Upper bound: includes queue and throttled time, which isn't billed.
-                est_cost_usd=sizing.cost_usd(minutes, gpu_class))
+                # Upper bound: includes queue and throttled time, which isn't billed. Prices are per GPU.
+                est_cost_usd=round(sizing.cost_usd(minutes, gpu_class) * gpu_count, 2))
     if status == "COMPLETED":
         rung["outcome"] = "pass"
         rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", key)
@@ -175,7 +212,9 @@ def run_rung(key, image, model, env, gpu_class, min_cuda, deadline, label, disk_
     else:
         rung["outcome"] = classify_failure(status, output, crash_signals)
         rung["logs"] = f"https://console.runpod.io/serverless/user/endpoint/{eid}"
-    log(f"[{label}] {rung['outcome']} ({status}) in {rung['minutes']} min")
+    b = rung.get("boot") or {}
+    log(f"[{label}] {rung['outcome']} ({status}) in {rung['minutes']} min"
+        + (f" on {b.get('gpu')} x{gpu_count} {b.get('gpu_devices')}" if b.get("gpu") else ""))
     return rung
 
 
@@ -271,6 +310,10 @@ def main():
                     "e.g. Hopper only: 'NVIDIA H100 80GB HBM3,NVIDIA H100 PCIe,NVIDIA H100 NVL' (no ladder climb)")
     ap.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
                     help="extra worker env for every rung, e.g. --set ATTENTION_BACKEND=FLASHINFER (repeatable)")
+    ap.add_argument("--gpu-count", type=int, default=1, choices=[1, 2, 4, 8],
+                    help="GPUs per worker; above 1 sets TENSOR_PARALLEL_SIZE to match and needs an explicit --gpu")
+    ap.add_argument("--min-balance", type=float,
+                    help="refuse to start when the account balance is below this (or can't be read)")
     ap.add_argument("--recipe", choices=["auto", "off"], default="auto",
                     help="auto: start from the model's vLLM recipe settings when one exists (recipes.py)")
     ap.add_argument("--env-file")
@@ -279,7 +322,14 @@ def main():
         ap.error("--set takes KEY=VALUE")
     if a.remote_code and a.no_remote_code:
         ap.error("--remote-code and --no-remote-code conflict")
+    if a.gpu_count > 1 and a.gpu == "auto":
+        ap.error("--gpu-count above 1 needs an explicit --gpu (the per-GPU class)")
     key = rp.load_key(a.env_file)
+    if a.min_balance is not None:
+        bal = rp.balance(key)
+        if bal is None or bal < a.min_balance:
+            log(f"NOT RUN: balance {'unreadable' if bal is None else 'below'} the ${a.min_balance:.2f} floor")
+            return 1
 
     order = list(GPU_CLASSES)
     base = {"image": a.image, "model": a.model}
@@ -296,7 +346,7 @@ def main():
         gpu = sizing.pick_class(gb) if gb is not None else "24gb"
         log(f"weights {base.get('weights_gb', '?')} GB -> {gpu or 'multi-GPU'}")
     skip = None
-    if gpu is None:
+    if gpu is None and a.gpu_count == 1:
         skip = {"reason": "needs_multi_gpu", "detail": f"{gb:.0f} GB of weights is more than one 180 GB GPU holds"}
     elif order.index(gpu) > order.index(a.max_gpu):
         skip = {"reason": "needs_larger_gpu", "detail": f"needs {gpu}; --max-gpu is {a.max_gpu}"}
@@ -310,6 +360,10 @@ def main():
 
     deadline = time.time() + a.max_minutes * 60
     env = dict(s.split("=", 1) for s in a.set)
+    if a.gpu_count > 1:
+        # worker-vllm doesn't infer it, and a mismatch with the endpoint's gpuCount costs a full boot.
+        env.setdefault("TENSOR_PARALLEL_SIZE", str(a.gpu_count))
+    base["gpu_count"] = a.gpu_count
     if a.remote_code:
         env["TRUST_REMOTE_CODE"] = "true"
     verdict = cpu_verdict(a.image)
@@ -333,7 +387,7 @@ def main():
     while time.time() < deadline:
         if a.budget_usd is not None:
             spent = spent_last_24h() + sum(r.get("est_cost_usd", 0) for r in rungs)
-            worst = sizing.cost_usd((deadline - time.time()) / 60, gpu)
+            worst = sizing.cost_usd((deadline - time.time()) / 60, gpu) * a.gpu_count
             if spent + worst > a.budget_usd:
                 stopped = {"reason": "budget", "detail": f"${spent:.2f} spent in the last 24 h + up to "
                            f"${worst:.2f} for a {gpu} rung > ${a.budget_usd:.2f} budget"}
@@ -346,7 +400,7 @@ def main():
             base["recipe"].update(skipped=rs["skipped"], notes=rs["notes"])
         rung_env = {**recipe_env, **env}  # --set and ladder changes beat the recipe
         r = run_rung(key, a.image, a.model, rung_env, gpu, a.min_cuda, deadline, f"{label}-{len(rungs)}", disk,
-                     gpu_types)
+                     gpu_types, a.gpu_count)
         if recipe_env:
             r["recipe_env"] = recipe_env
         if gpu_types:
@@ -373,7 +427,9 @@ def main():
     if passed:
         last = rungs[-1]
         result["deploy"] = {"template": template_body(a.image, a.model, last["env"], last["disk_gb"]),
-                            "endpoint": endpoint_body(last["gpu_class"], a.min_cuda, last.get("gpu_types"))}
+                            "endpoint": endpoint_body(last["gpu_class"], a.min_cuda, last.get("gpu_types"), a.gpu_count)}
+        if last.get("boot"):
+            result["device"] = last["boot"].get("gpu")
     if stopped:
         result["skipped" if not rungs else "stopped"] = stopped
     out = write_result(result, a.image)

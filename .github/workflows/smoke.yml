@@ -46,6 +46,11 @@ on:
       max_minutes:
         description: "wall-clock cap across all rungs"
         default: "40"
+      gpu_count:
+        description: "GPUs per worker (above 1 sets TENSOR_PARALLEL_SIZE; needs an explicit gpu class)"
+        default: "1"
+        type: choice
+        options: ["1", "2", "4", "8"]
 
 permissions:
   contents: write  # records data/smoke/, data/board.md, data/ready.json
@@ -59,7 +64,7 @@ jobs:
   smoke:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
-    environment: ${{ contains(fromJSON('["80gb", "141gb", "180gb"]'), inputs.max_gpu) && 'gpu-large' || 'gpu-small' }}
+    environment: ${{ (contains(fromJSON('["80gb", "141gb", "180gb"]'), inputs.max_gpu) || (inputs.gpu_count && inputs.gpu_count != '1')) && 'gpu-large' || 'gpu-small' }}
     env:
       IMAGE: ${{ inputs.image }}
       MODEL: ${{ inputs.model }}
@@ -68,6 +73,7 @@ jobs:
       ALLOW_REMOTE_CODE: ${{ inputs.allow_remote_code }}
       SET: ${{ inputs.set }}
       MAX_MINUTES: ${{ inputs.max_minutes }}
+      GPU_COUNT: ${{ inputs.gpu_count || '1' }}
       BUDGET_USD: ${{ vars.SMOKE_BUDGET_USD || '10' }}
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +92,7 @@ jobs:
         run: |
           if [ -z "$RUNPOD_API_KEY" ]; then echo "::error::repo secret RUNPOD_API_KEY is not set"; exit 1; fi
           args=(--image "$IMAGE" --model "$MODEL" --gpu "$GPU" --max-gpu "$MAX_GPU"
-                --max-minutes "$MAX_MINUTES" --budget-usd "$BUDGET_USD")
+                --max-minutes "$MAX_MINUTES" --budget-usd "$BUDGET_USD" --gpu-count "$GPU_COUNT")
           [ "$ALLOW_REMOTE_CODE" = "true" ] || args+=(--no-remote-code)
           read -ra kvs <<< "$SET"
           for kv in "${kvs[@]}"; do args+=(--set "$kv"); done

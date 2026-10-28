@@ -55,6 +55,7 @@ GRAPHQL = "https://api.runpod.io/graphql"
 CATALOG = "https://api.runpod.io/v2/catalog/datacenters?include=GPU_AVAILABILITY&networkVolumeTypes=STANDARD"
 LEVELS = {"HIGH": 3, "MEDIUM": 2, "LOW": 1}
 NO_GPU_MINUTES = 10  # a start whose worker never gets past "throttled" in this long has no GPU
+NO_GPU_BACKOFF_S = 120  # pause before the one retry of a start that got no GPU
 
 CONCURRENCY = 30                       # worker-vllm's MAX_CONCURRENCY default
 PROMPT_TOKENS, OUTPUT_TOKENS = 4096, 512
@@ -555,8 +556,9 @@ class Sweep:
         return ep["id"], tpl["id"], tpl_env
 
     def delete(self, eid, tid):
-        """Scale to 0, wait for the worker to go, delete; False if the endpoint is still there."""
+        """Scale to 0, clear its queue, wait for the worker to go, delete; False if the endpoint is still there."""
         set_workers(self.key, eid, max_=0, min_=0)
+        rp.call("POST", f"{rp.JOBS}/{eid}/purge-queue", self.key)
         wait_cold(self.key, eid, timeout=300)
         st, r = rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", self.key)
         if not rp.ok(st):
@@ -623,22 +625,36 @@ class Sweep:
         Stop, so a stopped sweep still shows the start that stopped it. Returns the last run."""
         first = self.cold_start(eid, kind, index)
         rec["runs"].append(first)
-        probe = first.get("route_probe")
-        if probe and not probe["ok"]:
-            raise Stop("bench_route", f"the OpenAI route didn't take a bench request: {probe['error']}")
+        self.check_probe(first)
         if first["ok"]:
             return first
         if first["no_gpu"]:
-            raise Stop("no_gpu", f"no worker got a GPU in {min(NO_GPU_MINUTES, self.a.start_minutes / 2):.0f} min "
-                                 f"(states seen: {first['worker_states'] or 'none'}); the volume's data center may "
-                                 f"not have the GPU type free")
+            # A wait that never got a worker cost nothing; try once more after a pause (run 2 stopped here).
+            log(f"  {kind} {index}: no GPU yet; waiting {NO_GPU_BACKOFF_S // 60} min, then one more try")
+            time.sleep(NO_GPU_BACKOFF_S)
+            second = self.cold_start(eid, kind, index, retry=True)
+            rec["runs"].append(second)
+            self.check_probe(second)
+            if second["no_gpu"]:
+                raise Stop("no_gpu", f"no worker got a GPU in two waits of {min(NO_GPU_MINUTES, self.a.start_minutes / 2):.0f} "
+                                     f"min (states seen: {second['worker_states'] or 'none'}); the volume's data "
+                                     f"center may not have the GPU type free")
+            return second
         if first["job_status"] == "COMPLETED" and not first["boot"]:
             raise Stop("no_boot_report", "the image answered without a boot report; build it from "
                                          "worker-vllm's day0-sweep branch")
         log(f"  {kind} {index} failed; one more try")
         second = self.cold_start(eid, kind, index, retry=True)
         rec["runs"].append(second)
+        self.check_probe(second)
         return second
+
+    @staticmethod
+    def check_probe(run):
+        """Stop the sweep if this start carried the route probe and the route failed it."""
+        probe = run.get("route_probe")
+        if probe and not probe["ok"]:
+            raise Stop("bench_route", f"the OpenAI route didn't take a bench request: {probe['error']}")
 
     def bench(self, eid, model):
         self.guard("bench")
@@ -918,6 +934,7 @@ def cleanup(key):
             continue
         eid = e["id"]
         set_workers(key, eid, max_=0, min_=0)
+        rp.call("POST", f"{rp.JOBS}/{eid}/purge-queue", key)  # queued bench jobs from a runner that died
         wait_cold(key, eid, timeout=300)
         st, r = rp.call("DELETE", f"{rp.REST}/endpoints/{eid}", key)
         print(f"cleanup: endpoint {eid} ({e.get('name')}) " + ("deleted" if rp.ok(st) else f"NOT deleted: {st} {str(r)[:120]}"))

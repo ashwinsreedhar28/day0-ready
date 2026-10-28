@@ -316,7 +316,7 @@ class FakeRunpod:
                 return 200, {"status": "COMPLETED", "output": [{"error": {"message": "unknown input"}}]}
             return 200, {"status": "COMPLETED", "delayTime": 61000, "executionTime": 40,
                          "output": [{"day0_boot_report": self.boot(eid)}]}
-        if "/cancel/" in path:
+        if "/cancel/" in path or path.endswith("/purge-queue"):
             return 200, {}
         raise AssertionError(f"unexpected call {method} {url}")
 
@@ -408,7 +408,9 @@ def test_stops_without_a_boot_report(fake, tmp_path):
 def test_stops_when_no_gpu_is_free(fake, tmp_path):
     fake(no_gpu=True)
     s = sweep.Sweep("k", args(start_minutes=0.001), 32768, 151936, tmp_path).run()
-    assert s["stopped"]["reason"] == "no_gpu"
+    assert s["stopped"]["reason"] == "no_gpu" and "two waits" in s["stopped"]["detail"]
+    s0 = json.loads((tmp_path / "S0.json").read_text())
+    assert [r["retry"] for r in s0["runs"]] == [False, True]  # one more wait before giving up
     assert s["worker_minutes"] == 0.0  # a throttled start never had a worker to pay for
 
 
@@ -649,3 +651,22 @@ def test_jobs_level_counts_short_and_failed_jobs(fake, monkeypatch):
     assert summary["output_tok_s"] == pytest.approx(58 * 512 / (2 * 30 * 512 / 700), rel=0.01)
     assert summary["via"] == "jobs API, not streamed"
     assert any("worker restarted" in (r["error"] or "") for r in recs)
+
+
+def test_route_probe_is_checked_on_a_retried_warm_up(fake, tmp_path, monkeypatch):
+    api = fake()
+    orig = api.boot
+    calls = {"n": 0}
+
+    def first_fails(eid):
+        calls["n"] += 1
+        b = orig(eid)
+        if calls["n"] == 1:
+            b["startup_error"], b["vllm"] = True, {}
+        return b
+
+    api.boot = first_fails
+    monkeypatch.setattr(bench_client, "stream_one", lambda url, key, payload, timeout=900: {
+        "ok": False, "error": "HTTP 400", "out_tokens": 0, "chunks": 0})
+    s = sweep.Sweep("k", args(), 32768, 151936, tmp_path).run()
+    assert s["stopped"]["reason"] == "bench_route"

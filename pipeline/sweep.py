@@ -488,7 +488,8 @@ class Sweep:
             rec["startup_error_output"] = json.dumps(cause)[:800]
         if rec["ok"] and not self.route_checked:
             url = f"{rp.JOBS}/{eid}/openai/v1/completions"
-            rec["route_probe"] = bench_client.stream_one(url, self.key, bench_client.body(self.a.model, self.probe, 16))
+            rec["route_probe"] = bench_client.stream_one(url, self.key, bench_client.body(self.a.model, self.probe, 16),
+                                                         timeout=180)
             self.route_checked = True
         set_workers(self.key, eid, max_=0)
         if not wait_cold(self.key, eid):
@@ -531,7 +532,7 @@ class Sweep:
                 rec["error"] = f"bench worker did not start ({status})"
                 return rec
             url = f"{rp.JOBS}/{eid}/openai/v1/completions"
-            probe = bench_client.stream_one(url, self.key, bench_client.body(model, self.probe, 16))
+            probe = bench_client.stream_one(url, self.key, bench_client.body(model, self.probe, 16), timeout=180)
             rec["probe"] = probe
             if not probe["ok"]:
                 rec["error"] = f"probe request failed: {probe['error']}"
@@ -543,7 +544,13 @@ class Sweep:
             rec["c30"], _ = bench_client.run_level(url, self.key, model, self.prompts[C1_REQUESTS:], CONCURRENCY,
                                                    OUTPUT_TOKENS)
             m2 = read_metrics(self.key, eid)
+            # A worker that idled out and restarted mid-bench resets vLLM's counters: check it's the same one.
+            _, after, _ = run_job(self.key, eid, {"day0_boot_report": True}, timeout=120, poll=2)
+            after_start = (boot_of(after) or {}).get("process_start")
+            rec["worker_changed"] = after_start != rec["boot"].get("process_start")
             rec["metrics"] = {"c1": metric_delta(m0, m1), "c30": metric_delta(m1, m2)}
+            if rec["worker_changed"]:
+                rec["metrics"] = {"c1": None, "c30": None}  # counters from two processes don't subtract
             gen = (rec["metrics"]["c30"] or {}).get("generation_tokens")
             rec["metrics_match"] = None if gen is None else abs(gen - rec["c30"]["output_tokens"]) <= max(
                 1.0, 0.01 * rec["c30"]["output_tokens"])

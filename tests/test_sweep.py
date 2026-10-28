@@ -545,3 +545,20 @@ def test_cleanup_touches_only_sweep_names(fake):
     assert sweep.cleanup("k") == 0
     assert api.deleted == ["/endpoints/e0", "/templates/t0", "/networkvolumes/v0"]
     assert api.endpoints["e1"]["workersMin"] == 1  # untouched
+
+
+def test_a_worker_swap_mid_bench_voids_the_counters(fake, tmp_path):
+    api = fake()
+    orig = api.boot
+    starts = iter(range(10_000))
+
+    def fresh_process(eid):
+        b = orig(eid)
+        b["process_start"] = float(next(starts))   # every boot report from a new process
+        return b
+
+    api.boot = fresh_process
+    s = sweep.Sweep("k", args(configs=["S0"]), 32768, 151936, tmp_path).run()
+    s0 = json.loads((tmp_path / "S0.json").read_text())
+    assert s0["bench"]["worker_changed"] is True and s0["bench"]["metrics"]["c30"] is None
+    assert s["configs"][0]["fits"] is False

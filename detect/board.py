@@ -40,7 +40,12 @@ def smoke_text(sm):
     model = sm["model"].split("/")[-1]
     if sm.get("passed"):
         how = ", ".join(f"{k}={v}" for k, v in (sm.get("passing_env") or {}).items()) or "defaults"
-        return f"pass: {model}, {sm['passing_gpu_class']}, {how}, {last.get('minutes')} min"
+        n = sm.get("gpu_count") or 1
+        where = f"{n}× {sm['passing_gpu_class']}" if n > 1 else sm["passing_gpu_class"]
+        device = sm.get("device") or (last.get("boot") or {}).get("gpu")
+        if device:
+            where += f" ({device})"
+        return f"pass: {model}, {where}, {how}, {last.get('minutes')} min"
     skipped = sm.get("skipped") or (sm.get("stopped") if not sm.get("rungs") else None)
     if skipped:
         return f"not run: {skipped['detail']}"
@@ -92,7 +97,9 @@ def ready_entries(smoke, builds_by_image, sweeps=None):
             "endpoint": smoke_mod.endpoint_body(last["gpu_class"], "13.0")}
         entry = {"model": sm["model"], "vllm_tag": build.get("vllm_tag"), "image": sm["image"],
                  "digest": build.get("digest") or (sm.get("image_build") or {}).get("digest"),
-                 "gpu_class": last["gpu_class"], "env": last["env"], "verified_at": sm["finished_at"],
+                 "gpu_class": last["gpu_class"], "gpu_count": sm.get("gpu_count") or 1,
+                 "device": sm.get("device") or (last.get("boot") or {}).get("gpu"),
+                 "env": last["env"], "verified_at": sm["finished_at"],
                  "result": f"data/smoke/{sm['image'].rsplit(':', 1)[-1]}.json", "deploy": deploy}
         sw = (sweeps or {}).get(sm["image"])
         if sw and sw.get("model") == sm["model"] and sw.get("recommended_block"):

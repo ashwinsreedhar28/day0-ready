@@ -268,9 +268,100 @@ def test_recipe_settings_seed_each_rung_and_set_wins(monkeypatch, tmp_path):
                                       "--max-gpu", "180gb", "--disk-gb", "60", "--set", "DTYPE=float16"])
     assert smoke.main() == 0
     # H200 has no hopper block; B200 adds the blackwell MoE backend. --set DTYPE beats the recipe's bfloat16.
-    assert {k: v for k, v in envs[0].items() if k not in ("MODEL_NAME", "MAX_MODEL_LEN")} == {"DTYPE": "float16"}
-    assert {k: v for k, v in envs[1].items() if k not in ("MODEL_NAME", "MAX_MODEL_LEN")} == {
+    keep = lambda e: {k: v for k, v in e.items() if k not in ("MODEL_NAME", "MAX_MODEL_LEN", "DAY0_BOOT_REPORT")}  # noqa: E731
+    assert all(e["DAY0_BOOT_REPORT"] == "1" for e in envs)
+    assert keep(envs[0]) == {"DTYPE": "float16"}
+    assert keep(envs[1]) == {
         "DTYPE": "float16", "MOE_BACKEND": "flashinfer_trtllm"}
     r = json.loads((tmp_path / "data" / "smoke" / "day0-r-abc1234.json").read_text())
+    assert "DAY0_BOOT_REPORT" not in r["deploy"]["template"]["env"]   # boot report is the test's, not the deploy's
     assert r["recipe"]["source"] == "https://example/recipe.yaml" and "--max-model-len 262144" in r["recipe"]["skipped"]
     assert r["deploy"]["template"]["env"]["MOE_BACKEND"] == "flashinfer_trtllm"
+
+
+BOOT = {"day0_boot_report": {"gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+                             "gpu_devices": ["GPU 0: NVIDIA RTX PRO 6000 Blackwell Server Edition", "MIG 2g.48gb Device 0:"],
+                             "gpu_memory_mib": [], "launch_to_healthy_s": 176.1, "relaunches": [],
+                             "vllm": {"model_load_gib": 15.27, "kv_cache_gib": 26.4, "kv_cache_tokens": 192208,
+                                      "engine_init_s": 143.34}}}
+
+
+def test_boot_summary_keeps_the_device_and_the_predictor_numbers():
+    b = smoke.boot_summary([BOOT])
+    assert b["gpu"].startswith("NVIDIA RTX PRO 6000") and "MIG 2g.48gb" in b["gpu_devices"][1]
+    assert b["weights_gib"] == 15.27 and b["kv_bytes_per_token"] == round(26.4 * 2 ** 30 / 192208)
+    assert smoke.boot_summary([{"error": {"message": "The boot report is off."}}]) is None   # older image
+    two = smoke.boot_summary([BOOT], gpu_count=2)   # per-GPU memory under tensor parallel, whole model here
+    assert two["weights_gib"] == 30.54 and two["kv_bytes_per_token"] == pytest.approx(2 * b["kv_bytes_per_token"], abs=2)
+
+
+def test_a_pass_records_the_device_the_worker_got(monkeypatch):
+    jobs = {}
+
+    def call(method, url, key, body=None):
+        if url.endswith("/templates") and method == "POST":
+            return 201, {"id": "t"}
+        if url.endswith("/endpoints") and method == "POST":
+            jobs["endpoint"] = body
+            return 201, {"id": "e"}
+        if url.endswith("/run"):
+            jid = f"j{len(jobs)}"
+            jobs[jid] = body["input"]
+            return 200, {"id": jid}
+        if url.endswith("/health"):
+            return 200, {"workers": {"running": 1}}
+        if "/status/" in url:
+            inp = jobs[url.rsplit("/", 1)[-1]]
+            return 200, {"status": "COMPLETED", "output": [BOOT] if inp.get("day0_boot_report") else ["ok"]}
+        return 204, None
+
+    monkeypatch.setattr(rp, "call", call)
+    monkeypatch.setattr(smoke.time, "sleep", lambda s: None)
+    r = smoke.run_rung("k", "img", "m", {"TENSOR_PARALLEL_SIZE": "2"}, "24gb", "13.0", smoke.time.time() + 3600,
+                       "t", gpu_count=2)
+    assert r["outcome"] == "pass" and r["boot"]["gpu"].startswith("NVIDIA RTX PRO 6000")
+    assert jobs["endpoint"]["gpuCount"] == 2 and r["gpu_count"] == 2
+
+
+def test_multi_gpu_needs_an_explicit_class_and_sets_tensor_parallel(monkeypatch, tmp_path):
+    bodies = []
+
+    def call(method, url, key, body=None):
+        if url.endswith("/templates") and method == "POST":
+            bodies.append(body)
+            return 201, {"id": "t"}
+        if url.endswith("/endpoints") and method == "POST":
+            bodies.append(body)
+            return 201, {"id": "e"}
+        if url.endswith("/run"):
+            return 200, {"id": "j"}
+        if url.endswith("/health"):
+            return 200, {"workers": {"running": 1}}
+        if "/status/" in url:
+            return 200, {"status": "COMPLETED", "output": ["ok"]}
+        return 204, None
+
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
+    monkeypatch.setattr(smoke.rp, "call", call)
+    monkeypatch.setattr(smoke.time, "sleep", lambda s: None)
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "ghcr.io/x/w:day0-q-abc1234", "--model", "Qwen/Qwen3-14B",
+                                      "--gpu", "24gb", "--gpu-count", "2", "--disk-gb", "60", "--recipe", "off"])
+    assert smoke.main() == 0
+    assert bodies[0]["env"]["TENSOR_PARALLEL_SIZE"] == "2" and bodies[1]["gpuCount"] == 2
+    import json
+    r = json.loads((tmp_path / "data" / "smoke" / "day0-q-abc1234.json").read_text())
+    assert r["gpu_count"] == 2 and r["deploy"]["endpoint"]["gpuCount"] == 2
+    assert r["passing_env"]["TENSOR_PARALLEL_SIZE"] == "2"
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "i", "--model", "m", "--gpu", "auto", "--gpu-count", "2"])
+    with pytest.raises(SystemExit):
+        smoke.main()
+
+
+def test_balance_floor_refuses_to_start(monkeypatch, tmp_path):
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    monkeypatch.setattr(smoke.rp, "load_key", lambda f=None: "k")
+    monkeypatch.setattr(smoke.rp, "balance", lambda k: 3.0)
+    monkeypatch.setattr(smoke.rp, "call", lambda *a, **k: pytest.fail("no Runpod call below the floor"))
+    monkeypatch.setattr(sys, "argv", ["smoke", "--image", "i", "--model", "m", "--gpu", "24gb", "--min-balance", "10"])
+    assert smoke.main() == 1

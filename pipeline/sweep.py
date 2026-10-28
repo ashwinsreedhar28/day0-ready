@@ -51,7 +51,7 @@ from smoke import GPU_CLASSES  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PREFIX = "day0-sweep-"
-GRAPHQL = "https://api.runpod.io/graphql"
+GRAPHQL = rp.GRAPHQL
 CATALOG = "https://api.runpod.io/v2/catalog/datacenters?include=GPU_AVAILABILITY&networkVolumeTypes=STANDARD"
 LEVELS = {"HIGH": 3, "MEDIUM": 2, "LOW": 1}
 NO_GPU_MINUTES = 10  # a start whose worker never gets past "throttled" in this long has no GPU
@@ -449,11 +449,7 @@ def read_metrics(key, eid):
 
 
 def balance(key):
-    st, r = rp.call("POST", GRAPHQL, key, {"query": "query { myself { clientBalance } }"})
-    try:
-        return float(r["data"]["myself"]["clientBalance"])
-    except (TypeError, KeyError, ValueError):
-        return None
+    return rp.balance(key)
 
 
 def availability(key):

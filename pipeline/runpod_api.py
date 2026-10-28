@@ -13,6 +13,7 @@ import urllib.request
 from pathlib import Path
 
 REST = "https://rest.runpod.io/v1"
+GRAPHQL = "https://api.runpod.io/graphql"
 JOBS = "https://api.runpod.ai/v2"
 UA = "day0-ready/0.1 (+https://github.com/ashwinsreedhar28/day0-ready)"
 
@@ -56,3 +57,12 @@ def items(resp, key):
     if isinstance(resp, dict):
         return resp.get(key) or resp.get("data") or []
     return []
+
+
+def balance(key):
+    """Account balance in USD, or None if it can't be read (callers refuse to spend then)."""
+    st, r = call("POST", GRAPHQL, key, {"query": "query { myself { clientBalance } }"})
+    try:
+        return float(r["data"]["myself"]["clientBalance"])
+    except (TypeError, KeyError, ValueError):
+        return None

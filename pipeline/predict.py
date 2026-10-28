@@ -55,16 +55,20 @@ _KV_GIB = re.compile(r"Available KV cache memory: ([\d.]+) GiB")
 _KV_TOK = re.compile(r"KV cache size: ([\d,]+) tokens")
 
 
-def from_numbers(weights_gib, kv_gib, kv_tokens):
-    return {"weights_gib": weights_gib, "kv_bytes_per_token": round(kv_gib * GIB / kv_tokens), "source": "measured"}
+def from_numbers(weights_gib, kv_gib, kv_tokens, gpus=1):
+    """Whole-model numbers. Under tensor parallel vLLM prints weights and KV memory per GPU
+    (2-GPU PoC, Oct 28: Qwen3-14B logged 13.88 GiB of its 27.8), with tokens for the whole group,
+    so a boot on N GPUs is scaled by N."""
+    return {"weights_gib": round(weights_gib * gpus, 2),
+            "kv_bytes_per_token": round(kv_gib * gpus * GIB / kv_tokens), "source": "measured"}
 
 
-def from_log(text):
+def from_log(text, gpus=1):
     """Measured numbers from a worker or vLLM log; None if a line is missing."""
     load, kv, tok = _LOAD.findall(text), _KV_GIB.findall(text), _KV_TOK.findall(text)
     if not (load and kv and tok):
         return None
-    return from_numbers(float(load[-1]), float(kv[-1]), int(tok[-1].replace(",", "")))
+    return from_numbers(float(load[-1]), float(kv[-1]), int(tok[-1].replace(",", "")), gpus)
 
 
 def from_record(rec):
@@ -95,21 +99,25 @@ def from_config(cfg, weights_gib):
             "source": "config estimate"}
 
 
-def per_class(m, gmu=GMU, overhead_gib=OVERHEAD_GIB):
-    """One row per GPU class: KV tokens, smoke and bench fit, context at 30 requests, $/h."""
+def per_class(m, gmu=GMU, overhead_gib=OVERHEAD_GIB, gpus=1):
+    """One row per GPU class: KV tokens, smoke and bench fit, context at 30 requests, $/h.
+
+    With gpus > 1 (tensor parallel), weights and KV split across the GPUs and each GPU pays its
+    own overhead. NCCL buffers come on top; the PoC on 2 GPUs is what checks that.
+    """
     rows = []
     for cls, (device, mib) in DEVICE_MIB.items():
-        kv_gib = mib / 1024 * gmu - m["weights_gib"] - overhead_gib
+        kv_gib = gpus * (mib / 1024 * gmu - overhead_gib) - m["weights_gib"]
         tokens = int(kv_gib * GIB / m["kv_bytes_per_token"]) if kv_gib > 0 else 0
-        rows.append({"gpu_class": cls, "device": device, "kv_gib": round(max(kv_gib, 0), 2), "kv_tokens": tokens,
-                     "smoke_fits": tokens >= SMOKE_LEN, "bench_fits": tokens >= KV_FLOOR,
-                     "context_at_30": tokens // CONCURRENCY, "usd_per_hr": sizing.PRICE_PER_HR[cls],
+        rows.append({"gpu_class": cls, "gpus": gpus, "device": device, "kv_gib": round(max(kv_gib, 0), 2),
+                     "kv_tokens": tokens, "smoke_fits": tokens >= SMOKE_LEN, "bench_fits": tokens >= KV_FLOOR,
+                     "context_at_30": tokens // CONCURRENCY, "usd_per_hr": round(sizing.PRICE_PER_HR[cls] * gpus, 2),
                      "batch_default": BATCH_DEFAULT[cls]})
     return rows
 
 
-def predict(m, name=None):
-    rows = per_class(m)
+def predict(m, name=None, gpus=1):
+    rows = per_class(m, gpus=gpus)
     bench = [r for r in rows if r["bench_fits"]]
     smoke = [r for r in rows if r["smoke_fits"]]
     pick = min(bench, key=lambda r: r["usd_per_hr"]) if bench else None
@@ -144,6 +152,8 @@ def neighbors(m, data=None, tol=0.02):
 def show(p):
     print(f"{p['model'] or 'model'}: {p['weights_gib']} GiB of weights, {p['kv_bytes_per_token']:,} KV bytes/token "
           f"({p['source']})")
+    if p["classes"][0]["gpus"] > 1:
+        print(f"{p['classes'][0]['gpus']} GPUs per worker, tensor parallel")
     print(f"{'class':6} {'device':24} {'KV GiB':>7} {'KV tokens':>10} {'ctx@30':>7} {'smoke':>5} {'bench':>5} {'$/h':>5}")
     for r in p["classes"]:
         print(f"{r['gpu_class']:6} {r['device']:24} {r['kv_gib']:7.1f} {r['kv_tokens']:10,} {r['context_at_30']:7,} "
@@ -163,10 +173,13 @@ def main():
     ap.add_argument("--log", help="a worker or vLLM log with the boot lines")
     ap.add_argument("--record", help="a sweep config record (data/sweep/<tag>/<config>.json)")
     ap.add_argument("--config", help="config.json, for an estimate (needs --weights-gib)")
+    ap.add_argument("--gpus", type=int, default=1, help="GPUs per worker (tensor parallel)")
+    ap.add_argument("--boot-gpus", type=int, default=1,
+                    help="GPUs the --log boot ran on (vLLM prints per-GPU memory under tensor parallel)")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     if a.log:
-        m = from_log(Path(a.log).read_text(errors="replace"))
+        m = from_log(Path(a.log).read_text(errors="replace"), a.boot_gpus)
     elif a.record:
         m = from_record(json.loads(Path(a.record).read_text()))
     elif a.config:
@@ -182,7 +195,7 @@ def main():
         sys.exit("give --log, --record, --config + --weights-gib, or --weights-gib + --kv-bytes-per-token")
     if m is None:
         sys.exit("no weights / KV lines found")
-    p = predict(m, a.name)
+    p = predict(m, a.name, a.gpus)
     print(json.dumps(p, indent=1)) if a.json else show(p)
 
 

@@ -71,3 +71,11 @@ def test_latest_sweep_per_image(tmp_path):
         (tmp_path / "sweep" / name / "summary.json").write_text(
             __import__("json").dumps({**SWEEP, "finished_at": finished, "recommended": name}))
     assert board.load_sweeps(tmp_path)[FLINT["image"]]["recommended"] == "b"
+
+
+def test_smoke_cell_shows_count_and_device():
+    two = {**FLINT, "gpu_count": 2, "device": "NVIDIA GeForce RTX 4090", "passing_gpu_class": "24gb",
+           "passing_env": {"TENSOR_PARALLEL_SIZE": "2"}}
+    assert board.smoke_text(two) == "pass: flint, 2× 24gb (NVIDIA GeForce RTX 4090), TENSOR_PARALLEL_SIZE=2, 13.1 min"
+    e = board.ready_entries({"day0-flint": {**FLINT, "device": "NVIDIA B200"}}, {FLINT["image"]: FLINT_BUILD})[0]
+    assert e["device"] == "NVIDIA B200" and e["gpu_count"] == 1

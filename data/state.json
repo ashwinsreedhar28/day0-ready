@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-10-29T14:07:22Z",
+ "last_poll": "2026-10-29T14:37:23Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -67,6 +67,14 @@
    "model": "MiniMaxAI/MiniMax-M3.1-Flash",
    "vllm_tag": "minimax-m31-flash-x86_64-cu134",
    "vllm_tag_pushed": "2026-10-23T01:07:01.42608Z"
+  },
+  "mistral-large-4": {
+   "family": "mistral-large-4",
+   "first_seen": "2026-10-29T14:37:23Z",
+   "match": "watchlist",
+   "model": "mistralai/Mistral-Large-4-1T-A52B",
+   "vllm_tag": "mistral-large-4",
+   "vllm_tag_pushed": "2026-10-29T14:22:45.353079Z"
   },
   "muse-glimmer": {
    "first_seen": "2026-10-21T19:28:09Z",

@@ -1,9 +1,10 @@
 # Day-0 board
 
-Last poll: 2026-10-29T14:07:22Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-10-29T14:37:23Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
+| `mistral-large-4` | 2026-10-29 14:22 | mistralai/Mistral-Large-4-1T-A52B | pending |  |  |  |  |
 | `minimax-m31-flash-x86_64-cu134` | 2026-10-23 01:07 | MiniMaxAI/MiniMax-M3.1-Flash | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39882185176) → `worker-vllm:day0-minimax-m31-flash-x86_64-cu134` | **native**: vLLM resolves the architecture natively | not run: 224 GB of weights is more than one 180 GB GPU holds |  | 0.3 h |
 | `flint` | 2026-10-21 16:09 | RecursiveSI/flint (HF search, 127 likes) | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665308085) → `worker-vllm:day0-flint` | **native**: vLLM resolves the architecture natively | pass: flint, 180gb, ATTENTION_BACKEND=FLASHINFER, 13.1 min |  | backfill |
 | `reflection-beam` | 2026-10-16 08:16 | no match | pending |  |  |  |  |

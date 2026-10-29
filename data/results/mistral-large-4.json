@@ -1,0 +1,78 @@
+{
+  "vllm_tag": "mistral-large-4",
+  "model": "mistralai/Mistral-Large-4-1T-A52B",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-mistral-large-4",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-mistral-large-4-8cf6da4",
+  "digest": "sha256:caca94cec6419901aeb42cab0c7034bf103b8f93ef50107b4a75b88e453c9ab5",
+  "worker": "ashwinsreedhar28/worker-vllm@8cf6da4",
+  "worker_ref": "day0-integration",
+  "build": "success",
+  "build_s": 263,
+  "pushed": "success",
+  "verdict": "fallback",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/40893342906",
+  "finished_at": "2026-10-29T14:50:32Z",
+  "checks": {
+    "model": "mistralai/Mistral-Large-4-1T-A52B",
+    "checked_at": "2026-10-29T14:44:20Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev23730+g64053a10b",
+          "transformers": "5.20.2",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 5.8
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "MistralLarge4ForConditionalGeneration"
+          ],
+          "model_type": "mistral_large4",
+          "auto_map": []
+        },
+        "s": 0.2
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "MistralLarge4ForConditionalGeneration": false
+        },
+        "s": 1.8
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The checkpoint you are trying to load has model type `mistral_large4` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "s": 0.0,
+        "trace_tail": [
+          "ValueError: The checkpoint you are trying to load has model type `mistral_large4` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
+          "",
+          "You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+        ]
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "PixtralForConditionalGeneration",
+          "architectures": "['PixtralForConditionalGeneration']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 27.8
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 204800
+        },
+        "s": 3.6
+      }
+    },
+    "verdict": "fallback"
+  }
+}

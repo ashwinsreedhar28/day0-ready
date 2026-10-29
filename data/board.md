@@ -1,6 +1,6 @@
 # Day-0 board
 
-Last poll: 2026-10-29T13:37:23Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-10-29T14:07:22Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|

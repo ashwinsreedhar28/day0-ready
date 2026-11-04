@@ -1,0 +1,82 @@
+{
+  "vllm_tag": "kimi-k31",
+  "model": "moonshotai/Kimi-K3.1-Pro",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-kimi-k31",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-kimi-k31-8cf6da4",
+  "digest": "sha256:95a7509f5e7fe52cb1fc1f43fc10d0a056f8de5c82343c6347cabec7a472a982",
+  "worker": "ashwinsreedhar28/worker-vllm@8cf6da4",
+  "worker_ref": "day0-integration",
+  "build": "success",
+  "build_s": 279,
+  "pushed": "success",
+  "verdict": "native",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/41864288153",
+  "finished_at": "2026-11-04T16:22:44Z",
+  "checks": {
+    "model": "moonshotai/Kimi-K3.1-Pro",
+    "checked_at": "2026-11-04T16:14:20Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev24216+g266e88c05",
+          "transformers": "5.21.1",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 5.1
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "KimiK31ForConditionalGeneration"
+          ],
+          "model_type": "kimi_k31",
+          "auto_map": [
+            "AutoConfig"
+          ]
+        },
+        "s": 0.3
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "KimiK31ForConditionalGeneration": true
+        },
+        "s": 4.0
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The repository moonshotai/Kimi-K3.1-Pro contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro .\n You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.",
+        "s": 0.1,
+        "trace_tail": [
+          "ValueError: The repository moonshotai/Kimi-K3.1-Pro contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro .",
+          " You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro.",
+          "Please pass the argument `trust_remote_code=True` to allow custom code to be run."
+        ]
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "KimiK31ForConditionalGeneration",
+          "architectures": "['KimiK31ForConditionalGeneration']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 18.7
+      },
+      "tokenizer": {
+        "ok": false,
+        "error": "ValueError: The repository moonshotai/Kimi-K3.1-Pro contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro .\n You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro.\nPlease pass the argument `trust_remote_code=True` to allow custom code to be run.",
+        "s": 0.1,
+        "trace_tail": [
+          "ValueError: The repository moonshotai/Kimi-K3.1-Pro contains custom code which must be executed to correctly load the model. You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro .",
+          " You can inspect the repository content at https://hf.co/moonshotai/Kimi-K3.1-Pro.",
+          "Please pass the argument `trust_remote_code=True` to allow custom code to be run."
+        ]
+      }
+    },
+    "verdict": "native"
+  }
+}

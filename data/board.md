@@ -4,7 +4,7 @@ Last poll: 2026-11-04T16:10:45Z. Rows: launches vLLM published a model-named ima
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
-| `kimi-k31` | 2026-11-04 15:49 | moonshotai/Kimi-K3.1-Pro | pending |  |  |  |  |
+| `kimi-k31` | 2026-11-04 15:49 | moonshotai/Kimi-K3.1-Pro | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/41864288153) → `worker-vllm:day0-kimi-k31` | **native**: vLLM resolves the architecture natively |  |  | 0.6 h |
 | `mistral-large-4` | 2026-10-29 14:22 | mistralai/Mistral-Large-4-1T-A52B | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/40893342906) → `worker-vllm:day0-mistral-large-4` | **fallback**: loads via vLLM's Transformers backend |  |  | 0.5 h |
 | `minimax-m31-flash-x86_64-cu134` | 2026-10-23 01:07 | MiniMaxAI/MiniMax-M3.1-Flash | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39882185176) → `worker-vllm:day0-minimax-m31-flash-x86_64-cu134` | **native**: vLLM resolves the architecture natively | not run: 224 GB of weights is more than one 180 GB GPU holds |  | 0.3 h |
 | `flint` | 2026-10-21 16:09 | RecursiveSI/flint (HF search, 127 likes) | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/39665308085) → `worker-vllm:day0-flint` | **native**: vLLM resolves the architecture natively | pass: flint, 180gb, ATTENTION_BACKEND=FLASHINFER, 13.1 min |  | backfill |

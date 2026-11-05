@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-05T20:37:19Z",
+ "last_poll": "2026-11-05T21:07:20Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -76,6 +76,13 @@
    "model": "moonshotai/Kimi-K3.1-Pro",
    "vllm_tag": "kimi-k31",
    "vllm_tag_pushed": "2026-11-04T15:49:08.580548Z"
+  },
+  "kimi-k31-mc": {
+   "family": "kimi-k31-mc",
+   "first_seen": "2026-11-05T21:07:20Z",
+   "model": null,
+   "vllm_tag": "kimi-k31-mc",
+   "vllm_tag_pushed": "2026-11-05T20:50:48.535627Z"
   },
   "mimo-v26": {
    "first_seen": "2026-10-21T19:28:09Z",

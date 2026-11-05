@@ -1,9 +1,10 @@
 # Day-0 board
 
-Last poll: 2026-11-05T20:37:19Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-11-05T21:07:20Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
+| `kimi-k31-mc` | 2026-11-05 20:50 | no match | pending |  |  |  |  |
 | `credential-check-01a1ab5c-4439-44f1-9310-92e65b0ed47c` | 2026-11-05 11:00 | no match | pending |  |  |  |  |
 | `credential-check-01a1ab58-157d-4ac4-9aac-dfea541fcae3` | 2026-11-05 10:55 | no match | pending |  |  |  |  |
 | `kimi-k31` | 2026-11-04 15:49 | moonshotai/Kimi-K3.1-Pro | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/41864288153) → `worker-vllm:day0-kimi-k31` | **native**: vLLM resolves the architecture natively |  |  | 0.6 h |

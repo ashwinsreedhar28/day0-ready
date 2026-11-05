@@ -1,10 +1,24 @@
 {
- "last_poll": "2026-11-05T10:43:47Z",
+ "last_poll": "2026-11-05T11:07:20Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "cosmos3"
+  },
+  "credential-check-01a1ab58-157d-4ac4-9aac-dfea541fcae3": {
+   "family": "credential-check-01a1ab58-157d-4ac4-9aac-dfea541fcae3",
+   "first_seen": "2026-11-05T11:07:20Z",
+   "model": null,
+   "vllm_tag": "credential-check-01a1ab58-157d-4ac4-9aac-dfea541fcae3",
+   "vllm_tag_pushed": "2026-11-05T10:55:43.82397Z"
+  },
+  "credential-check-01a1ab5c-4439-44f1-9310-92e65b0ed47c": {
+   "family": "credential-check-01a1ab5c-4439-44f1-9310-92e65b0ed47c",
+   "first_seen": "2026-11-05T11:07:20Z",
+   "model": null,
+   "vllm_tag": "credential-check-01a1ab5c-4439-44f1-9310-92e65b0ed47c",
+   "vllm_tag_pushed": "2026-11-05T11:00:30.313389Z"
   },
   "deepseekv4-flash-vision": {
    "first_seen": "2026-10-21T19:28:09Z",

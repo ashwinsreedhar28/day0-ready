@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-06T10:07:18Z",
+ "last_poll": "2026-11-06T10:37:19Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -19,6 +19,13 @@
    "model": null,
    "vllm_tag": "credential-check-01a1ab5c-4439-44f1-9310-92e65b0ed47c",
    "vllm_tag_pushed": "2026-11-05T11:00:30.313389Z"
+  },
+  "cu134-arm64-1105-mdev": {
+   "family": "cu134-arm64-1105-mdev",
+   "first_seen": "2026-11-06T10:37:19Z",
+   "model": null,
+   "vllm_tag": "cu134-arm64-1105-mdev",
+   "vllm_tag_pushed": "2026-11-06T10:35:11.778545Z"
   },
   "deepseekv4-flash-vision": {
    "first_seen": "2026-10-21T19:28:09Z",

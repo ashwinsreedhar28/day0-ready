@@ -1,9 +1,10 @@
 # Day-0 board
 
-Last poll: 2026-11-08T21:07:19Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-11-08T21:37:19Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
+| `minimax-m31-flash-x86_64-cu134-b022bb7-mc0.3.13.post1` | 2026-11-08 21:35 | no match | pending |  |  |  |  |
 | `cu134-arm64-1107-mdev` | 2026-11-07 02:01 | no match | pending |  |  |  |  |
 | `cu134-arm64-1105-mdev` | 2026-11-06 10:35 | no match | pending |  |  |  |  |
 | `minimax-m31-flash-x86_64-cu134-bc9a3ac-mc0.3.13.post1` | 2026-11-06 01:21 | no match | pending |  |  |  |  |

@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-11T08:07:20Z",
+ "last_poll": "2026-11-11T08:37:20Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -131,6 +131,13 @@
    "model": null,
    "vllm_tag": "minimax-m31-flash-x86_64-cu134-569fb50-mc0.3.13.post1",
    "vllm_tag_pushed": "2026-11-10T10:13:04.440309Z"
+  },
+  "minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.13.post1": {
+   "family": "minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.13.post1",
+   "first_seen": "2026-11-11T08:37:20Z",
+   "model": null,
+   "vllm_tag": "minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.13.post1",
+   "vllm_tag_pushed": "2026-11-11T08:30:06.375663Z"
   },
   "minimax-m31-flash-x86_64-cu134-b022bb7-mc0.3.13.post1": {
    "family": "minimax-m31-flash-x86_64-cu134-b022bb7-mc0.3.13.post1",

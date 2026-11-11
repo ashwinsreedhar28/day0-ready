@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-11T07:07:19Z",
+ "last_poll": "2026-11-11T07:37:19Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -48,6 +48,13 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "dsv4-megamoe-mxfp4-x86_64-cu130-4ba0a72"
+  },
+  "efa-nightly": {
+   "family": "efa-nightly",
+   "first_seen": "2026-11-11T07:37:19Z",
+   "model": null,
+   "vllm_tag": "efa-nightly",
+   "vllm_tag_pushed": "2026-11-11T07:25:04.606371Z"
   },
   "flint": {
    "family": "flint",

@@ -1,0 +1,77 @@
+{
+  "vllm_tag": "inkling-2-small",
+  "model": "thinkingmachines/Inkling-2-Small",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-inkling-2-small",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-inkling-2-small-8cf6da4",
+  "digest": "",
+  "worker": "ashwinsreedhar28/worker-vllm@8cf6da4",
+  "worker_ref": "day0-integration",
+  "build": "success",
+  "build_s": 240,
+  "pushed": "failure",
+  "verdict": "error",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/43312086042",
+  "finished_at": "2026-11-12T21:45:19Z",
+  "checks": {
+    "model": "thinkingmachines/Inkling-2-Small",
+    "checked_at": "2026-11-12T21:44:36Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev25249+gb974b306f",
+          "transformers": "5.22.2",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 5.7
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "Inkling2ForConditionalGeneration"
+          ],
+          "model_type": "inkling2",
+          "auto_map": []
+        },
+        "s": 0.1
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "Inkling2ForConditionalGeneration": true
+        },
+        "s": 3.5
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The checkpoint you are trying to load has model type `inkling2` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "s": 0.0,
+        "trace_tail": [
+          "ValueError: The checkpoint you are trying to load has model type `inkling2` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
+          "",
+          "You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+        ]
+      },
+      "vllm_model_config": {
+        "ok": false,
+        "error": "ValidationError: 1 validation error for ModelConfig\n  Value error, Model architectures ['Inkling2ForConditionalGeneration'] failed to be inspected. Please check the logs for more details. [type=value_error, input_value=ArgsKwargs((), {'model': ...st_remote_code': False}), input_type=ArgsKwargs]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        "s": 10.9,
+        "trace_tail": [
+          "pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig",
+          "  Value error, Model architectures ['Inkling2ForConditionalGeneration'] failed to be inspected. Please check the logs for more details. [type=value_error, input_value=ArgsKwargs((), {'model': ...st_remote_code': False}), input_type=ArgsKwargs]",
+          "    For further information visit https://errors.pydantic.dev/2.14/v/value_error"
+        ]
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 200058
+        },
+        "s": 1.8
+      }
+    },
+    "verdict": "error"
+  }
+}

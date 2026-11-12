@@ -1,9 +1,10 @@
 # Day-0 board
 
-Last poll: 2026-11-12T21:07:22Z. Rows: launches vLLM published a model-named image for.
+Last poll: 2026-11-12T21:37:23Z. Rows: launches vLLM published a model-named image for.
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
+| `inkling-2-small` | 2026-11-12 21:13 | thinkingmachines/Inkling-2-Small | pending |  |  |  |  |
 | `minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.14` | 2026-11-11 19:22 | no match | pending |  |  |  |  |
 | `minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.13.post1` | 2026-11-11 08:30 | no match | pending |  |  |  |  |
 | `efa-nightly` | 2026-11-11 07:25 | no match | pending |  |  |  |  |

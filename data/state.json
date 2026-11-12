@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-12T21:07:22Z",
+ "last_poll": "2026-11-12T21:37:23Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -84,6 +84,14 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "inkling"
+  },
+  "inkling-2-small": {
+   "family": "inkling-2-small",
+   "first_seen": "2026-11-12T21:37:23Z",
+   "match": "watchlist",
+   "model": "thinkingmachines/Inkling-2-Small",
+   "vllm_tag": "inkling-2-small",
+   "vllm_tag_pushed": "2026-11-12T21:13:06.801657Z"
   },
   "kimi-k3": {
    "first_seen": "2026-10-21T19:28:09Z",

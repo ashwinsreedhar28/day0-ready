@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-18T03:37:19Z",
+ "last_poll": "2026-11-18T04:07:24Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -74,6 +74,14 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "hy3"
+  },
+  "hy4-flash": {
+   "family": "hy4-flash",
+   "first_seen": "2026-11-18T04:07:24Z",
+   "match": "watchlist",
+   "model": "tencent/Hy4-flash",
+   "vllm_tag": "hy4-flash-x86_64-cu130",
+   "vllm_tag_pushed": "2026-11-18T04:07:10.242289Z"
   },
   "hy4-preview": {
    "first_seen": "2026-10-21T19:28:09Z",

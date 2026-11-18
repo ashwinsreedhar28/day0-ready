@@ -4,7 +4,7 @@ Last poll: 2026-11-18T04:07:24Z. Rows: launches vLLM published a model-named ima
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
-| `hy4-flash-x86_64-cu130` | 2026-11-18 04:07 | tencent/Hy4-flash | pending |  |  |  |  |
+| `hy4-flash-x86_64-cu130` | 2026-11-18 04:07 | tencent/Hy4-flash | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/44235126770) → `worker-vllm:day0-hy4-flash-x86_64-cu130` | **fallback**: loads via vLLM's Transformers backend |  |  | 0.2 h |
 | `inkling-2-small` | 2026-11-12 21:13 | thinkingmachines/Inkling-2-Small | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/43312086042) | **error**: check failed; see run |  |  |  |
 | `minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.14` | 2026-11-11 19:22 | no match | pending |  |  |  |  |
 | `minimax-m31-flash-x86_64-cu134-5e21ce1-mc0.3.13.post1` | 2026-11-11 08:30 | no match | pending |  |  |  |  |

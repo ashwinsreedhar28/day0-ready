@@ -1,0 +1,78 @@
+{
+  "vllm_tag": "hy4-flash-x86_64-cu130",
+  "model": "tencent/Hy4-flash",
+  "image": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-hy4-flash-x86_64-cu130",
+  "image_pinned": "ghcr.io/ashwinsreedhar28/worker-vllm:day0-hy4-flash-x86_64-cu130-8cf6da4",
+  "digest": "sha256:2b9082db319b6d5e80174ee43dc89af22187d9bd76ff2e656ff4597a4deec5c7",
+  "worker": "ashwinsreedhar28/worker-vllm@8cf6da4",
+  "worker_ref": "day0-integration",
+  "build": "success",
+  "build_s": 182,
+  "pushed": "success",
+  "verdict": "fallback",
+  "run_url": "https://github.com/ashwinsreedhar28/day0-ready/actions/runs/44235126770",
+  "finished_at": "2026-11-18T04:20:11Z",
+  "checks": {
+    "model": "tencent/Hy4-flash",
+    "checked_at": "2026-11-18T04:13:15Z",
+    "steps": {
+      "versions": {
+        "ok": true,
+        "value": {
+          "vllm": "0.1.dev25463+g77766db1f.d20261117",
+          "transformers": "5.23.0",
+          "torch": "2.14.0+cu130"
+        },
+        "s": 1.6
+      },
+      "hub_config": {
+        "ok": true,
+        "value": {
+          "architectures": [
+            "HYV4FlashForConditionalGeneration"
+          ],
+          "model_type": "hy_v4_flash",
+          "auto_map": []
+        },
+        "s": 0.1
+      },
+      "registry": {
+        "ok": true,
+        "value": {
+          "HYV4FlashForConditionalGeneration": false
+        },
+        "s": 2.2
+      },
+      "transformers_config": {
+        "ok": false,
+        "error": "ValueError: The checkpoint you are trying to load has model type `hy_v4_flash` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.\n\nYou can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`",
+        "s": 0.0,
+        "trace_tail": [
+          "ValueError: The checkpoint you are trying to load has model type `hy_v4_flash` but Transformers does not recognize this architecture. This could be because of an issue with the checkpoint, or because your version of Transformers is out of date.",
+          "",
+          "You can update Transformers with the command `pip install --upgrade transformers`. If this does not work, and the checkpoint is very new, then there may not be a release version that supports this model yet. In this case, you can get the most up-to-date code by installing Transformers from source with the command `pip install git+https://github.com/huggingface/transformers.git`"
+        ]
+      },
+      "vllm_model_config": {
+        "ok": true,
+        "value": {
+          "trust_remote_code": false,
+          "architecture": "HYV4FlashVLForConditionalGeneration",
+          "architectures": "['HYV4FlashVLForConditionalGeneration']",
+          "model_impl": "auto",
+          "runner_type": "generate"
+        },
+        "s": 10.7
+      },
+      "tokenizer": {
+        "ok": true,
+        "value": {
+          "class": "TokenizersBackend",
+          "vocab": 120832
+        },
+        "s": 0.6
+      }
+    },
+    "verdict": "fallback"
+  }
+}

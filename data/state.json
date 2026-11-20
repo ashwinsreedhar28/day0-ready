@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-20T21:07:19Z",
+ "last_poll": "2026-11-20T21:37:20Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -99,6 +99,14 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "inkling"
+  },
+  "inkling-2-mini": {
+   "family": "inkling-2-mini",
+   "first_seen": "2026-11-20T21:37:20Z",
+   "match": "watchlist",
+   "model": "thinkingmachines/Inkling-2-Mini",
+   "vllm_tag": "inkling-2-mini",
+   "vllm_tag_pushed": "2026-11-20T21:35:58.193798Z"
   },
   "inkling-2-small": {
    "family": "inkling-2-small",

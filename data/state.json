@@ -1,5 +1,5 @@
 {
- "last_poll": "2026-11-20T03:07:24Z",
+ "last_poll": "2026-11-20T03:37:23Z",
  "seen": {
   "cosmos3": {
    "first_seen": "2026-10-21T19:28:09Z",
@@ -74,6 +74,13 @@
    "first_seen": "2026-10-21T19:28:09Z",
    "skipped": "before --since",
    "vllm_tag": "hy3"
+  },
+  "hy4": {
+   "family": "hy4",
+   "first_seen": "2026-11-20T03:37:23Z",
+   "model": null,
+   "vllm_tag": "hy4",
+   "vllm_tag_pushed": "2026-11-20T03:07:45.762975Z"
   },
   "hy4-flash": {
    "family": "hy4-flash",

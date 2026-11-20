@@ -4,7 +4,7 @@ Last poll: 2026-11-20T21:37:20Z. Rows: launches vLLM published a model-named ima
 
 | vLLM day-0 image | pushed (UTC) | model | worker build | CPU checks | GPU smoke test | recommended config | tag → worker image |
 |---|---|---|---|---|---|---|---|
-| `inkling-2-mini` | 2026-11-20 21:35 | thinkingmachines/Inkling-2-Mini | pending |  |  |  |  |
+| `inkling-2-mini` | 2026-11-20 21:35 | thinkingmachines/Inkling-2-Mini | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/44821958636) → `worker-vllm:day0-inkling-2-mini` | **error**: check failed; see run |  |  | 0.2 h |
 | `hy4` | 2026-11-20 03:07 | no match | pending |  |  |  |  |
 | `hy4-flash-x86_64-cu130` | 2026-11-18 04:07 | tencent/Hy4-flash | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/44235126770) → `worker-vllm:day0-hy4-flash-x86_64-cu130` | **fallback**: loads via vLLM's Transformers backend |  |  | 0.2 h |
 | `inkling-2-small` | 2026-11-12 21:13 | thinkingmachines/Inkling-2-Small | [success](https://github.com/ashwinsreedhar28/day0-ready/actions/runs/43312086042) | **error**: check failed; see run |  |  |  |
